@@ -1,0 +1,11 @@
+{
+  "title": "Chat",
+  "pages": [
+    "index",
+    "chat",
+    "chat-provider",
+    "chat-messages",
+    "chat-message",
+    "chat-skeleton"
+  ]
+}

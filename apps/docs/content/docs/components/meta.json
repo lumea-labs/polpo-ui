@@ -2,10 +2,6 @@
   "title": "Components",
   "pages": [
     "index",
-    "chat",
-    "chat-provider",
-    "chat-messages",
-    "chat-message",
-    "chat-skeleton"
+    "chat"
   ]
 }
