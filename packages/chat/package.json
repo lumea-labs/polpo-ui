@@ -26,6 +26,7 @@
   },
   "files": [
     "dist",
+    "registry.json",
     "README.md"
   ],
   "sideEffects": false,
