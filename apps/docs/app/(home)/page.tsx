@@ -32,24 +32,17 @@ export default function HomePage() {
           <span className="text-fd-foreground font-medium">shadcn/ui</span>.
         </p>
 
-        <div className="mt-10 flex items-center gap-4">
-          <div className="border border-fd-border bg-fd-card px-5 py-2.5">
-            <code className="font-mono text-sm text-fd-primary">npm install @polpo-ai/chat</code>
+        {/* CTA: install command */}
+        <div className="mt-10 flex items-center gap-6">
+          <div className="border border-fd-border bg-fd-card px-6 py-3">
+            <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
           </div>
           <Link
             href="/docs"
-            className="px-5 py-2.5 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+            className="text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
             Docs
           </Link>
-          <a
-            href="https://github.com/lumea-labs/polpo-ui"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-          >
-            GitHub
-          </a>
         </div>
       </section>
 
@@ -60,24 +53,40 @@ export default function HomePage() {
             {
               title: "Fully Composable",
               desc: "Three levels of control — zero-config, customizable, or headless. Use the full Chat component or build from primitives.",
+              icon: (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L12 12.75 6.429 9.75m11.142 0l4.179 2.25L12 17.25 2.25 12l4.179-2.25m11.142 0l4.179 2.25-4.179 2.25m0 0L12 17.25l-5.571-3m11.142 0l4.179 2.25L12 21.75l-9.75-5.25 4.179-2.25" />
+                </svg>
+              ),
             },
             {
               title: "Polpo SDK Integration",
               desc: "Built on @polpo-ai/react hooks. Streaming, sessions, tool calls, memory — all wired out of the box.",
+              icon: (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.614a4.5 4.5 0 00-1.242-7.244l4.5-4.5a4.5 4.5 0 016.364 6.364l-1.757 1.757" />
+                </svg>
+              ),
             },
             {
               title: "shadcn/ui Foundation",
               desc: "Install to your project with npx. You own the code. Tailwind CSS, fully customizable, no vendor lock-in.",
+              icon: (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                </svg>
+              ),
             },
           ].map((card) => (
             <div
               key={card.title}
               className="border border-fd-border bg-fd-card p-6"
             >
+              <div className="text-fd-primary mb-3">{card.icon}</div>
               <h3 className="text-sm font-bold tracking-tight">
                 {card.title}
               </h3>
-              <p className="mt-3 text-xs leading-relaxed text-fd-muted-foreground">
+              <p className="mt-2 text-xs leading-relaxed text-fd-muted-foreground">
                 {card.desc}
               </p>
             </div>
@@ -88,7 +97,7 @@ export default function HomePage() {
       {/* Chat showcase */}
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pb-24">
         <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-fd-primary">
-          Components
+          Chat
         </p>
         <h2 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">
           Chat that works<span className="text-fd-muted-foreground">, instantly.</span>
@@ -138,11 +147,17 @@ export default function HomePage() {
 
         {/* Code */}
         <div className="mt-4 border border-fd-border bg-fd-card p-5 overflow-x-auto">
-          <pre className="font-mono text-sm leading-relaxed"><code><span className="text-purple-400">import</span> {"{ "}<span className="text-fd-foreground">Chat</span>{" }"} <span className="text-purple-400">from</span> <span className="text-green-400">&quot;@polpo-ai/chat&quot;</span>{"\n"}<span className="text-purple-400">import</span> {"{ "}<span className="text-fd-foreground">PolpoProvider</span>{" }"} <span className="text-purple-400">from</span> <span className="text-green-400">&quot;@polpo-ai/react&quot;</span>{"\n\n"}<span className="text-fd-muted-foreground/60">{"// That's it. Full chat with streaming + tools."}</span>{"\n"}<span className="text-blue-400">{"<"}</span><span className="text-fd-foreground">PolpoProvider</span> <span className="text-purple-300">baseUrl</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;https://api.polpo.sh&quot;</span><span className="text-blue-400">{">"}</span>{"\n  "}<span className="text-blue-400">{"<"}</span><span className="text-fd-foreground">Chat</span> <span className="text-purple-300">agent</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;coder&quot;</span> <span className="text-purple-300">sessionId</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;session_abc&quot;</span> <span className="text-blue-400">{"/>"}</span>{"\n"}<span className="text-blue-400">{"</"}</span><span className="text-fd-foreground">PolpoProvider</span><span className="text-blue-400">{">"}</span></code></pre>
+          <pre className="font-mono text-sm leading-7"><code className="text-fd-muted-foreground">{`import { Chat } from "@polpo-ai/chat"
+import { PolpoProvider } from "@polpo-ai/react"
+
+// Full chat with streaming + tools.
+<PolpoProvider baseUrl="https://api.polpo.sh">
+  <Chat agent="coder" sessionId="session_abc" />
+</PolpoProvider>`}</code></pre>
         </div>
       </section>
 
-      {/* Install CTA */}
+      {/* Start building */}
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pb-24">
         <div className="border border-fd-primary/20 bg-fd-primary/[0.03] p-8">
           <h2 className="text-xl font-extrabold tracking-tight">Start building</h2>
@@ -156,6 +171,19 @@ export default function HomePage() {
             <p className="text-xs text-fd-muted-foreground">Or via shadcn registry:</p>
             <div className="w-fit border border-fd-border bg-fd-background px-5 py-2.5">
               <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
+            </div>
+          </div>
+
+          {/* Examples */}
+          <div className="mt-8 pt-6 border-t border-fd-border/50">
+            <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Examples</p>
+            <div className="mt-3 flex gap-3">
+              <Link
+                href="/docs/examples/chat-agent"
+                className="border border-fd-border bg-fd-background px-4 py-2 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              >
+                Chat Agent
+              </Link>
             </div>
           </div>
         </div>
