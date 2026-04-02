@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChatDemo } from "@/components/chat-demo";
 
 export default function HomePage() {
   return (
@@ -95,46 +96,9 @@ export default function HomePage() {
           and session persistence. One import.
         </p>
 
-        {/* Mock chat */}
-        <div className="mt-10 border border-fd-border bg-fd-card">
-          <div className="flex items-center justify-between border-b border-fd-border px-5 py-3">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-fd-primary" />
-              <span className="font-mono text-xs text-fd-muted-foreground">coder</span>
-            </div>
-            <span className="font-mono text-[10px] text-fd-muted-foreground/40">session_abc</span>
-          </div>
-
-          <div className="divide-y divide-fd-border/50">
-            <div className="px-5 py-4">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-fd-muted-foreground/40">you</p>
-              <p className="mt-2 text-sm">Create a REST API for a todo app with Express and TypeScript</p>
-            </div>
-            <div className="px-5 py-4">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-fd-primary/60">coder</p>
-              <p className="mt-2 text-sm text-fd-muted-foreground">
-                I&apos;ll create a complete Express + TypeScript REST API with CRUD endpoints, validation, and error handling.
-              </p>
-              <div className="mt-3 space-y-1.5">
-                {[
-                  { name: "write", arg: "src/index.ts" },
-                  { name: "write", arg: "src/routes/todos.ts" },
-                  { name: "write", arg: "src/middleware/validate.ts" },
-                  { name: "bash", arg: "npm test" },
-                ].map((tool, i) => (
-                  <div key={i} className="flex items-center gap-2 font-mono text-xs">
-                    <span className="h-1.5 w-1.5 rounded-full bg-fd-primary" />
-                    <span className="text-fd-muted-foreground">{tool.name}</span>
-                    <span className="text-fd-muted-foreground/40">{tool.arg}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-fd-border px-5 py-3">
-            <span className="text-xs text-fd-muted-foreground/30">Message coder...</span>
-          </div>
+        {/* Live chat demo using real @polpo-ai/chat components */}
+        <div className="mt-10">
+          <ChatDemo />
         </div>
 
         {/* Code */}
