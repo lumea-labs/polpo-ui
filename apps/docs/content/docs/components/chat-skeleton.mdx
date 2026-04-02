@@ -1,0 +1,26 @@
+---
+title: ChatSkeleton
+description: Loading skeletons for chat components.
+---
+
+# ChatSkeleton
+
+Skeleton loading states that match the chat layout.
+
+## Import
+
+```tsx
+import { ChatSkeleton, MessageSkeleton, UserMessageSkeleton } from "@polpo-ai/chat";
+```
+
+## Usage
+
+```tsx
+{isLoading ? <ChatSkeleton /> : <ChatMessages />}
+```
+
+## Variants
+
+- `ChatSkeleton` — Full chat skeleton (multiple messages)
+- `MessageSkeleton` — Single assistant message skeleton
+- `UserMessageSkeleton` — Single user message skeleton

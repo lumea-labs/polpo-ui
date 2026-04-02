@@ -1,13 +1,45 @@
 ---
-title: Hello World
-description: Your first document
+title: Introduction
+description: Composable React components for building AI agent interfaces with Polpo.
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+# @polpo-ai/ui
 
-## What is Next?
+UI components for building AI agent interfaces with [Polpo](https://polpo.sh). Built on React + Tailwind CSS + shadcn/ui.
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
-</Cards>
+## What is this?
+
+A component library that gives you production-ready chat interfaces, tool renderers, and agent views — wired to the Polpo SDK out of the box.
+
+Three levels of composition:
+
+- **Zero config** — Drop in `<Chat agent="coder" />` and get a full conversational UI
+- **Customizable** — Use `ChatProvider` + individual components to control layout
+- **Headless** — Use hooks only (`useSubmitHandler`, `useDocumentDrag`) and build your own UI
+
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| `@polpo-ai/chat` | Chat components, tool renderers, hooks |
+| `@polpo-ai/ui` | CLI for installing components (coming soon) |
+
+## Quick Start
+
+```bash
+npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react
+```
+
+```tsx
+import { Chat } from "@polpo-ai/chat";
+
+function App() {
+  return <Chat agent="coder" sessionId="session_abc" />;
+}
+```
+
+Or install via shadcn registry:
+
+```bash
+npx shadcn@latest add "https://ui.polpo.sh/registry/polpo-chat"
+```

@@ -1,0 +1,40 @@
+---
+title: ChatMessages
+description: Virtualized message list with auto-scroll.
+---
+
+# ChatMessages
+
+A virtualized, auto-scrolling message list. Handles hundreds of messages efficiently.
+
+## Import
+
+```tsx
+import { ChatMessages } from "@polpo-ai/chat";
+```
+
+## Usage
+
+Must be used inside a `ChatProvider`:
+
+```tsx
+<ChatProvider agent="coder" sessionId="session_abc">
+  <ChatMessages className="flex-1 overflow-hidden" />
+</ChatProvider>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | — | Custom CSS class |
+| `renderMessage` | `(msg) => ReactNode` | — | Custom message renderer |
+
+## Ref
+
+```tsx
+import { ChatMessages, type ChatMessagesHandle } from "@polpo-ai/chat";
+
+const ref = useRef<ChatMessagesHandle>(null);
+ref.current?.scrollToBottom();
+```

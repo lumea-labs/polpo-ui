@@ -1,0 +1,53 @@
+---
+title: Tool Renderers
+description: Components for rendering agent tool calls.
+---
+
+# Tool Renderers
+
+Visual components for displaying tool call results inline in chat messages.
+
+## ToolCallChip
+
+Compact inline display of a tool call — shows tool name, status, and primary argument.
+
+```tsx
+import { ToolCallChip } from "@polpo-ai/chat/tools";
+
+<ToolCallChip
+  name="write"
+  state="completed"
+  arguments={{ path: "src/index.ts" }}
+/>
+```
+
+## ToolCallShell
+
+Expandable tool call display with full arguments and output.
+
+```tsx
+import { ToolCallShell } from "@polpo-ai/chat/tools";
+
+<ToolCallShell
+  name="bash"
+  state="completed"
+  arguments={{ command: "npm test" }}
+  result="47 passed, 0 failed"
+/>
+```
+
+## Built-in Tool Renderers
+
+The chat components automatically render these tools with specialized UIs:
+
+| Tool | Renderer | What it shows |
+|------|----------|---------------|
+| `bash` | `ToolBash` | Command + output with syntax highlighting |
+| `read` | `ToolRead` | File path + content preview |
+| `write` | `ToolWrite` | File path + diff-style content |
+| `search` | `ToolSearch` | Query + results |
+| `http_fetch` | `ToolHttp` | URL + response status |
+| `email` | `ToolEmail` | Recipient + subject |
+| `ask_user_question` | `ToolAskUser` | Interactive question prompt |
+
+All tool renderers are automatically selected by the `ChatMessage` component based on the tool name.

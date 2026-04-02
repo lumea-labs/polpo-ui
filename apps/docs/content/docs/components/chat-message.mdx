@@ -1,0 +1,30 @@
+---
+title: ChatMessage
+description: Individual message renderer with tool call support.
+---
+
+# ChatMessage
+
+Renders a single chat message — user or assistant — with tool call chips and streaming markdown.
+
+## Import
+
+```tsx
+import { ChatMessage, ChatUserMessage, ChatAssistantMessage } from "@polpo-ai/chat";
+```
+
+## Variants
+
+- `ChatUserMessage` — User bubble with plain text
+- `ChatAssistantMessage` — Assistant response with streaming markdown + tool calls
+- `ChatMessage` — Auto-selects based on role
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `role` | `"user" \| "assistant"` | Message role |
+| `content` | `string \| ContentPart[]` | Message content |
+| `toolCalls` | `ToolCall[]` | Tool calls to render |
+| `isStreaming` | `boolean` | Whether response is still streaming |
+| `timestamp` | `string` | ISO timestamp |
