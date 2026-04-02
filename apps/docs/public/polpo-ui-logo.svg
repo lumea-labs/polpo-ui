@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="136" viewBox="0 0 750 136">
+  <rect x="0" y="2" width="59" height="59" fill="currentColor"/>
+  <rect x="72" y="74" width="59" height="59" fill="currentColor"/>
+  <text x="173" y="104" font-family="JetBrains Mono, Geist Mono, monospace"
+    font-weight="700" font-size="100" letter-spacing="30" fill="currentColor">POLPO</text>
+  <text x="670" y="104" font-family="JetBrains Mono, Geist Mono, monospace"
+    font-weight="400" font-size="100" letter-spacing="10" fill="currentColor" opacity="0.5">UI</text>
+</svg>

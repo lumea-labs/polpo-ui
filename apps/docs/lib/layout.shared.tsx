@@ -5,13 +5,8 @@ export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       title: (
-        <div className="flex items-center gap-2.5">
-          <div className="flex flex-col gap-[2px]">
-            <div className="h-[10px] w-[10px] bg-current" />
-            <div className="ml-[12px] h-[10px] w-[10px] bg-current" />
-          </div>
-          <span className="font-mono text-xs font-bold tracking-[0.15em]">POLPO UI</span>
-        </div>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src="/polpo-ui-logo.svg" alt="POLPO UI" className="h-6" />
       ),
     },
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,

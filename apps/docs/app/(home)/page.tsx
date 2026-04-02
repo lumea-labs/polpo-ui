@@ -33,17 +33,20 @@ export default function HomePage() {
         </p>
 
         <div className="mt-10 flex items-center gap-4">
+          <div className="border border-fd-border bg-fd-card px-5 py-2.5">
+            <code className="font-mono text-sm text-fd-primary">npm install @polpo-ai/chat</code>
+          </div>
           <Link
             href="/docs"
-            className="bg-fd-foreground text-fd-background px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+            className="px-5 py-2.5 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
-            Get Started
+            Docs
           </Link>
           <a
             href="https://github.com/lumea-labs/polpo-ui"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-fd-border px-5 py-2.5 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+            className="text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
             GitHub
           </a>
