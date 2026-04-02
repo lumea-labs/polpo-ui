@@ -1,0 +1,16 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "getting-started",
+    "---Components---",
+    "components",
+    "---Hooks---",
+    "hooks",
+    "---Tools---",
+    "tools",
+    "---Examples---",
+    "examples"
+  ]
+}
