@@ -1,0 +1,22 @@
+{
+  "name": "@polpo-ai/chat",
+  "version": "0.1.0",
+  "description": "Composable chat UI components for Polpo AI agents",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tools": "./src/tools/index.tsx",
+    "./hooks": "./src/hooks/index.ts"
+  },
+  "peerDependencies": {
+    "@polpo-ai/sdk": ">=0.5.0",
+    "@polpo-ai/react": ">=0.5.0",
+    "react": ">=18.0.0",
+    "react-virtuoso": ">=4.0.0",
+    "lucide-react": ">=0.400.0"
+  },
+  "keywords": ["polpo", "chat", "ai", "react", "components"],
+  "license": "MIT"
+}
