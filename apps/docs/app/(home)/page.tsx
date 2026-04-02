@@ -134,38 +134,26 @@ export default function HomePage() {
         </div>
 
         {/* Code */}
-        <div className="mt-4 border border-fd-border bg-fd-card p-5">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-fd-muted-foreground/40">Usage</p>
-          <pre className="mt-3 font-mono text-sm">
-            <span className="text-fd-primary">import</span>
-            {" { "}Chat{" } "}
-            <span className="text-fd-primary">from</span>
-            <span className="text-fd-muted-foreground">{' "@polpo-ai/chat"'}</span>
-            {"\n\n"}
-            <span className="text-fd-muted-foreground">{"<"}</span>
-            Chat
-            <span className="text-fd-primary"> agent</span>
-            <span className="text-fd-muted-foreground">=</span>
-            <span className="text-fd-muted-foreground">{'"coder"'}</span>
-            <span className="text-fd-primary"> sessionId</span>
-            <span className="text-fd-muted-foreground">=</span>
-            <span className="text-fd-muted-foreground">{'"session_abc"'}</span>
-            <span className="text-fd-muted-foreground">{" />"}</span>
-          </pre>
+        <div className="mt-4 border border-fd-border bg-fd-card p-5 overflow-x-auto">
+          <pre className="font-mono text-sm leading-relaxed"><code><span className="text-purple-400">import</span> {"{ "}<span className="text-fd-foreground">Chat</span>{" }"} <span className="text-purple-400">from</span> <span className="text-green-400">&quot;@polpo-ai/chat&quot;</span>{"\n"}<span className="text-purple-400">import</span> {"{ "}<span className="text-fd-foreground">PolpoProvider</span>{" }"} <span className="text-purple-400">from</span> <span className="text-green-400">&quot;@polpo-ai/react&quot;</span>{"\n\n"}<span className="text-fd-muted-foreground/60">{"// That's it. Full chat with streaming + tools."}</span>{"\n"}<span className="text-blue-400">{"<"}</span><span className="text-fd-foreground">PolpoProvider</span> <span className="text-purple-300">baseUrl</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;https://api.polpo.sh&quot;</span><span className="text-blue-400">{">"}</span>{"\n  "}<span className="text-blue-400">{"<"}</span><span className="text-fd-foreground">Chat</span> <span className="text-purple-300">agent</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;coder&quot;</span> <span className="text-purple-300">sessionId</span><span className="text-fd-muted-foreground">=</span><span className="text-green-400">&quot;session_abc&quot;</span> <span className="text-blue-400">{"/>"}</span>{"\n"}<span className="text-blue-400">{"</"}</span><span className="text-fd-foreground">PolpoProvider</span><span className="text-blue-400">{">"}</span></code></pre>
         </div>
       </section>
 
       {/* Install CTA */}
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pb-24">
-        <div className="border border-fd-primary/20 bg-fd-primary/[0.03] p-8 text-center">
+        <div className="border border-fd-primary/20 bg-fd-primary/[0.03] p-8">
           <h2 className="text-xl font-extrabold tracking-tight">Start building</h2>
           <p className="mt-2 text-sm text-fd-muted-foreground">
             Add chat components to your project in one command.
           </p>
-          <div className="mx-auto mt-6 w-fit border border-fd-border bg-fd-background px-6 py-3">
-            <code className="font-mono text-sm text-fd-primary">
-              npx @polpo-ai/ui add chat
-            </code>
+          <div className="mt-6 space-y-3">
+            <div className="w-fit border border-fd-border bg-fd-background px-5 py-2.5">
+              <code className="font-mono text-sm text-fd-primary">npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react</code>
+            </div>
+            <p className="text-xs text-fd-muted-foreground">Or via shadcn registry:</p>
+            <div className="w-fit border border-fd-border bg-fd-background px-5 py-2.5">
+              <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
+            </div>
           </div>
         </div>
       </section>
