@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CopyButton } from "./copy-button";
 
 export default function HomePage() {
   return (
@@ -34,8 +35,9 @@ export default function HomePage() {
 
         {/* CTA: install command */}
         <div className="mt-10 flex items-center gap-6">
-          <div className="border border-fd-border bg-fd-card px-6 py-3">
+          <div className="flex items-center gap-3 border border-fd-border bg-fd-card px-5 py-2.5">
             <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
+            <CopyButton text="npx shadcn add @polpo-ai/chat" />
           </div>
           <Link
             href="/docs"
@@ -64,7 +66,7 @@ export default function HomePage() {
               desc: "Built on @polpo-ai/react hooks. Streaming, sessions, tool calls, memory — all wired out of the box.",
               icon: (
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.614a4.5 4.5 0 00-1.242-7.244l4.5-4.5a4.5 4.5 0 016.364 6.364l-1.757 1.757" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
               ),
             },
@@ -97,7 +99,7 @@ export default function HomePage() {
       {/* Chat showcase */}
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pb-24">
         <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-fd-primary">
-          Chat
+          Components
         </p>
         <h2 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">
           Chat that works<span className="text-fd-muted-foreground">, instantly.</span>
@@ -147,44 +149,62 @@ export default function HomePage() {
 
         {/* Code */}
         <div className="mt-4 border border-fd-border bg-fd-card p-5 overflow-x-auto">
-          <pre className="font-mono text-sm leading-7"><code className="text-fd-muted-foreground">{`import { Chat } from "@polpo-ai/chat"
-import { PolpoProvider } from "@polpo-ai/react"
-
-// Full chat with streaming + tools.
-<PolpoProvider baseUrl="https://api.polpo.sh">
-  <Chat agent="coder" sessionId="session_abc" />
-</PolpoProvider>`}</code></pre>
+          <pre className="font-mono text-sm leading-7"><code>
+<span className="text-[#c586c0]">import</span> <span className="text-fd-foreground">{"{ Chat }"}</span> <span className="text-[#c586c0]">from</span> <span className="text-[#ce9178]">&quot;@polpo-ai/chat&quot;</span>{"\n"}<span className="text-[#c586c0]">import</span> <span className="text-fd-foreground">{"{ PolpoProvider }"}</span> <span className="text-[#c586c0]">from</span> <span className="text-[#ce9178]">&quot;@polpo-ai/react&quot;</span>
+{"\n\n"}<span className="text-[#6a9955]">{"// Full chat with streaming + tools."}</span>
+{"\n"}<span className="text-[#808080]">&lt;</span><span className="text-[#4ec9b0]">PolpoProvider</span> <span className="text-[#9cdcfe]">baseUrl</span><span className="text-fd-foreground">=</span><span className="text-[#ce9178]">&quot;https://api.polpo.sh&quot;</span><span className="text-[#808080]">&gt;</span>
+{"\n"}{"  "}<span className="text-[#808080]">&lt;</span><span className="text-[#4ec9b0]">Chat</span> <span className="text-[#9cdcfe]">agent</span><span className="text-fd-foreground">=</span><span className="text-[#ce9178]">&quot;coder&quot;</span> <span className="text-[#9cdcfe]">sessionId</span><span className="text-fd-foreground">=</span><span className="text-[#ce9178]">&quot;session_abc&quot;</span> <span className="text-[#808080]">/&gt;</span>
+{"\n"}<span className="text-[#808080]">&lt;/</span><span className="text-[#4ec9b0]">PolpoProvider</span><span className="text-[#808080]">&gt;</span></code></pre>
         </div>
       </section>
 
-      {/* Start building */}
+      {/* Examples */}
       <section className="relative z-10 mx-auto max-w-[1100px] px-6 pb-24">
-        <div className="border border-fd-primary/20 bg-fd-primary/[0.03] p-8">
-          <h2 className="text-xl font-extrabold tracking-tight">Start building</h2>
-          <p className="mt-2 text-sm text-fd-muted-foreground">
-            Add chat components to your project in one command.
-          </p>
-          <div className="mt-6 space-y-3">
-            <div className="w-fit border border-fd-border bg-fd-background px-5 py-2.5">
-              <code className="font-mono text-sm text-fd-primary">npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react</code>
+        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-fd-primary">
+          Examples
+        </p>
+        <h2 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">
+          See it in action
+        </h2>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <Link
+            href="/docs/examples/chat-agent"
+            className="group border border-fd-border bg-fd-card p-6 transition-colors hover:border-fd-primary/30"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="h-4 w-4 text-fd-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+              </svg>
+              <span className="text-sm font-bold">Chat Agent</span>
             </div>
-            <p className="text-xs text-fd-muted-foreground">Or via shadcn registry:</p>
-            <div className="w-fit border border-fd-border bg-fd-background px-5 py-2.5">
-              <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
+            <p className="text-xs text-fd-muted-foreground leading-relaxed">
+              Full-page chat interface connected to a Polpo agent with streaming and tool calls.
+            </p>
+          </Link>
+
+          <div className="border border-fd-border/50 bg-fd-card/50 p-6 opacity-50">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+              </svg>
+              <span className="text-sm font-bold">Task Dashboard</span>
             </div>
+            <p className="text-xs text-fd-muted-foreground leading-relaxed">
+              Task list with status, agent assignment, and output viewer. Coming soon.
+            </p>
           </div>
 
-          {/* Examples */}
-          <div className="mt-8 pt-6 border-t border-fd-border/50">
-            <p className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Examples</p>
-            <div className="mt-3 flex gap-3">
-              <Link
-                href="/docs/examples/chat-agent"
-                className="border border-fd-border bg-fd-background px-4 py-2 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-              >
-                Chat Agent
-              </Link>
+          <div className="border border-fd-border/50 bg-fd-card/50 p-6 opacity-50">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+              <span className="text-sm font-bold">Multi-Agent</span>
             </div>
+            <p className="text-xs text-fd-muted-foreground leading-relaxed">
+              Agent selector with session switching and team views. Coming soon.
+            </p>
           </div>
         </div>
       </section>

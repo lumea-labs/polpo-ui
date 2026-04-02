@@ -4,6 +4,6 @@
   <rect x="72" y="74" width="59" height="59" fill="currentColor"/>
   <text x="173" y="104" font-family="JetBrains Mono, Geist Mono, monospace"
     font-weight="700" font-size="100" letter-spacing="30" fill="currentColor">POLPO</text>
-  <text x="670" y="104" font-family="JetBrains Mono, Geist Mono, monospace"
-    font-weight="400" font-size="100" letter-spacing="10" fill="currentColor" opacity="0.5">UI</text>
+  <text x="660" y="104" font-family="JetBrains Mono, Geist Mono, monospace"
+    font-weight="400" font-size="80" letter-spacing="8" fill="currentColor" opacity="0.4">UI</text>
 </svg>
