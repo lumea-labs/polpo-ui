@@ -1,0 +1,51 @@
+---
+title: ChatMessages
+description: Virtualized, auto-scrolling message list powered by react-virtuoso.
+---
+
+`ChatMessages` renders the conversation as a virtualized list with automatic scroll-following during streaming. It includes a built-in `ChatScrollButton` and skeleton loading state. Must be rendered inside a `ChatProvider`.
+
+<Preview path="chat-messages" />
+
+## Import
+
+```tsx
+import { ChatMessages, type ChatMessagesHandle } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `renderItem` | `(msg: ChatMessage, index: number, isLast: boolean, isStreaming: boolean) => ReactNode` | plain text fallback | Custom renderer for each message |
+| `className` | `string` | — | Extra classes applied to the container |
+| `skeletonCount` | `number` | `3` | Number of skeleton pairs to show during initial load |
+
+## Ref handle
+
+The component exposes a `ChatMessagesHandle` via `ref`:
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `scrollToBottom` | `(behavior?: "smooth" \| "auto") => void` | Programmatically scroll to the bottom |
+
+## Usage
+
+```tsx
+const messagesRef = useRef<ChatMessagesHandle>(null);
+
+<ChatProvider agent="my-agent">
+  <ChatMessages
+    ref={messagesRef}
+    renderItem={(msg, index, isLast, isStreaming) => (
+      <ChatMessage
+        msg={msg}
+        isLast={isLast}
+        isStreaming={isStreaming}
+        avatar={<BotIcon />}
+      />
+    )}
+  />
+  <ChatInput />
+</ChatProvider>
+```

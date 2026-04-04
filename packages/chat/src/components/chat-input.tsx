@@ -38,7 +38,6 @@ export interface ChatInputProps {
   renderSubmit?: (props: { isStreaming: boolean; onStop: () => void }) => ReactNode;
 }
 
-export type ChatInputCompactProps = ChatInputProps;
 
 /* ------------------------------------------------------------------ */
 /*  Shared input logic                                                 */
@@ -252,59 +251,3 @@ export function ChatInput({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  ChatInputCompact — minimal padding, no max-w, for sidebars/dialogs */
-/* ------------------------------------------------------------------ */
-
-export function ChatInputCompact({
-  placeholder = "Type a message…",
-  hint,
-  allowAttachments = true,
-  className,
-  renderSubmit,
-}: ChatInputCompactProps) {
-  const s = useChatInputState();
-
-  return (
-    <div className={`shrink-0 ${className || ""}`}>
-      <div className="relative">
-        {allowAttachments && s.dragging && (
-          <div className="absolute inset-0 z-10 bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl flex items-center justify-center gap-2 text-blue-600 text-xs font-medium pointer-events-none">
-            <Upload className="size-3.5" /> Drop files
-          </div>
-        )}
-        <div
-          className="rounded-xl border border-gray-200 shadow-sm focus-within:border-blue-400 transition-all bg-gray-50"
-          onDrop={allowAttachments ? s.onDrop : undefined}
-          onDragOver={allowAttachments ? (e) => e.preventDefault() : undefined}
-        >
-          <PendingFiles files={s.files} removeFile={s.removeFile} />
-          <textarea
-            ref={s.textareaRef}
-            value={s.text}
-            onChange={(e) => s.setText(e.target.value)}
-            onKeyDown={s.onKeyDown}
-            placeholder={placeholder}
-            aria-label={placeholder}
-            rows={1}
-            className="w-full resize-none bg-transparent px-3 pt-2.5 pb-1.5 text-xs outline-none placeholder:text-gray-400"
-          />
-          <div className="flex items-center justify-between px-2 pb-2">
-            {allowAttachments ? (
-              <button type="button" onClick={() => s.fileInputRef.current?.click()} className="flex items-center justify-center size-6 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Attach file">
-                <Plus className="size-3.5" />
-              </button>
-            ) : <div />}
-            {renderSubmit ? renderSubmit({ isStreaming: s.isStreaming, onStop: s.abort }) : (
-              <button type="button" onClick={s.isStreaming ? s.abort : s.submit} disabled={s.isSending && !s.isStreaming} className="flex items-center justify-center size-6 rounded bg-gray-900 text-white hover:bg-gray-700 disabled:opacity-40 transition-colors" aria-label={s.isStreaming ? "Stop" : "Send"}>
-                {s.isStreaming ? <Square className="size-3" /> : <ArrowUp className="size-3.5" />}
-              </button>
-            )}
-          </div>
-        </div>
-        {allowAttachments && <input ref={s.fileInputRef} type="file" multiple onChange={s.onFileChange} className="hidden" />}
-        {hint && <p className="text-xs text-gray-400 mt-1.5">{hint}</p>}
-      </div>
-    </div>
-  );
-}

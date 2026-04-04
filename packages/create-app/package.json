@@ -1,0 +1,14 @@
+{
+  "name": "create-polpo-app",
+  "version": "0.1.0",
+  "description": "Create Polpo AI applications from starter templates",
+  "type": "module",
+  "bin": {
+    "create-polpo-app": "./bin.mjs"
+  },
+  "files": [
+    "bin.mjs"
+  ],
+  "keywords": ["polpo", "chat", "ai", "create", "scaffold", "template"],
+  "license": "MIT"
+}

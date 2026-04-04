@@ -1,0 +1,49 @@
+---
+title: ChatProvider
+description: Context provider that wires up chat state, streaming, and file uploads.
+---
+
+`ChatProvider` wraps `useChat` from `@polpo-ai/react` and `useFiles` to provide a unified context consumed by all chat components. It exposes the full `UseChatReturn` interface plus file upload capabilities.
+
+## Import
+
+```tsx
+import { ChatProvider, useChatContext } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sessionId` | `string` | — | Resume an existing session by ID |
+| `agent` | `string` | — | Target a specific agent for conversation |
+| `onSessionCreated` | `(id: string) => void` | — | Called when a new session is created (first message) |
+| `onUpdate` | `() => void` | — | Called after each stream update |
+| `children` | `ReactNode` | **required** | Child components that consume the context |
+
+## Context value
+
+The `useChatContext()` hook returns `ChatContextValue` which extends `UseChatReturn` with:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `uploadFile` | `(destPath, file, filename) => Promise<...>` | Upload a file attachment |
+| `isUploading` | `boolean` | Whether a file upload is in progress |
+
+## Usage
+
+```tsx
+<ChatProvider agent="my-agent" onSessionCreated={(id) => console.log(id)}>
+  <ChatMessages />
+  <ChatInput />
+</ChatProvider>
+```
+
+### Accessing context directly
+
+```tsx
+function CustomControls() {
+  const { messages, isStreaming, abort } = useChatContext();
+  return <p>{messages.length} messages</p>;
+}
+```

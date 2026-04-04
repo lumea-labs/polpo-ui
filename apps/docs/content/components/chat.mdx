@@ -1,0 +1,56 @@
+---
+title: Chat
+description: All-in-one chat widget combining ChatProvider, ChatMessages, and ChatInput.
+---
+
+The `Chat` component is the highest-level composition. It wraps `ChatProvider`, renders a virtualized message list via `ChatMessages`, and provides a default `ChatInput`. Use `children` to replace the default input or render a landing page.
+
+## Preview
+
+<Preview path="chat" />
+
+## Import
+
+```tsx
+import { Chat } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sessionId` | `string` | — | Resume an existing session by ID |
+| `agent` | `string` | — | Agent name for completions |
+| `onSessionCreated` | `(sessionId: string) => void` | — | Called when a new session is created |
+| `onUpdate` | `() => void` | — | Called on each stream update |
+| `renderMessage` | `(msg, index, isLast, isStreaming) => ReactNode` | — | Custom message renderer |
+| `avatar` | `ReactNode` | — | Avatar shown on assistant messages |
+| `agentName` | `string` | — | Display name shown on assistant messages |
+| `streamdownComponents` | `Record<string, unknown>` | built-in | Streamdown component overrides for code blocks |
+| `skeletonCount` | `number` | `3` | Number of skeleton items while loading |
+| `inputPlaceholder` | `string` | `"Type a message…"` | Placeholder for the default input |
+| `inputHint` | `string` | — | Hint text below the default input |
+| `allowAttachments` | `boolean` | `true` | Whether file attachments are enabled |
+| `children` | `ReactNode \| ((ctx: ChatRenderContext) => ReactNode)` | — | Replaces the default input; render function receives `{ hasMessages }` |
+| `className` | `string` | — | Additional className on the outer container |
+
+## Usage
+
+```tsx
+<Chat
+  agent="my-agent"
+  onSessionCreated={(id) => router.push(`/chat/${id}`)}
+  avatar={<BotIcon />}
+  agentName="Assistant"
+/>
+```
+
+### With landing page pattern
+
+```tsx
+<Chat agent="my-agent">
+  {({ hasMessages }) =>
+    hasMessages ? <ChatInput /> : <ChatLanding greeting="Hello!" />
+  }
+</Chat>
+```

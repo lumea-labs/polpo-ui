@@ -1,0 +1,46 @@
+---
+title: Components
+description: All available chat UI components in @polpo-ai/chat.
+---
+
+The `@polpo-ai/chat` package provides a complete set of composable React components for building chat interfaces. Components are organized into four categories.
+
+## Core
+
+| Component | Description |
+|-----------|-------------|
+| [Chat](/components/chat) | All-in-one chat widget with provider, messages, and input |
+| [ChatInput](/components/chat-input) | Text input with file attachments and send/stop controls |
+| [ChatMessages](/components/chat-messages) | Virtualized, auto-scrolling message list |
+| [ChatMessage](/components/chat-message) | Single message renderer for user and assistant messages |
+| [ChatProvider](/components/chat-provider) | Context provider that wires up chat state and file uploads |
+
+## Sessions
+
+| Component | Description |
+|-----------|-------------|
+| [ChatSessionList](/components/chat-session-list) | Flat list of chat sessions with selection and delete |
+| [ChatSessionsByAgent](/components/chat-sessions-by-agent) | Sessions grouped by agent with count badges |
+
+## Landing
+
+| Component | Description |
+|-----------|-------------|
+| [ChatLanding](/components/chat-landing) | Full-page landing with greeting, input, and suggestions |
+| [ChatSuggestions](/components/chat-suggestions) | Grid of clickable suggestion prompts |
+| [ChatAgentSelector](/components/chat-agent-selector) | Dropdown picker for switching between agents |
+
+## Interactive
+
+| Component | Description |
+|-----------|-------------|
+| [ChatAskUser](/components/chat-ask-user) | Multi-question form for agent-initiated user prompts |
+| [ChatScrollButton](/components/chat-scroll-button) | Floating scroll-to-bottom button with new-message indicator |
+| [ChatTyping](/components/chat-typing) | Animated three-dot typing indicator |
+| [ChatSkeleton](/components/chat-skeleton) | Skeleton loaders that mirror real message layout |
+
+## Tools
+
+| Component | Description |
+|-----------|-------------|
+| [ToolCallShell](/components/tool-call-shell) | Expandable shell for tool call results with status indicators |

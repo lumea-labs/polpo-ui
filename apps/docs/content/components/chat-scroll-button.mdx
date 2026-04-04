@@ -1,0 +1,40 @@
+---
+title: ChatScrollButton
+description: Floating scroll-to-bottom button with new-message indicator.
+---
+
+A floating circular button that appears when the user has scrolled up in the message list. Includes an optional pulsing dot to indicate new messages arrived below.
+
+This component is built into `ChatMessages` by default, but can be used standalone for custom layouts.
+
+## Preview
+
+<Preview path="chat-scroll-button" />
+
+## Import
+
+```tsx
+import { ChatScrollButton } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isAtBottom` | `boolean` | **required** | Whether the list is scrolled to the bottom; hides the button when `true` |
+| `showNewMessage` | `boolean` | -- | Show a pulsing blue dot to indicate new messages |
+| `onClick` | `() => void` | **required** | Called when the button is clicked |
+| `className` | `string` | -- | Additional className |
+
+## Usage
+
+```tsx
+<div className="relative">
+  {/* Your message list */}
+  <ChatScrollButton
+    isAtBottom={isAtBottom}
+    showNewMessage={hasNewMessages}
+    onClick={() => scrollToBottom()}
+  />
+</div>
+```

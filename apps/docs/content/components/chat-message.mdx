@@ -1,0 +1,57 @@
+---
+title: ChatMessage
+description: Single message renderer that dispatches to user or assistant sub-components.
+---
+
+`ChatMessage` is a dispatcher that renders `ChatUserMessage` or `ChatAssistantMessage` based on the message role. All three are exported and can be used independently.
+
+## Preview
+
+<Preview path="chat-message" />
+
+## Import
+
+```tsx
+import {
+  ChatMessage,
+  ChatUserMessage,
+  ChatAssistantMessage,
+  type ChatMessageProps,
+  type ChatMessageItemData,
+} from "@polpo-ai/chat";
+```
+
+## ChatMessageItemData
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Optional message ID |
+| `role` | `"user" \| "assistant"` | Message sender role |
+| `content` | `string \| ContentPart[]` | Text or structured content parts |
+| `ts` | `string` | Optional ISO timestamp |
+| `toolCalls` | `ToolCallEvent[]` | Optional tool call events |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `msg` | `ChatMessageItemData` | **required** | The message data to render |
+| `isLast` | `boolean` | — | Whether this is the last message in the list |
+| `isStreaming` | `boolean` | — | Whether the assistant is currently streaming |
+| `avatar` | `ReactNode` | — | Avatar shown on assistant messages |
+| `agentName` | `string` | — | Display name for assistant messages |
+| `streamdownComponents` | `Record<string, unknown>` | — | Streamdown component overrides |
+| `resolveFileUrl` | `(fileId: string) => string` | `/api/v1/files/read?path=<id>` | Resolve file_id to a URL |
+| `className` | `string` | — | Additional className |
+
+## Usage
+
+```tsx
+<ChatMessage
+  msg={{ role: "assistant", content: "Hello!" }}
+  isLast={true}
+  isStreaming={false}
+  avatar={<BotIcon />}
+  agentName="Assistant"
+/>
+```

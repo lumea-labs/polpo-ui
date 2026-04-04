@@ -1,45 +1,158 @@
 ---
 title: Introduction
-description: Composable React components for building AI agent interfaces with Polpo.
+description: Composable React components for building AI agent chat interfaces with Polpo.
 ---
 
-# @polpo-ai/ui
+# Polpo UI
 
-UI components for building AI agent interfaces with [Polpo](https://polpo.sh). Built on React + Tailwind CSS + shadcn/ui.
+A component library for building AI agent interfaces with [Polpo](https://polpo.sh). Composable chat components, tool renderers, session management, and agent views — wired to the Polpo SDK out of the box.
 
-## What is this?
+## Why Polpo UI?
 
-A component library that gives you production-ready chat interfaces, tool renderers, and agent views — wired to the Polpo SDK out of the box.
+Building a chat interface for AI agents requires streaming, tool call rendering, session persistence, file attachments, ask-user flows, and more. Polpo UI handles all of that so you can focus on your product.
 
-Three levels of composition:
+- **Three composition levels** — zero-config `<Chat />`, composable children, or headless primitives
+- **Works with any Polpo agent** — coder, support, orchestrator, custom
+- **Neutral styling** — ships Tailwind utility classes, fully themeable
+- **Dark mode ready** — map gray tokens to your palette, dark mode works automatically
+- **Framework agnostic** — works with Next.js, Vite, Remix, React Router, Astro, TanStack
 
-- **Zero config** — Drop in `<Chat agent="coder" />` and get a full conversational UI
-- **Customizable** — Use `ChatProvider` + individual components to control layout
-- **Headless** — Use hooks only (`useSubmitHandler`, `useDocumentDrag`) and build your own UI
+## Getting Started
 
-## Packages
+### New project (recommended)
 
-| Package | Description |
-|---------|-------------|
-| `@polpo-ai/chat` | Chat components, tool renderers, hooks |
-| `@polpo-ai/ui` | CLI for installing components (coming soon) |
-
-## Quick Start
+Create a complete app from a starter template:
 
 ```bash
-npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react
+# Interactive — prompts for name and template
+npx create-polpo-app
+
+# Non-interactive — for CI and AI agents
+npx create-polpo-app my-chat -t chat -y
 ```
 
-```tsx
-import { Chat } from "@polpo-ai/chat";
+Available templates:
 
-function App() {
-  return <Chat agent="coder" sessionId="session_abc" />;
+| Template | Description |
+|----------|-------------|
+| `chat` | Full-page chat with sidebar, sessions, and dark/light mode |
+| `chat-widget` | Floating/embedded support widget with multiple variants |
+| `multi-agent` | Multi-agent workspace with grouped sessions |
+
+### Add to existing project
+
+#### Via CLI (shadcn-style, copies source)
+
+Requires [shadcn/ui](https://ui.shadcn.com) initialized in your project. Works with Next.js, Vite, Remix, React Router, Astro, TanStack, Laravel.
+
+```bash
+# Interactive
+npx @polpo-ai/ui add chat
+
+# Non-interactive — for CI and AI agents
+npx @polpo-ai/ui add chat --overwrite
+```
+
+Components are copied into your project at `components/polpo-chat/`. You own the code — modify anything.
+
+#### Via npm (compiled package)
+
+```bash
+npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react react-virtuoso lucide-react streamdown
+```
+
+Add this to your CSS so Tailwind scans the package classes:
+
+```css
+/* Tailwind v4 */
+@source "../node_modules/@polpo-ai/chat/dist/**/*.js";
+```
+
+```js
+// Tailwind v3 — tailwind.config.js
+module.exports = {
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./node_modules/@polpo-ai/chat/dist/**/*.js",
+  ],
 }
 ```
 
-Or install via shadcn registry:
+## Quick Start
 
-```bash
-npx shadcn@latest add "https://ui.polpo.sh/registry/polpo-chat"
+Wrap your app with `PolpoProvider`, then drop in a `<Chat />`:
+
+```tsx
+import { PolpoProvider } from "@polpo-ai/react";
+import { Chat } from "@polpo-ai/chat";
+
+function App() {
+  return (
+    <PolpoProvider baseUrl="https://api.polpo.sh" apiKey="sk_live_...">
+      <Chat agent="coder" />
+    </PolpoProvider>
+  );
+}
 ```
+
+That's it. Streaming, markdown, tool calls, input with file attachments, scroll-to-bottom, skeleton loading — all included.
+
+## Three Levels
+
+### Level 1 — Zero Config
+
+```tsx
+<Chat sessionId="session_abc" agent="coder" />
+```
+
+### Level 2 — Compose
+
+```tsx
+<Chat sessionId="session_abc" agent="coder" avatar={<MyAvatar />}>
+  <MyCustomInput />
+</Chat>
+```
+
+Children replace the default input. Use `useChatContext()` from any child to access chat state.
+
+### Level 3 — Primitives
+
+```tsx
+import { ChatMessage, ChatSkeleton, ToolCallChip } from "@polpo-ai/chat";
+import { useChat } from "@polpo-ai/react";
+
+// Build completely custom layouts with individual components
+```
+
+## What's Included
+
+| Category | Components |
+|----------|-----------|
+| **Core** | Chat, ChatProvider, ChatMessages, ChatMessage, ChatUserMessage, ChatAssistantMessage, ChatInput |
+| **Sessions** | ChatSessionList, ChatSessionsByAgent |
+| **Landing** | ChatLanding, ChatSuggestions, ChatAgentSelector |
+| **Interactive** | ChatAskUser, ChatScrollButton, ChatTyping, ChatSkeleton, MessageSkeleton, UserMessageSkeleton |
+| **Tools** | ToolCallChip, ToolCallShell + 7 built-in renderers (bash, read, write, search, http, email, ask-user) |
+| **Hooks** | useSubmitHandler, useDocumentDrag, useChatContext |
+| **Utilities** | relativeTime, getTextContent, streamdownComponents, createStreamdownComponents |
+
+## Frameworks
+
+Polpo UI works with any React 18+ framework:
+
+- **Next.js** (App Router recommended)
+- **Vite**
+- **Remix**
+- **React Router**
+- **Astro**
+- **TanStack Start / Router**
+- **Laravel**
+
+The `"use client"` directives on components are used by Next.js and ignored by other frameworks.
+
+## Next Steps
+
+- [Setup](/docs/setup) — Provider configuration, API key, baseUrl
+- [Usage](/docs/usage) — Composition patterns, session navigation, ask-user-question
+- [Theming](/docs/theming) — Colors, fonts, dark mode, Tailwind token mapping
+- [Polpo Stack](/docs/polpo-stack) — How the packages fit together

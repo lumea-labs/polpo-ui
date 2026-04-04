@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "chat",
+    "chat-input",
+    "chat-message",
+    "chat-messages",
+    "chat-provider",
+    "chat-session-list",
+    "chat-sessions-by-agent",
+    "chat-landing",
+    "chat-suggestions",
+    "chat-agent-selector",
+    "chat-ask-user",
+    "chat-scroll-button",
+    "chat-skeleton",
+    "chat-typing",
+    "tool-call-shell"
+  ]
+}

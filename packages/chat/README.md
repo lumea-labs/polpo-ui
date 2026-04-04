@@ -649,6 +649,12 @@ Add to your `globals.css` for the typing indicator:
 }
 ```
 
+## Credits
+
+Built with [React](https://react.dev), [React Virtuoso](https://virtuoso.dev), [Lucide](https://lucide.dev), and [Streamdown](https://github.com/nichochar/streamdown).
+
+Inspired by [shadcn/ui](https://ui.shadcn.com) and the [Vercel AI SDK](https://ai-sdk.dev).
+
 ## License
 
 MIT

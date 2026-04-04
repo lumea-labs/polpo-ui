@@ -1,0 +1,45 @@
+---
+title: ChatSessionList
+description: Flat list of chat sessions with selection, delete, and agent avatar support.
+---
+
+Renders a scrollable list of chat sessions with active state highlighting, relative timestamps, agent display names, and optional delete buttons.
+
+## Preview
+
+<Preview path="chat-session-list" />
+
+## Import
+
+```tsx
+import { ChatSessionList, type ChatSessionListProps } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sessions` | `ChatSession[]` | **required** | Session list from `useSessions().sessions` |
+| `agents` | `AgentConfig[]` | — | Agents list for resolving display names |
+| `activeSessionId` | `string \| null` | — | Currently active session ID (highlighted) |
+| `onSelect` | `(sessionId: string) => void` | **required** | Called when a session is selected |
+| `onDelete` | `(sessionId: string) => void` | — | Called when delete is requested; omit to hide delete buttons |
+| `isLoading` | `boolean` | — | Show skeleton loading state |
+| `emptyMessage` | `string` | `"No conversations yet"` | Empty state message |
+| `className` | `string` | — | Additional className on the outer container |
+| `renderAvatar` | `(agent: AgentConfig \| undefined, agentName: string) => ReactNode` | — | Custom avatar renderer |
+
+## Usage
+
+```tsx
+const { sessions } = useSessions();
+const { agents } = useAgents();
+
+<ChatSessionList
+  sessions={sessions}
+  agents={agents}
+  activeSessionId={currentId}
+  onSelect={(id) => setCurrentId(id)}
+  onDelete={(id) => deleteSession(id)}
+/>
+```

@@ -1,5 +1,6 @@
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
+import { Navbar } from '@/components/navbar';
 import './global.css';
 
 const jakarta = Plus_Jakarta_Sans({
@@ -18,7 +19,10 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${jetbrains.variable}`} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen font-sans">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          <Navbar />
+          {children}
+        </RootProvider>
       </body>
     </html>
   );

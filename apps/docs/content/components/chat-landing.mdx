@@ -1,0 +1,45 @@
+---
+title: ChatLanding
+description: Full-page landing screen with greeting, input, and suggestion prompts.
+---
+
+`ChatLanding` provides a centered landing page with a greeting heading, optional subtitle, a `ChatInput`, and clickable suggestion prompts. It wraps itself in a `ChatProvider` so it can be used standalone.
+
+<Preview path="chat-landing" />
+
+## Import
+
+```tsx
+import { ChatLanding, type ChatLandingProps } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `agent` | `string` | — | Agent name for new conversations |
+| `onSessionCreated` | `(sessionId: string) => void` | — | Called when the first message creates a session |
+| `greeting` | `string` | `"How can I help you?"` | Greeting heading text |
+| `subtitle` | `string` | — | Subtitle below the greeting |
+| `suggestions` | `ChatSuggestion[]` | — | Suggestion prompts to display |
+| `suggestionColumns` | `1 \| 2 \| 3` | `2` | Number of grid columns for suggestions |
+| `inputPlaceholder` | `string` | — | Input placeholder text |
+| `inputHint` | `string` | — | Hint text below the input |
+| `allowAttachments` | `boolean` | `true` | Allow file attachments |
+| `header` | `ReactNode` | — | Custom header content rendered above the input |
+| `className` | `string` | — | Additional className on the outer container |
+
+## Usage
+
+```tsx
+<ChatLanding
+  agent="my-agent"
+  greeting="What can I help with?"
+  subtitle="I can answer questions about your data."
+  suggestions={[
+    { icon: <SearchIcon />, text: "Search my documents" },
+    { icon: <ChartIcon />, text: "Analyze last month's data" },
+  ]}
+  onSessionCreated={(id) => router.push(`/chat/${id}`)}
+/>
+```

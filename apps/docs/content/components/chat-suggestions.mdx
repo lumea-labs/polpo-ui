@@ -1,0 +1,51 @@
+---
+title: ChatSuggestions
+description: Grid of clickable suggestion prompts with optional icons.
+---
+
+Renders a responsive grid of suggestion buttons. Clicking a suggestion calls `onSelect` with the suggestion text, typically used to send a pre-filled message.
+
+## Preview
+
+<Preview path="chat-suggestions" />
+
+## Import
+
+```tsx
+import {
+  ChatSuggestions,
+  type ChatSuggestionsProps,
+  type ChatSuggestion,
+} from "@polpo-ai/chat";
+```
+
+## ChatSuggestion
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `icon` | `ReactNode` | Optional icon rendered before the text |
+| `text` | `string` | Suggestion text, also used as the message on click |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `suggestions` | `ChatSuggestion[]` | **required** | List of suggestions to display |
+| `onSelect` | `(text: string) => void` | **required** | Called when a suggestion is clicked |
+| `columns` | `1 \| 2 \| 3` | `2` | Number of grid columns |
+| `className` | `string` | — | Additional className |
+
+## Usage
+
+```tsx
+<ChatSuggestions
+  suggestions={[
+    { icon: <Lightbulb />, text: "Explain quantum computing" },
+    { icon: <Code />, text: "Write a Python script" },
+    { icon: <BookOpen />, text: "Summarize this article" },
+    { icon: <HelpCircle />, text: "How does this work?" },
+  ]}
+  onSelect={(text) => sendMessage(text)}
+  columns={2}
+/>
+```

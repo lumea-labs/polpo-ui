@@ -1,0 +1,14 @@
+{
+  "name": "@polpo-ai/ui",
+  "version": "0.1.0",
+  "description": "CLI to add Polpo AI chat components to your project",
+  "type": "module",
+  "bin": {
+    "polpo-ui": "./bin.mjs"
+  },
+  "files": [
+    "bin.mjs"
+  ],
+  "keywords": ["polpo", "chat", "ai", "cli", "shadcn", "components"],
+  "license": "MIT"
+}

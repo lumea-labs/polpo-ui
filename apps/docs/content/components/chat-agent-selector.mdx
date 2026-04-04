@@ -1,0 +1,59 @@
+---
+title: ChatAgentSelector
+description: Dropdown picker for switching between agents.
+---
+
+`ChatAgentSelector` renders a compact dropdown button that shows the currently selected agent and lets users switch between available agents. Useful in multi-agent apps where the user needs to pick which agent to talk to.
+
+## Preview
+
+<Preview path="chat-agent-selector" />
+
+## Import
+
+```tsx
+import { ChatAgentSelector, type ChatAgentSelectorProps } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `agents` | `AgentConfig[] \| undefined` | -- | Agents list from `useAgents().agents` |
+| `selected` | `string \| undefined` | -- | Currently selected agent name |
+| `onSelect` | `(agentName: string) => void` | **required** | Called when an agent is selected |
+| `fallbackLabel` | `string` | `"Select agent"` | Label shown when no agent is selected |
+| `renderAvatar` | `(agent: AgentConfig, size: number) => ReactNode` | -- | Custom avatar renderer |
+| `className` | `string` | -- | Additional className |
+
+## Usage
+
+```tsx
+const [agent, setAgent] = useState("coder");
+const { agents } = useAgents();
+
+<ChatAgentSelector
+  agents={agents}
+  selected={agent}
+  onSelect={setAgent}
+/>
+```
+
+### With custom avatar
+
+```tsx
+<ChatAgentSelector
+  agents={agents}
+  selected={agent}
+  onSelect={setAgent}
+  renderAvatar={(agent, size) => (
+    <img
+      src={`/avatars/${agent.name}.png`}
+      alt={agent.name}
+      width={size}
+      height={size}
+      className="rounded"
+    />
+  )}
+/>
+```

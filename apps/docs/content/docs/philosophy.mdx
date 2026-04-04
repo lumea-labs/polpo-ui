@@ -1,0 +1,30 @@
+---
+title: Philosophy
+description: Design principles behind Polpo UI.
+---
+
+# Philosophy
+
+## Composability
+
+Components are building blocks, not black boxes. `<Chat />` is a compound of `ChatProvider` + `ChatMessages` + `ChatInput` — use it as one unit or take the pieces apart. Three levels of control, same components.
+
+## Neutral by Default
+
+Components ship with Tailwind gray utilities — no brand colors, no CSS variables, no opinions. Map the gray scale to your palette and dark mode works automatically. Your brand, not ours.
+
+## SDK Alignment
+
+Every component is wired to `@polpo-ai/sdk` and `@polpo-ai/react`. Streaming, tool calls, sessions, file uploads, ask-user flows — the SDK handles the data, components handle the rendering. No glue code.
+
+## Own Your Code
+
+Install via CLI (`npx @polpo-ai/ui add chat`) and the source lives in your project. Modify anything. No dependency lock-in, no upstream breaking changes, no waiting for patches.
+
+## Accessibility
+
+Semantic HTML, ARIA attributes, keyboard navigation, visible focus indicators. `role="button"` with `tabIndex` and `onKeyDown` where needed. Screen reader labels on every interactive element.
+
+## Performance
+
+Virtualized message lists (React Virtuoso), memoized components, stable callbacks via refs, no stale closures. Audited against Vercel React Best Practices — no `forwardRef`, functional setState, lazy state initialization.

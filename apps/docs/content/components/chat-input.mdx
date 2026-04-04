@@ -1,0 +1,57 @@
+---
+title: ChatInput
+description: Text input with file attachments, drag-and-drop, and send/stop controls.
+---
+
+`ChatInput` is the standard padded input (centered, `max-w-3xl`). For compact layouts like sidebars or dialogs, use `ChatInputCompact` which removes padding and max-width constraints.
+
+Both variants must be rendered inside a `ChatProvider`.
+
+## Preview
+
+<Preview path="chat-input" />
+
+## Import
+
+```tsx
+import { ChatInput, ChatInputCompact } from "@polpo-ai/chat";
+```
+
+## Props
+
+Shared by both `ChatInput` and `ChatInputCompact`:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | `"Type a message…"` | Placeholder text for the textarea |
+| `hint` | `string` | — | Hint text below the input |
+| `allowAttachments` | `boolean` | `true` | Whether file attachments are enabled |
+| `className` | `string` | — | Additional className on the outer wrapper |
+| `renderSubmit` | `(props: { isStreaming: boolean; onStop: () => void }) => ReactNode` | — | Custom submit button renderer |
+
+## Usage
+
+```tsx
+<ChatProvider agent="my-agent">
+  <ChatMessages />
+  <ChatInput placeholder="Ask anything..." hint="Shift+Enter for newline" />
+</ChatProvider>
+```
+
+### Compact variant
+
+```tsx
+<ChatInputCompact allowAttachments={false} />
+```
+
+### Custom submit button
+
+```tsx
+<ChatInput
+  renderSubmit={({ isStreaming, onStop }) => (
+    <button onClick={isStreaming ? onStop : undefined}>
+      {isStreaming ? "Stop" : "Send"}
+    </button>
+  )}
+/>
+```

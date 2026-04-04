@@ -37,8 +37,8 @@ export default function HomePage() {
         {/* CTA: install command */}
         <div className="mt-10 flex items-center gap-6">
           <div className="flex items-center gap-3 border border-fd-border bg-fd-card px-5 py-2.5">
-            <code className="font-mono text-sm text-fd-primary">npx shadcn add @polpo-ai/chat</code>
-            <CopyButton text="npx shadcn add @polpo-ai/chat" />
+            <code className="font-mono text-sm text-fd-primary">npx @polpo-ai/ui add chat</code>
+            <CopyButton text="npx @polpo-ai/ui add chat" />
           </div>
           <Link
             href="/docs"

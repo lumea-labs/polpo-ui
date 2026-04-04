@@ -1,6 +1,6 @@
 {
   "name": "@polpo-ai/chat",
-  "version": "0.8.0",
+  "version": "0.10.0",
   "description": "Composable chat UI components for Polpo AI agents",
   "type": "module",
   "main": "./dist/index.js",
@@ -26,6 +26,7 @@
   },
   "files": [
     "dist",
+    "registry",
     "registry.json",
     "README.md"
   ],

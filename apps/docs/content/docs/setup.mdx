@@ -1,0 +1,138 @@
+---
+title: Setup
+description: Configure PolpoProvider, API keys, and baseUrl.
+---
+
+# Setup
+
+## Prerequisites
+
+- React 18+ or 19
+- Tailwind CSS 3 or 4
+- A Polpo account with an API key
+
+Supported frameworks: Next.js, Vite, Remix, React Router, Astro, TanStack, Laravel.
+
+## Installation
+
+### Option 1: New project from template
+
+```bash
+npx create-polpo-app my-app
+```
+
+This scaffolds a complete working app. Interactive by default — pass flags for non-interactive use:
+
+```bash
+npx create-polpo-app my-app -t chat -y              # skip prompts
+npx create-polpo-app my-app -t chat-widget -y        # widget template
+npx create-polpo-app my-app -t multi-agent -y        # multi-agent template
+npx create-polpo-app my-app -t chat -y --skip-install # skip npm install
+```
+
+### Option 2: Add to existing project (CLI)
+
+Requires shadcn/ui initialized (`npx shadcn init`).
+
+```bash
+npx @polpo-ai/ui add chat
+```
+
+Non-interactive:
+
+```bash
+npx @polpo-ai/ui add chat --overwrite    # overwrite existing files
+npx @polpo-ai/ui add tools              # install only tool renderers
+npx @polpo-ai/ui add hooks              # install only hooks
+```
+
+### Option 3: npm package
+
+```bash
+npm install @polpo-ai/chat @polpo-ai/sdk @polpo-ai/react react-virtuoso lucide-react streamdown
+```
+
+Tailwind content scanning (required for npm, not needed for CLI):
+
+```css
+/* Tailwind v4 — globals.css */
+@source "../node_modules/@polpo-ai/chat/dist/**/*.js";
+```
+
+```js
+// Tailwind v3 — tailwind.config.js
+module.exports = {
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./node_modules/@polpo-ai/chat/dist/**/*.js",
+  ],
+}
+```
+
+## PolpoProvider
+
+Wrap your app with `PolpoProvider` from `@polpo-ai/react`:
+
+```tsx
+import { PolpoProvider } from "@polpo-ai/react";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <PolpoProvider
+      baseUrl="https://api.polpo.sh"
+      apiKey={process.env.NEXT_PUBLIC_POLPO_API_KEY}
+      autoConnect={false}
+    >
+      {children}
+    </PolpoProvider>
+  );
+}
+```
+
+### baseUrl
+
+The root URL of the Polpo API. The SDK appends `/v1/` internally — do **not** add it yourself.
+
+| Environment | baseUrl |
+|-------------|---------|
+| Cloud | `https://api.polpo.sh` |
+| Self-hosted | `http://localhost:3000` |
+
+### apiKey
+
+Your Polpo API key. Add to `.env.local`:
+
+```
+NEXT_PUBLIC_POLPO_API_KEY=sk_live_...
+```
+
+### autoConnect
+
+Set to `false` to disable the SSE real-time connection. Recommended for chat-only apps.
+
+## Verify
+
+```tsx
+import { Chat } from "@polpo-ai/chat";
+
+export default function TestPage() {
+  return (
+    <div className="h-screen">
+      <Chat agent="coder" />
+    </div>
+  );
+}
+```
+
+If you see the chat input and can send a message, you're set.
+
+## Animations
+
+Add the typing dots animation to your `globals.css`:
+
+```css
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+```

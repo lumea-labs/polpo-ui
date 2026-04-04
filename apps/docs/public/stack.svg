@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" fill="none">
+  <style>
+    text { font-family: ui-monospace, monospace; }
+    .pkg { font-size: 12px; font-weight: 700; }
+    .desc { font-size: 10px; opacity: 0.5; }
+    .detail { font-size: 9px; opacity: 0.3; }
+    .label { font-size: 9px; font-weight: 600; opacity: 0.35; letter-spacing: 0.08em; }
+    .connector { stroke: currentColor; opacity: 0.15; stroke-width: 1.5; }
+    .connector-dash { stroke: currentColor; opacity: 0.2; stroke-width: 1.5; stroke-dasharray: 5 3; }
+    .dot { fill: currentColor; opacity: 0.15; }
+    .layer-accent { fill: currentColor; fill-opacity: 0.02; stroke-width: 1.5; }
+    .layer-muted { fill: currentColor; fill-opacity: 0.03; stroke: currentColor; stroke-opacity: 0.1; stroke-width: 1; }
+  </style>
+
+  <!-- Your App container -->
+  <rect x="24" y="12" width="472" height="276" rx="14" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.08" stroke-width="1"/>
+  <text x="44" y="32" class="label" fill="currentColor">YOUR APP</text>
+
+  <!-- @polpo-ai/chat -->
+  <rect x="44" y="44" width="432" height="56" rx="10" class="layer-accent" stroke="#4A90E2"/>
+  <text x="64" y="68" class="pkg" fill="#4A90E2">@polpo-ai/chat</text>
+  <text x="220" y="68" class="desc" fill="currentColor">UI Components</text>
+  <text x="64" y="86" class="detail" fill="currentColor">Chat · ChatInput · ChatMessage · ChatSessionList · ChatAskUser · ToolCallChip</text>
+
+  <circle cx="260" cy="108" r="2" class="dot"/>
+  <line x1="260" y1="100" x2="260" y2="116" class="connector"/>
+
+  <!-- @polpo-ai/react -->
+  <rect x="44" y="116" width="432" height="56" rx="10" class="layer-accent" stroke="#22C55E"/>
+  <text x="64" y="140" class="pkg" fill="#22C55E">@polpo-ai/react</text>
+  <text x="228" y="140" class="desc" fill="currentColor">React Hooks</text>
+  <text x="64" y="158" class="detail" fill="currentColor">useChat · useSessions · useAgents · useFiles · PolpoProvider</text>
+
+  <circle cx="260" cy="180" r="2" class="dot"/>
+  <line x1="260" y1="172" x2="260" y2="188" class="connector"/>
+
+  <!-- @polpo-ai/sdk -->
+  <rect x="44" y="188" width="432" height="56" rx="10" class="layer-accent" stroke="#D97706"/>
+  <text x="64" y="212" class="pkg" fill="#D97706">@polpo-ai/sdk</text>
+  <text x="212" y="212" class="desc" fill="currentColor">TypeScript Client</text>
+  <text x="64" y="230" class="detail" fill="currentColor">PolpoClient · ChatCompletionStream · EventSourceManager</text>
+
+  <circle cx="260" cy="256" r="2" class="dot"/>
+  <line x1="260" y1="244" x2="260" y2="268" class="connector-dash"/>
+  <text x="272" y="260" style="font-size:8px;opacity:0.3;font-weight:600" fill="currentColor">HTTPS / SSE</text>
+
+  <!-- Connection to runtime -->
+  <line x1="260" y1="288" x2="260" y2="316" class="connector-dash"/>
+  <circle cx="260" cy="310" r="2" class="dot"/>
+
+  <!-- Polpo Runtime -->
+  <rect x="44" y="316" width="432" height="56" rx="10" class="layer-muted"/>
+  <text x="64" y="340" class="pkg" fill="currentColor" style="opacity:0.8">Polpo Runtime</text>
+  <text x="208" y="340" class="desc" fill="currentColor">polpo.sh</text>
+  <text x="64" y="358" class="detail" fill="currentColor">Agents · Tools · Memory · Sessions · Tasks · Missions</text>
+</svg>

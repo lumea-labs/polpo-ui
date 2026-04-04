@@ -1,0 +1,51 @@
+---
+title: ChatSkeleton
+description: Skeleton loaders that mirror real message layout for seamless loading states.
+---
+
+Three skeleton components that match the exact layout of real chat messages so the loading state feels native. `ChatSkeleton` composes `UserMessageSkeleton` and `MessageSkeleton` into alternating pairs.
+
+## Preview
+
+<Preview path="chat-skeleton" />
+
+## Import
+
+```tsx
+import {
+  ChatSkeleton,
+  MessageSkeleton,
+  UserMessageSkeleton,
+} from "@polpo-ai/chat";
+```
+
+## ChatSkeleton
+
+Full conversation skeleton with alternating user/assistant message pairs.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | `number` | `3` | Number of user/assistant skeleton pairs to render |
+
+## MessageSkeleton
+
+Skeleton for an assistant message: avatar placeholder, name line, and text lines.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `lines` | `number` | `3` | Number of text lines to show |
+
+## UserMessageSkeleton
+
+Skeleton for a user message: right-aligned rounded bubble. Takes no props.
+
+## Usage
+
+```tsx
+// Full conversation skeleton
+<ChatSkeleton count={3} />
+
+// Individual skeletons
+<UserMessageSkeleton />
+<MessageSkeleton lines={4} />
+```

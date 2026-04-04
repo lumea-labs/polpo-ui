@@ -1,0 +1,31 @@
+---
+title: ChatTyping
+description: Animated three-dot typing indicator.
+---
+
+An inline typing indicator with three animated bouncing dots. Used automatically inside `ChatAssistantMessage` when streaming is active and the message content is empty.
+
+## Preview
+
+<Preview path="chat-typing" />
+
+## Import
+
+```tsx
+import { ChatTyping } from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | -- | Additional className |
+
+## Usage
+
+```tsx
+<ChatTyping />
+
+// With custom spacing
+<ChatTyping className="ml-2" />
+```

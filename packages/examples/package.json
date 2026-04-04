@@ -1,0 +1,11 @@
+{
+  "name": "@polpo-ai/examples",
+  "private": true,
+  "type": "module",
+  "exports": { "./src/*": "./src/*" },
+  "dependencies": {
+    "@polpo-ai/chat": "workspace:*",
+    "lucide-react": "*",
+    "react": "*"
+  }
+}

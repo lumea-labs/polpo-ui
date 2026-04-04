@@ -1,0 +1,80 @@
+---
+title: ChatAskUser
+description: Multi-question form for agent-initiated user prompts.
+---
+
+`ChatAskUser` renders an interactive form when the agent needs input from the user. Supports single questions (flat layout) and multi-question wizards with step navigation, option selection, custom text input, and a summary step.
+
+## Preview
+
+<Preview path="chat-ask-user" />
+
+## Import
+
+```tsx
+import { ChatAskUser, type ChatAskUserProps } from "@polpo-ai/chat";
+```
+
+## AskUserQuestion
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Unique question identifier |
+| `question` | `string` | The question text |
+| `header` | `string` | Optional header/label above the question |
+| `options` | `{ label: string; description?: string }[]` | Selectable options |
+| `multiple` | `boolean` | Allow selecting multiple options |
+| `custom` | `boolean` | Show a custom text input (default: `true`) |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `questions` | `AskUserQuestion[]` | **required** | Questions to present to the user |
+| `onSubmit` | `(answers: { questionId: string; selected: string[] }[]) => void` | **required** | Called when the user submits answers |
+| `disabled` | `boolean` | -- | Whether the panel is disabled (e.g. already submitted) |
+
+## Usage
+
+### Single question
+
+```tsx
+<ChatAskUser
+  questions={[
+    {
+      id: "db",
+      question: "Which database do you want to use?",
+      header: "Database",
+      options: [
+        { label: "PostgreSQL", description: "Recommended for production" },
+        { label: "SQLite", description: "Great for development" },
+      ],
+    },
+  ]}
+  onSubmit={(answers) => console.log(answers)}
+/>
+```
+
+### Multi-question wizard
+
+When `questions` has more than one entry, a wizard layout is shown with step tabs, back/next navigation, and a summary step.
+
+```tsx
+<ChatAskUser
+  questions={[
+    {
+      id: "db",
+      question: "Which database?",
+      header: "Database",
+      options: [{ label: "PostgreSQL" }, { label: "SQLite" }],
+    },
+    {
+      id: "auth",
+      question: "Which auth provider?",
+      header: "Authentication",
+      options: [{ label: "Clerk" }, { label: "NextAuth" }],
+    },
+  ]}
+  onSubmit={(answers) => sendToolResult(answers)}
+/>
+```

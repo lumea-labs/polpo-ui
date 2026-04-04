@@ -1,10 +1,15 @@
 {
   "pages": [
     "index",
-    "getting-started",
-    "components",
-    "hooks",
-    "tools",
-    "examples"
+    "---Getting Started---",
+    "setup",
+    "usage",
+    "theming",
+    "---Polpo Stack---",
+    "polpo-stack",
+    "---AI Skills---",
+    "skill-ui",
+    "---About---",
+    "philosophy"
   ]
 }

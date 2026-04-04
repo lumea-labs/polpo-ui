@@ -82,16 +82,15 @@ export default function ExamplesPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[var(--fd-layout-width)] px-6 py-20">
+    <div className="mx-auto w-full max-w-[1400px] px-6 py-10">
       <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-fd-primary">
         Examples
       </p>
       <h1 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
         Starter projects
       </h1>
-      <p className="mt-3 max-w-md text-sm text-fd-muted-foreground">
-        Clone a full project, set your API key, and run. Each example is a
-        standalone Next.js app you can deploy anywhere.
+      <p className="mt-3 text-sm text-fd-muted-foreground">
+        Clone a full project, set your API key, and run. Each example is a standalone Next.js app you can deploy anywhere.
       </p>
 
       {/* Horizontal tabs */}

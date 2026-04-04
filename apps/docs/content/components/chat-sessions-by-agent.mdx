@@ -1,0 +1,42 @@
+---
+title: ChatSessionsByAgent
+description: Sessions grouped by agent with count badges and role descriptions.
+---
+
+Groups sessions by agent name and renders each group as a clickable row with the agent display name, role description, and a session count badge. Useful for multi-agent apps where users pick an agent first.
+
+## Preview
+
+<Preview path="chat-sessions-by-agent" />
+
+## Import
+
+```tsx
+import {
+  ChatSessionsByAgent,
+  type ChatSessionsByAgentProps,
+  type AgentSessionGroup,
+} from "@polpo-ai/chat";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sessions` | `ChatSession[]` | **required** | Session list from `useSessions().sessions` |
+| `agents` | `AgentConfig[]` | — | Agents list for resolving display names and roles |
+| `onSelect` | `(agentName: string) => void` | **required** | Called when an agent group is selected |
+| `isLoading` | `boolean` | — | Show skeleton loading state |
+| `emptyMessage` | `string` | `"No conversations yet"` | Empty state message |
+| `className` | `string` | — | Additional className on the outer container |
+| `renderAvatar` | `(agent: AgentConfig \| undefined, agentName: string) => ReactNode` | — | Custom avatar renderer |
+
+## Usage
+
+```tsx
+<ChatSessionsByAgent
+  sessions={sessions}
+  agents={agents}
+  onSelect={(agentName) => router.push(`/chat/${agentName}`)}
+/>
+```

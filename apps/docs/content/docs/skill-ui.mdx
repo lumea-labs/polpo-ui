@@ -1,0 +1,96 @@
+---
+title: UI Skill
+description: Claude Code skill for building chat interfaces with @polpo-ai/chat.
+---
+
+# UI Skill
+
+The `polpo-ui` skill teaches AI coding agents (Claude Code, Cursor, etc.) how to use `@polpo-ai/chat`. Install it once and your AI assistant knows every component, prop, and pattern.
+
+## What is a Skill?
+
+A skill is a knowledge package that gives AI coding agents domain expertise. Instead of explaining your stack every time, the skill provides the context automatically — the agent knows the components, the composition patterns, the styling rules.
+
+## Install
+
+### Via skills.sh (recommended)
+
+```bash
+npx skills add lumea-labs/polpo-skills --skill polpo-ui
+```
+
+This installs the `polpo-ui` skill from the [polpo-skills repo](https://github.com/lumea-labs/polpo-skills). Works with Claude Code, Cursor, Copilot, and other AI agents.
+
+To install globally (available in all projects):
+
+```bash
+npx skills add lumea-labs/polpo-skills --skill polpo-ui --global
+```
+
+To install all Polpo skills at once:
+
+```bash
+npx skills add lumea-labs/polpo-skills --skill '*'
+```
+
+### Manual install
+
+```bash
+# Clone and copy to your project
+git clone https://github.com/lumea-labs/polpo-skills
+cp -r polpo-skills/polpo-ui .claude/skills/
+```
+
+### Update
+
+```bash
+npx skills update
+```
+
+The skill triggers automatically when you mention "chat UI", "chat component", "@polpo-ai/chat", "ChatInput", "session list", or similar keywords.
+
+## What the Skill Knows
+
+### Components
+
+Every component with full props — Chat, ChatInput, ChatMessages, ChatMessage, ChatSessionList, ChatSessionsByAgent, ChatAgentSelector, ChatSuggestions, ChatAskUser, ChatLanding, ChatScrollButton, ChatSkeleton, ChatTyping.
+
+### Patterns
+
+- Three composition levels (zero-config, compose, primitives)
+- Render function pattern for landing → conversation transitions
+- Session navigation with `onSessionCreated` callback
+- Ask-user-question handling with `ChatAskUser`
+- Custom tool renderers with `ToolCallShell`
+
+### Styling
+
+- Tailwind token mapping for theming
+- Dark mode setup with CSS variables
+- `@source` directive for npm installs
+- Anti-flash script for theme persistence
+
+### Architecture
+
+- PolpoProvider setup (baseUrl, apiKey, autoConnect)
+- Data flow: SDK → hooks → components
+- File upload flow: `useFiles` → `ContentPart[]` → `sendMessage`
+
+## Skill Files
+
+```
+polpo-ui/
+├── SKILL.md                    — Quick reference, triggers, core API
+└── references/
+    ├── components.md           — Full props for every component
+    └── patterns.md             — App assembly, sidebar, theming, dark mode
+```
+
+## Other Polpo Skills
+
+| Skill | What it covers |
+|-------|---------------|
+| `polpo-sdk` | TypeScript SDK — client, streaming, sessions, agents, memory |
+| `polpo-agents` | Agent design — models, tools, identity, vault, system prompts |
+| `polpo-cloud` | Cloud deployment — hosting, scaling, monitoring |
+| `polpo-ui` | Chat UI components (this page) |

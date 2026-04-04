@@ -1,0 +1,153 @@
+---
+title: Theming
+description: Colors, fonts, dark mode, and Tailwind token mapping.
+---
+
+# Theming
+
+All components use neutral Tailwind gray classes (`bg-gray-50`, `text-gray-900`, `border-gray-200`). No CSS is shipped — everything is Tailwind inline. Override by mapping your brand colors to the gray scale.
+
+## Color Mapping
+
+Map Tailwind tokens to your CSS variables in `globals.css`:
+
+```css
+@theme inline {
+  --color-gray-50: var(--my-bg);        /* backgrounds, input surface */
+  --color-gray-100: var(--my-subtle);   /* hover states, cards */
+  --color-gray-200: var(--my-border);   /* borders */
+  --color-gray-400: var(--my-muted);    /* muted text */
+  --color-gray-600: var(--my-secondary); /* secondary text */
+  --color-gray-900: var(--my-foreground); /* primary text */
+  --color-blue-500: var(--my-accent);   /* accent, focus rings */
+  --color-green-600: var(--my-success); /* success states */
+}
+```
+
+Use `var()` inside `@theme inline` — this makes values resolve at runtime, required for dark mode.
+
+## Fonts
+
+Components inherit fonts from the parent. Set your fonts on `<body>`:
+
+```css
+body {
+  font-family: 'Inter', sans-serif;
+}
+```
+
+Agent names in messages use `text-[13px] font-semibold` with the inherited font.
+
+## Dark Mode
+
+Define CSS variables in `:root` (light) and override them for dark mode. There are two common approaches:
+
+### Class-based (Tailwind / Fumadocs standard)
+
+This is the standard approach used by Tailwind CSS and Fumadocs. The dark mode class is toggled on `<html>`:
+
+```css
+:root {
+  --my-bg: #FAFAF7;
+  --my-border: #E5E1DA;
+  --my-foreground: #111111;
+}
+
+.dark {
+  --my-bg: #0F0F0F;
+  --my-border: #2A2A2A;
+  --my-foreground: #EEEEEE;
+}
+```
+
+### Attribute-based
+
+Uses a `data-theme` attribute instead of a class. Useful when you want to support more than two themes:
+
+```css
+:root {
+  --my-bg: #FAFAF7;
+  --my-border: #E5E1DA;
+  --my-foreground: #111111;
+}
+
+[data-theme="dark"] {
+  --my-bg: #0F0F0F;
+  --my-border: #2A2A2A;
+  --my-foreground: #EEEEEE;
+}
+```
+
+All components use tokenized classes (`bg-gray-50` not `bg-white`), so dark mode works automatically when you map the tokens — regardless of which approach you use.
+
+### Anti-flash
+
+To prevent the light-to-dark flash on page load, add an inline script in `<head>`. Choose the version that matches your approach:
+
+**Class-based:**
+
+```tsx
+<html suppressHydrationWarning>
+  <head>
+    <script dangerouslySetInnerHTML={{ __html:
+      `(function(){try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}})()` 
+    }} />
+  </head>
+</html>
+```
+
+**Attribute-based:**
+
+```tsx
+<html suppressHydrationWarning>
+  <head>
+    <script dangerouslySetInnerHTML={{ __html:
+      `(function(){try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}})()` 
+    }} />
+  </head>
+</html>
+```
+
+## Font Size
+
+Override message text size globally with a wrapper class:
+
+```css
+.chat-wrapper { font-size: 15px; }
+```
+
+Or use `className` on individual components.
+
+## Spacing and Radius
+
+Components use fixed Tailwind spacing. Override via `className`:
+
+```tsx
+<ChatInput className="px-4 py-2" />
+<Chat className="max-w-4xl mx-auto" />
+```
+
+## Tailwind Content Scanning
+
+When installing via npm (not CLI), Tailwind doesn't scan `node_modules`. Add the content path so Tailwind picks up the component classes.
+
+### Tailwind v4
+
+```css
+/* globals.css */
+@source "../node_modules/@polpo-ai/chat/dist/**/*.js";
+```
+
+### Tailwind v3
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./node_modules/@polpo-ai/chat/dist/**/*.js",
+  ],
+}
+```
+
+This is not needed when using `npx @polpo-ai/ui add chat` — the CLI copies source files into your project.

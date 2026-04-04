@@ -1,0 +1,76 @@
+---
+title: ToolCallShell
+description: Expandable shell for displaying tool call results with status indicators.
+---
+
+`ToolCallShell` is the base wrapper that all built-in tool renderers use. It shows an icon, label, status indicator (spinner, checkmark, or error), and an expandable panel for the result. Use it directly when building custom tool renderers.
+
+The `ToolCallChip` dispatcher automatically selects the right renderer for known tools (bash, read, write, search, etc.) and falls back to a generic `ToolCallShell` for unknown tools.
+
+## Import
+
+```tsx
+import { ToolCallShell, type ToolCallShellProps } from "@polpo-ai/chat";
+import { ToolCallChip } from "@polpo-ai/chat";
+```
+
+## Preview
+
+<Preview path="tool-call-shell" />
+
+## ToolCallShell Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tool` | `ToolCallEvent` | **required** | The tool call event data |
+| `icon` | `LucideIcon` | **required** | Icon displayed in the header |
+| `label` | `string` | **required** | Label text next to the icon |
+| `summary` | `string \| null` | -- | One-line summary shown after the label |
+| `children` | `ReactNode` | -- | Custom expanded content; replaces the default raw result display |
+
+## ToolCallChip Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tool` | `ToolCallEvent` | **required** | The tool call event to render |
+
+## Tool states
+
+The shell shows different indicators based on `tool.state`:
+
+- `"calling"` / `"preparing"` -- spinning loader
+- `"completed"` -- green checkmark, content is expandable
+- `"error"` -- red alert icon with error styling
+
+## Usage
+
+### Using ToolCallChip (automatic)
+
+```tsx
+{msg.toolCalls?.map((tool) => (
+  <ToolCallChip key={tool.id} tool={tool} />
+))}
+```
+
+### Custom tool renderer with ToolCallShell
+
+```tsx
+import { ToolCallShell } from "@polpo-ai/chat";
+import { Database } from "lucide-react";
+
+function ToolDatabaseQuery({ tool }: { tool: ToolCallEvent }) {
+  return (
+    <ToolCallShell
+      tool={tool}
+      icon={Database}
+      label="Database Query"
+      summary={tool.arguments?.query?.slice(0, 60)}
+    >
+      {/* Custom expanded content */}
+      <table className="w-full text-xs">
+        {/* render query results as a table */}
+      </table>
+    </ToolCallShell>
+  );
+}
+```

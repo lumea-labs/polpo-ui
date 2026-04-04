@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@source "../node_modules/@polpo-ai/chat/dist/**/*.js";
+
+/* ── Dark palette (conductor-inspired) ────────────────── */
+
+:root {
+  --c-bg: #1B1B1F;
+  --c-bg-subtle: #141417;
+  --c-border: #2A2A2F;
+  --c-border-2: #35353A;
+  --c-ink-3: #5A5A65;
+  --c-ink-2-5: #8A8A95;
+  --c-ink-2: #B0B0BA;
+  --c-ink: #E8E8ED;
+  --c-surface: #222226;
+
+  --c-accent-soft: #1A2535;
+  --c-accent-light: #6BA3E8;
+  --c-accent: #4A90E2;
+  --c-accent-dark: #3A7BD0;
+  --c-accent-darker: #2D6BBF;
+
+  --c-green: #4ADE80;
+  --c-green-dark: #22C55E;
+  --c-red-soft: #2A1515;
+  --c-red-light: #F87171;
+  --c-red: #EF4444;
+
+  --sidebar-bg: var(--c-bg-subtle);
+  --sidebar-border: var(--c-border);
+  --ink: var(--c-ink);
+  --ink-2: var(--c-ink-2);
+  --ink-3: var(--c-ink-3);
+  --border: var(--c-border);
+  --bg: var(--c-bg);
+  --surface: var(--c-surface);
+  --accent: var(--c-accent);
+}
+
+/* ── Light theme ───────────────────────────────────────── */
+
+[data-theme="light"] {
+  --c-bg: #FAFAFA;
+  --c-bg-subtle: #F0F0F2;
+  --c-border: #E0E0E5;
+  --c-border-2: #D0D0D5;
+  --c-ink-3: #9090A0;
+  --c-ink-2-5: #707080;
+  --c-ink-2: #505060;
+  --c-ink: #1A1A2E;
+  --c-surface: #FFFFFF;
+
+  --c-accent-soft: #EBF2FF;
+  --c-accent-light: #5B93E0;
+  --c-accent: #3B7DD8;
+  --c-accent-dark: #2D6CC5;
+  --c-accent-darker: #2060B5;
+
+  --c-green: #16A34A;
+  --c-green-dark: #15803D;
+  --c-red-soft: #FEF2F2;
+  --c-red-light: #FCA5A5;
+  --c-red: #EF4444;
+}
+
+/* ── Tailwind tokens ──────────────────────────────────── */
+
+@theme inline {
+  --font-sans: var(--font-dm-sans);
+
+  --color-background: var(--c-bg);
+  --color-foreground: var(--c-ink);
+
+  --color-gray-50: var(--c-bg);
+  --color-gray-100: var(--c-bg-subtle);
+  --color-gray-200: var(--c-border);
+  --color-gray-300: var(--c-border-2);
+  --color-gray-400: var(--c-ink-3);
+  --color-gray-500: var(--c-ink-2-5);
+  --color-gray-600: var(--c-ink-2);
+  --color-gray-900: var(--c-ink);
+
+  --color-blue-50: var(--c-accent-soft);
+  --color-blue-400: var(--c-accent-light);
+  --color-blue-500: var(--c-accent);
+  --color-blue-600: var(--c-accent-dark);
+  --color-blue-700: var(--c-accent-darker);
+
+  --color-green-600: var(--c-green-dark);
+  --color-green-700: var(--c-green);
+
+  --color-red-50: var(--c-red-soft);
+  --color-red-200: var(--c-red-light);
+  --color-red-500: var(--c-red);
+
+  --color-white: var(--c-surface);
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+
+body {
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: white;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-ink-3); }
+
+/* ── Animations ───────────────────────────────────────── */
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}

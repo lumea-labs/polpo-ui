@@ -3,49 +3,73 @@
 @import 'fumadocs-ui/css/preset.css';
 
 @source "../../packages/chat/src";
+@source "../../packages/examples/src";
 
-/* polpo chat design tokens */
+/* ── Chat component theming (light/dark) ──────────────── */
+
 :root {
-  --bg: #FAFAF7;
-  --surface: #FFFFFF;
-  --ink: #0F0F0F;
-  --ink-2: #555;
-  --ink-3: #999;
-  --p-accent: #E2733D;
-  --p-green: #1A7F52;
-  --warm: #F3F0EB;
-  --line: #E5E1DA;
-  --p-bg: #FAFAF7;
-  --p-warm: #F3F0EB;
-  --p-line: #E5E1DA;
-  --p-ink: #0F0F0F;
-  --p-ink-2: #555;
-  --p-ink-3: #999;
-  --polpo-border: #E5E1DA;
-  --polpo-bg: #FFFFFF;
-  --polpo-bg-hover: #F3F0EB;
-  --polpo-fg: #0F0F0F;
-  --polpo-accent: #E2733D;
+  --c-bg: #FAFAF7;
+  --c-bg-subtle: #F2F0EB;
+  --c-border: #E5E1DA;
+  --c-border-2: #D1CEC6;
+  --c-ink-3: #999;
+  --c-ink-2-5: #777;
+  --c-ink-2: #555;
+  --c-ink: #0F0F0F;
+  --c-surface: #FFFFFF;
+  --c-accent: #E2733D;
+  --c-accent-soft: #FEF0EC;
+  --c-accent-light: #EC7A5C;
+  --c-accent-dark: #D14E2D;
+  --c-accent-darker: #B8421F;
+  --c-green: #1A7F52;
+  --c-green-dark: #15663F;
+  --c-red-soft: #FEF2F2;
+  --c-red-light: #FCA5A5;
+  --c-red: #E53E3E;
 }
 
 .dark {
-  --bg: #111;
-  --surface: #1a1a1a;
-  --ink: #f0f0f0;
-  --ink-2: #aaa;
-  --ink-3: #666;
-  --warm: #1e1e1e;
-  --line: #2a2a2a;
-  --p-bg: #111;
-  --p-warm: #1e1e1e;
-  --p-line: #2a2a2a;
-  --p-ink: #f0f0f0;
-  --p-ink-2: #aaa;
-  --p-ink-3: #666;
-  --polpo-border: #2a2a2a;
-  --polpo-bg: #1a1a1a;
-  --polpo-bg-hover: #222;
-  --polpo-fg: #f0f0f0;
+  --c-bg: #0F0F0F;
+  --c-bg-subtle: #171717;
+  --c-border: #2A2A2A;
+  --c-border-2: #333;
+  --c-ink-3: #666;
+  --c-ink-2-5: #888;
+  --c-ink-2: #AAA;
+  --c-ink: #F0F0F0;
+  --c-surface: #1A1A1A;
+  --c-accent: #F07052;
+  --c-accent-soft: #2A1510;
+  --c-accent-light: #F08A70;
+  --c-accent-dark: #E85D3A;
+  --c-accent-darker: #D14E2D;
+  --c-green: #4ADE80;
+  --c-green-dark: #22C55E;
+  --c-red-soft: #2A1010;
+  --c-red-light: #F87171;
+  --c-red: #EF4444;
+}
+
+@theme inline {
+  --color-gray-50: var(--c-bg);
+  --color-gray-100: var(--c-bg-subtle);
+  --color-gray-200: var(--c-border);
+  --color-gray-300: var(--c-border-2);
+  --color-gray-400: var(--c-ink-3);
+  --color-gray-500: var(--c-ink-2-5);
+  --color-gray-600: var(--c-ink-2);
+  --color-gray-900: var(--c-ink);
+  --color-blue-50: var(--c-accent-soft);
+  --color-blue-400: var(--c-accent-light);
+  --color-blue-500: var(--c-accent);
+  --color-blue-600: var(--c-accent-dark);
+  --color-blue-700: var(--c-accent-darker);
+  --color-green-600: var(--c-green);
+  --color-green-700: var(--c-green-dark);
+  --color-red-50: var(--c-red-soft);
+  --color-red-200: var(--c-red-light);
+  --color-red-500: var(--c-red);
 }
 
 /* sugar-high syntax highlighting — light */
@@ -81,6 +105,27 @@
 
 html {
   scrollbar-gutter: stable;
+}
+
+/* Sidebar separator labels */
+#nd-sidebar p {
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.12em !important;
+  color: var(--fd-foreground) !important;
+  opacity: 0.5 !important;
+}
+
+/* Preview code block — strip sugar-high inline backgrounds */
+[data-preview-code] span {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Docs layout — sidebar flush to edge */
+#nd-docs-layout {
+  --fd-layout-width: 100vw;
 }
 
 html > body[data-scroll-locked] {

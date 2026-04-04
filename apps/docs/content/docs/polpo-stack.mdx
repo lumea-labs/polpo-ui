@@ -1,0 +1,55 @@
+---
+title: Polpo Stack
+description: How Polpo UI fits into the Polpo ecosystem — SDK, React hooks, agents, and runtime.
+---
+
+# Polpo Stack
+
+Polpo UI is the frontend layer of the Polpo ecosystem. Here's how the pieces fit together.
+
+## Architecture
+
+![Polpo Stack](/stack.svg)
+
+## Packages
+
+| Package | What it does | Install |
+|---------|-------------|---------|
+| `@polpo-ai/sdk` | TypeScript client for the Polpo API. Chat completions, streaming, sessions, agents, memory, webhooks. | `npm install @polpo-ai/sdk` |
+| `@polpo-ai/react` | React hooks wrapping the SDK. `useChat`, `useSessions`, `useAgents`, `useFiles`, `PolpoProvider`. | `npm install @polpo-ai/react` |
+| `@polpo-ai/chat` | UI components built on the hooks. Chat, input, messages, sessions, tools, ask-user. | `npx @polpo-ai/ui add chat` |
+| `@polpo-ai/ui` | CLI for installing components into your project (shadcn-style). | `npx @polpo-ai/ui add chat` |
+
+## How Data Flows
+
+1. **PolpoProvider** creates a `PolpoClient` with your `baseUrl` and `apiKey`
+2. **useChat** uses the client to stream completions via SSE (`chatCompletionsStream`)
+3. **Chat** renders messages from `useChat`, handles scroll, skeleton loading, tool calls
+4. **ChatInput** captures user input, uploads files via `useFiles`, sends messages via `sendMessage`
+5. **ChatSessionList** reads sessions from `useSessions`, navigates via callbacks
+
+The SDK handles the connection. The hooks handle the state. The components handle the rendering. You handle the layout.
+
+## PolpoProvider Props
+
+```tsx
+<PolpoProvider
+  baseUrl="https://api.polpo.sh"  // Root URL — SDK appends /v1/ internally
+  apiKey="sk_live_..."            // API key
+  autoConnect={false}             // Disable SSE (recommended for chat-only apps)
+>
+```
+
+## Polpo Runtime
+
+The Polpo runtime is the server that runs your AI agents. It provides:
+
+- **Agents** — configurable AI workers with roles, tools, and identity
+- **Tools** — bash, read, write, grep, http_fetch, email, ask_user_question, and custom
+- **Sessions** — persistent conversation history
+- **Memory** — project-wide and per-agent knowledge
+- **Tasks & Missions** — long-running agent workflows
+
+Polpo UI doesn't require you to understand the runtime — `<Chat agent="coder" />` just works. But when you need more control, the SDK gives you full access.
+
+Learn more at [polpo.sh](https://polpo.sh).

@@ -1,0 +1,30 @@
+{
+  "name": "polpo-chat-hooks",
+  "type": "registry:hook",
+  "title": "Polpo Chat Hooks",
+  "description": "Hooks for chat submit and drag.",
+  "dependencies": [
+    "@polpo-ai/sdk"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/polpo-chat/index.ts",
+      "content": "export { useSubmitHandler } from \"./use-submit-handler\";\nexport { useDocumentDrag } from \"./use-document-drag\";\n",
+      "type": "registry:hook",
+      "target": "hooks/polpo-chat/index.ts"
+    },
+    {
+      "path": "hooks/polpo-chat/use-document-drag.ts",
+      "content": "\"use client\";\n\nimport { useState, useRef, useEffect } from \"react\";\n\n/** Track document-level drag state for visual feedback */\nexport function useDocumentDrag() {\n  const [dragging, setDragging] = useState(false);\n  const counterRef = useRef(0);\n  useEffect(() => {\n    const onEnter = (e: DragEvent) => { if (e.dataTransfer?.types?.includes(\"Files\")) { counterRef.current++; setDragging(true); } };\n    const onLeave = () => { counterRef.current--; if (counterRef.current === 0) setDragging(false); };\n    const onDrop = () => { counterRef.current = 0; setDragging(false); };\n    document.addEventListener(\"dragenter\", onEnter);\n    document.addEventListener(\"dragleave\", onLeave);\n    document.addEventListener(\"drop\", onDrop);\n    return () => { document.removeEventListener(\"dragenter\", onEnter); document.removeEventListener(\"dragleave\", onLeave); document.removeEventListener(\"drop\", onDrop); };\n  }, []);\n  return dragging;\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/polpo-chat/use-document-drag.ts"
+    },
+    {
+      "path": "hooks/polpo-chat/use-submit-handler.ts",
+      "content": "\"use client\";\n\nimport { useCallback } from \"react\";\nimport type { ContentPart } from \"@polpo-ai/sdk\";\n\n/** Shape of the message emitted by the PromptInput component. */\nexport interface PromptInputMessage {\n  text: string;\n  files: { url: string; filename?: string }[];\n}\n\n/** Shared submit handler — uploads files via SDK then sends ContentPart[] */\nexport function useSubmitHandler(\n  sendMessage: (content: string | ContentPart[]) => Promise<void>,\n  uploadFile: (destPath: string, file: Blob, filename: string) => Promise<unknown>,\n) {\n  return useCallback(async (message: PromptInputMessage) => {\n    const text = message.text.trim();\n    const files = message.files || [];\n    if (!text && files.length === 0) return;\n\n    if (files.length > 0) {\n      const parts: ContentPart[] = [];\n      if (text) parts.push({ type: \"text\", text });\n      for (const f of files) {\n        const name = f.filename || \"upload\";\n        try {\n          const res = await fetch(f.url);\n          const blob = await res.blob();\n          await uploadFile(\"workspace\", blob, name);\n          parts.push({ type: \"file\", file_id: `workspace/${name}` });\n        } catch { /* skip failed uploads */ }\n      }\n      if (parts.length > 0) sendMessage(parts);\n    } else {\n      sendMessage(text);\n    }\n  }, [sendMessage, uploadFile]);\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/polpo-chat/use-submit-handler.ts"
+    }
+  ]
+}

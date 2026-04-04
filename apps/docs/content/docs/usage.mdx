@@ -1,0 +1,172 @@
+---
+title: Usage
+description: Composition patterns, session navigation, render functions, and ask-user-question.
+---
+
+# Usage
+
+## Session Navigation
+
+The package does not handle routing — use `onSessionCreated` to navigate when the first message creates a session:
+
+```tsx
+import { Chat } from "@polpo-ai/chat";
+import { useRouter } from "next/navigation";
+
+function NewChatPage() {
+  const router = useRouter();
+
+  return (
+    <Chat
+      agent="coder"
+      onSessionCreated={(id) => router.replace(`/chat/${id}`)}
+    />
+  );
+}
+```
+
+## Render Function Pattern
+
+Use a render function for conditional rendering — show a landing page when there are no messages, then switch to the conversation:
+
+```tsx
+<Chat agent="coder" onSessionCreated={(id) => router.replace(`/chat/${id}`)}>
+  {({ hasMessages }) =>
+    hasMessages ? (
+      <ChatInput placeholder="Type a message..." />
+    ) : (
+      <LandingPage />
+    )
+  }
+</Chat>
+```
+
+When `hasMessages` is false and children is a render function, the message list is hidden automatically.
+
+## Custom Prompt Input
+
+Pass children to `<Chat>` to replace the default `ChatInput`:
+
+```tsx
+<Chat sessionId={id} agent="coder">
+  <MyCustomInput />
+</Chat>
+```
+
+Inside any child, use `useChatContext()` to access chat state:
+
+```tsx
+import { useChatContext } from "@polpo-ai/chat";
+
+function MyCustomInput() {
+  const { sendMessage, isStreaming, abort, uploadFile } = useChatContext();
+  // Build your own input...
+}
+```
+
+## Ask-User-Question
+
+When an agent sends an `ask_user_question` tool call, show the `ChatAskUser` component:
+
+```tsx
+import { ChatInput, ChatAskUser, useChatContext } from "@polpo-ai/chat";
+
+function ChatInputWithAskUser() {
+  const { pendingToolCall, sendMessage } = useChatContext();
+
+  if (pendingToolCall?.toolName === "ask_user_question") {
+    return (
+      <ChatAskUser
+        questions={pendingToolCall.arguments.questions}
+        onSubmit={(answers) => sendMessage(JSON.stringify({ answers }))}
+      />
+    );
+  }
+
+  return <ChatInput />;
+}
+```
+
+Single question renders a flat layout. Multiple questions render a wizard with tabs and summary.
+
+## Session List
+
+Show previous conversations with `ChatSessionList` or grouped by agent with `ChatSessionsByAgent`:
+
+```tsx
+import { useSessions, useAgents } from "@polpo-ai/react";
+import { ChatSessionList } from "@polpo-ai/chat";
+
+function Sidebar() {
+  const { sessions, isLoading, deleteSession } = useSessions();
+  const { agents } = useAgents();
+
+  return (
+    <ChatSessionList
+      sessions={sessions}
+      agents={agents}
+      isLoading={isLoading}
+      activeSessionId={currentId}
+      onSelect={(id) => router.push(`/chat/${id}`)}
+      onDelete={deleteSession}
+    />
+  );
+}
+```
+
+## Agent Selector
+
+Let users pick an agent before starting a conversation:
+
+```tsx
+import { useAgents } from "@polpo-ai/react";
+import { ChatAgentSelector } from "@polpo-ai/chat";
+
+function AgentPicker() {
+  const { agents } = useAgents();
+  const [selected, setSelected] = useState<string>();
+
+  return (
+    <ChatAgentSelector
+      agents={agents}
+      selected={selected}
+      onSelect={setSelected}
+      fallbackLabel="Auto (Orchestrator)"
+    />
+  );
+}
+```
+
+## Suggestions
+
+Show prompt suggestions on the landing page:
+
+```tsx
+import { ChatSuggestions } from "@polpo-ai/chat";
+
+<ChatSuggestions
+  suggestions={[
+    { icon: <Zap size={14} />, text: "Automate a task" },
+    { icon: <BarChart3 size={14} />, text: "Generate a report" },
+  ]}
+  onSelect={(text) => sendMessage(text)}
+  columns={2}
+/>
+```
+
+## Custom Tool Renderers
+
+All tool calls are rendered automatically. To customize a specific tool:
+
+```tsx
+import { ToolCallShell } from "@polpo-ai/chat/tools";
+import { Database } from "lucide-react";
+
+function ToolDatabaseQuery({ tool }) {
+  return (
+    <ToolCallShell tool={tool} icon={Database} label="Query" summary={tool.arguments?.query}>
+      <pre>{tool.result}</pre>
+    </ToolCallShell>
+  );
+}
+```

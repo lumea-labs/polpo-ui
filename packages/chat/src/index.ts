@@ -1,6 +1,6 @@
 // Components
 export { Chat, type ChatProps, type ChatRenderContext } from "./components/chat";
-export { ChatInput, ChatInputCompact, type ChatInputProps, type ChatInputCompactProps } from "./components/chat-input";
+export { ChatInput, type ChatInputProps } from "./components/chat-input";
 export { ChatLanding, type ChatLandingProps } from "./components/chat-landing";
 export { ChatSessionList, type ChatSessionListProps } from "./components/chat-session-list";
 export { ChatSessionsByAgent, type ChatSessionsByAgentProps, type AgentSessionGroup } from "./components/chat-sessions-by-agent";
