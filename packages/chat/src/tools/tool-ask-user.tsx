@@ -34,23 +34,23 @@ export function ToolAskUser({ tool }: { tool: ToolCallEvent }) {
       label="Question"
       summary={isAnswered ? `${questions.length} answered` : `${questions.length} question${questions.length > 1 ? "s" : ""}`}
     >
-      <div className="bg-p-bg px-3 py-2 text-xs space-y-2">
+      <div className="bg-gray-50 px-3 py-2 text-xs space-y-2">
         {questions.map((q) => {
           const answer = answers.find((a) => a.questionId === q.id);
           return (
             <div key={q.id} className="flex items-start gap-2">
               {isAnswered ? (
-                <Check size={12} className="text-p-green shrink-0 mt-0.5" />
+                <Check size={12} className="text-green-600 shrink-0 mt-0.5" />
               ) : (
-                <MessageSquareMore size={12} className="text-p-accent shrink-0 mt-0.5" />
+                <MessageSquareMore size={12} className="text-blue-500 shrink-0 mt-0.5" />
               )}
               <div className="min-w-0">
-                <p className="text-p-ink font-medium">{q.question}</p>
+                <p className="text-gray-900 font-medium">{q.question}</p>
                 {answer && answer.selected.length > 0 && (
-                  <p className="text-p-ink-3 mt-0.5">{answer.selected.join(", ")}</p>
+                  <p className="text-gray-400 mt-0.5">{answer.selected.join(", ")}</p>
                 )}
                 {!answer && isAnswered && (
-                  <p className="text-p-ink-3/50 italic mt-0.5">Skipped</p>
+                  <p className="text-gray-300 italic mt-0.5">Skipped</p>
                 )}
               </div>
             </div>

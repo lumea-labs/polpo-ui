@@ -36,9 +36,9 @@ function FallbackCodeBlock({ code, language }: CodeBlockComponentProps) {
         padding: "0.875rem 1rem",
         borderRadius: "10px",
         overflowX: "auto",
-        border: "1px solid var(--line, #e5e7eb)",
-        background: "var(--bg, #f9fafb)",
-        color: "var(--ink, inherit)",
+        border: "1px solid #e5e7eb",
+        background: "#f9fafb",
+        color: "inherit",
         fontSize: "0.75rem",
         lineHeight: "1.625",
       }}

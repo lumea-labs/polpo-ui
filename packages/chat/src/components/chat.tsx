@@ -1,11 +1,18 @@
 "use client";
 
-import { forwardRef, type ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 import { ChatProvider } from "./chat-provider";
+import { useChatContext } from "./chat-provider";
 import { ChatMessages, type ChatMessagesHandle } from "./chat-messages";
 import { ChatMessage, type ChatMessageProps } from "./chat-message";
+import { ChatInput } from "./chat-input";
+import { streamdownComponents as defaultStreamdownComponents } from "./streamdown-code";
 
 // ── Props ──
+
+export interface ChatRenderContext {
+  hasMessages: boolean;
+}
 
 export interface ChatProps {
   /** Session ID — omit for new chats */
@@ -26,41 +33,104 @@ export interface ChatProps {
   streamdownComponents?: Record<string, unknown>;
   /** Number of skeleton items while loading */
   skeletonCount?: number;
-  /** Children rendered after the message list (e.g. ChatInput) */
-  children?: ReactNode;
+  /** Placeholder text for the default input */
+  inputPlaceholder?: string;
+  /** Hint text below the default input */
+  inputHint?: string;
+  /** Whether file attachments are enabled on the default input (default: true) */
+  allowAttachments?: boolean;
+  /** Children rendered after the message list — replaces the default ChatInput.
+   *  Can be a render function receiving `{ hasMessages }` for conditional rendering. */
+  children?: ReactNode | ((ctx: ChatRenderContext) => ReactNode);
   /** Additional className on the outer container */
   className?: string;
 }
 
-// ── Component ──
+// ── Inner component (needs context) ──
 
-export const Chat = forwardRef<ChatMessagesHandle, ChatProps>(function Chat(
-  {
-    sessionId,
-    agent,
-    onSessionCreated,
-    onUpdate,
-    renderMessage,
-    avatar,
-    agentName,
-    streamdownComponents,
-    skeletonCount,
-    children,
-    className,
-  },
+function ChatInner({
   ref,
-) {
-  const defaultRender = (msg: ChatMessageProps["msg"], _index: number, isLast: boolean, isStreaming: boolean) => (
-    <ChatMessage
-      msg={msg}
-      isLast={isLast}
-      isStreaming={isStreaming}
-      avatar={avatar}
-      agentName={agentName}
-      streamdownComponents={streamdownComponents}
-    />
+  renderMessage,
+  avatar,
+  agentName,
+  streamdownComponents,
+  skeletonCount,
+  inputPlaceholder,
+  inputHint,
+  allowAttachments,
+  children,
+  className,
+}: Omit<ChatProps, "sessionId" | "agent" | "onSessionCreated" | "onUpdate"> & {
+  ref?: React.Ref<ChatMessagesHandle>;
+}) {
+  const { messages } = useChatContext();
+  const hasMessages = messages.length > 0;
+  const hasChildren = children !== undefined && children !== null;
+  const isRenderFunction = typeof children === "function";
+
+  const defaultRender = useCallback(
+    (msg: ChatMessageProps["msg"], _index: number, isLast: boolean, isStreaming: boolean) => (
+      <ChatMessage
+        msg={msg}
+        isLast={isLast}
+        isStreaming={isStreaming}
+        avatar={avatar}
+        agentName={agentName}
+        streamdownComponents={(streamdownComponents ?? defaultStreamdownComponents) as Record<string, unknown>}
+      />
+    ),
+    [avatar, agentName, streamdownComponents],
   );
 
+  // Resolve children content
+  let content: ReactNode;
+  if (isRenderFunction) {
+    content = children({ hasMessages });
+  } else if (hasChildren) {
+    content = children;
+  } else {
+    content = (
+      <ChatInput
+        placeholder={inputPlaceholder}
+        hint={inputHint}
+        allowAttachments={allowAttachments}
+      />
+    );
+  }
+
+  // When using render function and no messages yet, skip the message list
+  // (landing page pattern)
+  if (isRenderFunction && !hasMessages) {
+    return (
+      <div className={`flex flex-col min-w-0 min-h-0 ${className || ""}`}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex flex-col min-w-0 min-h-0 ${className || ""}`}>
+      <ChatMessages
+        ref={ref}
+        renderItem={renderMessage || defaultRender}
+        skeletonCount={skeletonCount}
+        className="flex-1"
+      />
+      {content}
+    </div>
+  );
+}
+
+// ── Public component ──
+
+export function Chat({
+  sessionId,
+  agent,
+  onSessionCreated,
+  onUpdate,
+  ref,
+  ...rest
+}: ChatProps & { ref?: React.Ref<ChatMessagesHandle> }) {
   return (
     <ChatProvider
       sessionId={sessionId}
@@ -68,15 +138,7 @@ export const Chat = forwardRef<ChatMessagesHandle, ChatProps>(function Chat(
       onSessionCreated={onSessionCreated}
       onUpdate={onUpdate}
     >
-      <div className={`flex flex-col min-w-0 min-h-0 ${className || ""}`}>
-        <ChatMessages
-          ref={ref}
-          renderItem={renderMessage || defaultRender}
-          skeletonCount={skeletonCount}
-          className="flex-1"
-        />
-        {children}
-      </div>
+      <ChatInner ref={ref} {...rest} />
     </ChatProvider>
   );
-});
+}

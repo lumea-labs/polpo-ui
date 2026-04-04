@@ -13,8 +13,8 @@ export function ToolWrite({ tool }: { tool: ToolCallEvent }) {
   return (
     <ToolCallShell tool={tool} icon={Pen} label={tool.name === "edit" ? "Edit" : "Write"} summary={path}>
       {preview && (
-        <div className="bg-p-bg max-h-[180px] overflow-y-auto">
-          <pre className="m-0 px-2.5 py-2 text-[11px] leading-normal font-mono text-p-green whitespace-pre-wrap break-all">
+        <div className="bg-gray-50 max-h-[180px] overflow-y-auto">
+          <pre className="m-0 px-2.5 py-2 text-[11px] leading-normal font-mono text-green-700 whitespace-pre-wrap break-all">
             {preview}{content && content.length > 200 ? "\n…" : ""}
           </pre>
         </div>

@@ -7,11 +7,7 @@ export default defineConfig({
     "hooks/index": "src/hooks/index.ts",
   },
   format: ["esm"],
-  dts: {
-    compilerOptions: {
-      ignoreDeprecations: "6.0",
-    },
-  },
+  dts: true,
   external: [
     "react",
     "react-dom",

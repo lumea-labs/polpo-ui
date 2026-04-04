@@ -36,6 +36,9 @@ export interface ChatMessageProps {
   avatar?: ReactNode;
   agentName?: string;
   streamdownComponents?: StreamdownComponentsProp;
+  /** Resolve a file_id to a URL for file attachment links. Defaults to `/api/v1/files/read?path=<file_id>`. */
+  resolveFileUrl?: (fileId: string) => string;
+  className?: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -56,7 +59,7 @@ function CopyButton({ text }: { text: string }) {
       type="button"
       onClick={handleCopy}
       aria-label="Copy message"
-      className="inline-flex items-center justify-center rounded-md p-1 text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--warm)] transition-colors"
+      className="inline-flex items-center justify-center rounded-md p-1 text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
     >
       {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
     </button>
@@ -67,12 +70,17 @@ function CopyButton({ text }: { text: string }) {
 /*  File / image content parts                                         */
 /* ------------------------------------------------------------------ */
 
+const defaultResolveFileUrl = (fileId: string) =>
+  `/api/v1/files/read?path=${encodeURIComponent(fileId)}`;
+
 function ContentParts({
   parts,
   align,
+  resolveFileUrl = defaultResolveFileUrl,
 }: {
   parts: ContentPart[];
   align: "start" | "end";
+  resolveFileUrl?: (fileId: string) => string;
 }) {
   const nonText = parts.filter((p) => p.type !== "text");
   if (nonText.length === 0) return null;
@@ -105,10 +113,10 @@ function ContentParts({
           return (
             <a
               key={i}
-              href={`/api/polpo/files/read?path=${encodeURIComponent(fileId)}`}
+              href={resolveFileUrl(fileId)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-[var(--warm)] border border-[var(--line)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--ink)] hover:border-[var(--ink-3)] transition-colors"
+              className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-900 hover:border-gray-400 transition-colors"
             >
               <FileCode size={13} />
               <span className="truncate max-w-[120px]">{fn}</span>
@@ -130,26 +138,30 @@ export const ChatUserMessage = memo(
     msg,
     isLast,
     isStreaming,
+    resolveFileUrl,
+    className,
   }: {
     msg: ChatMessageItemData;
     isLast?: boolean;
     isStreaming?: boolean;
+    resolveFileUrl?: (fileId: string) => string;
+    className?: string;
   }) {
     const text = getTextContent(msg.content);
 
     return (
-      <div className="w-full px-6 py-3">
+      <div className={`w-full px-6 py-3 ${className ?? ""}`}>
         <div className="max-w-3xl mx-auto">
           <div className="group flex w-full flex-col gap-2 ml-auto justify-end">
             {/* File/image parts */}
             {Array.isArray(msg.content) && (
-              <ContentParts parts={msg.content} align="end" />
+              <ContentParts parts={msg.content} align="end" resolveFileUrl={resolveFileUrl} />
             )}
 
             {/* Message bubble */}
-            <div className="w-fit max-w-[80%] ml-auto rounded-[18px_18px_4px_18px] bg-[var(--warm)] px-4 py-3">
+            <div className="w-fit max-w-[80%] ml-auto rounded-[18px_18px_4px_18px] bg-gray-100 px-4 py-3">
               {text ? (
-                <p className="whitespace-pre-wrap break-words text-[var(--ink)]">
+                <p className="whitespace-pre-wrap break-words text-gray-900">
                   {text}
                 </p>
               ) : null}
@@ -158,7 +170,7 @@ export const ChatUserMessage = memo(
             {/* Hover actions: timestamp + copy */}
             {text && (!isLast || !isStreaming) && (
               <div className="flex items-center justify-end gap-1.5 h-6">
-                <span className="text-[11px] text-[var(--ink-3)] opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[11px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
                   {msg.ts ? relativeTime(msg.ts) : ""}
                 </span>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -190,6 +202,8 @@ export const ChatAssistantMessage = memo(
     avatar,
     agentName,
     streamdownComponents: components,
+    resolveFileUrl,
+    className,
   }: {
     msg: ChatMessageItemData;
     isLast?: boolean;
@@ -197,6 +211,8 @@ export const ChatAssistantMessage = memo(
     avatar?: ReactNode;
     agentName?: string;
     streamdownComponents?: StreamdownComponentsProp;
+    resolveFileUrl?: (fileId: string) => string;
+    className?: string;
   }) {
     const text = getTextContent(msg.content);
     const filteredToolCalls = msg.toolCalls?.filter(
@@ -204,7 +220,7 @@ export const ChatAssistantMessage = memo(
     );
 
     return (
-      <div className="w-full px-6 pt-4 pb-6">
+      <div className={`w-full px-6 pt-4 pb-6 ${className ?? ""}`}>
         <div className="max-w-3xl mx-auto">
           <div className="group flex w-full flex-col gap-2">
             {/* Avatar + name header */}
@@ -212,7 +228,7 @@ export const ChatAssistantMessage = memo(
               <div className="flex items-center gap-2 mb-1">
                 {avatar}
                 {agentName && (
-                  <span className="font-display text-[13px] font-semibold text-[var(--ink)]">
+                  <span className="text-[13px] font-semibold text-gray-900">
                     {agentName}
                   </span>
                 )}
@@ -230,11 +246,11 @@ export const ChatAssistantMessage = memo(
 
             {/* File/image parts */}
             {Array.isArray(msg.content) && (
-              <ContentParts parts={msg.content} align="start" />
+              <ContentParts parts={msg.content} align="start" resolveFileUrl={resolveFileUrl} />
             )}
 
             {/* Text content or typing dots */}
-            <div className="w-full text-[var(--ink)]">
+            <div className="w-full text-gray-900">
               {text ? (
                 components ? (
                   <Streamdown
@@ -287,10 +303,12 @@ export const ChatMessage = memo(
     avatar,
     agentName,
     streamdownComponents,
+    resolveFileUrl,
+    className,
   }: ChatMessageProps) {
     if (msg.role === "user") {
       return (
-        <ChatUserMessage msg={msg} isLast={isLast} isStreaming={isStreaming} />
+        <ChatUserMessage msg={msg} isLast={isLast} isStreaming={isStreaming} resolveFileUrl={resolveFileUrl} className={className} />
       );
     }
 
@@ -302,6 +320,8 @@ export const ChatMessage = memo(
         avatar={avatar}
         agentName={agentName}
         streamdownComponents={streamdownComponents}
+        resolveFileUrl={resolveFileUrl}
+        className={className}
       />
     );
   },
@@ -311,6 +331,8 @@ export const ChatMessage = memo(
     prev.isLast === next.isLast &&
     prev.isStreaming === next.isStreaming &&
     prev.streamdownComponents === next.streamdownComponents &&
+    prev.resolveFileUrl === next.resolveFileUrl &&
+    prev.className === next.className &&
     prev.msg.id === next.msg.id &&
     prev.msg.content === next.msg.content &&
     prev.msg.role === next.msg.role &&

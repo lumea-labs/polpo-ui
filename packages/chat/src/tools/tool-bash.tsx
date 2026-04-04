@@ -16,7 +16,7 @@ export function ToolBash({ tool }: { tool: ToolCallEvent }) {
       <div className="bg-[#1a1a1a] max-h-[220px] overflow-y-auto">
         {command && (
           <div className="px-3 py-1.5 text-[11px] font-mono text-emerald-400 border-b border-white/10">
-            <span className="text-p-ink-3 select-none">$ </span>{command}
+            <span className="text-gray-500 select-none">$ </span>{command}
           </div>
         )}
         {tool.result && (

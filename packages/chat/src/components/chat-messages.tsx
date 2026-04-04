@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -73,8 +72,12 @@ function VirtuosoFooter() {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export const ChatMessages = forwardRef<ChatMessagesHandle, ChatMessagesProps>(
-  function ChatMessages({ renderItem, className, skeletonCount = 3 }, ref) {
+export function ChatMessages({
+  renderItem,
+  className,
+  skeletonCount = 3,
+  ref,
+}: ChatMessagesProps & { ref?: React.Ref<ChatMessagesHandle> }) {
     const { messages, isStreaming, status } = useChatContext();
 
     /* ── Virtuoso ref & scroll state ────────────────────────────── */
@@ -180,5 +183,4 @@ export const ChatMessages = forwardRef<ChatMessagesHandle, ChatMessagesProps>(
         />
       </div>
     );
-  },
-);
+}

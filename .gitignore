@@ -3,3 +3,6 @@ dist/
 .turbo/
 .next/
 *.tsbuildinfo
+.env.local
+.env*.local
+.vercel

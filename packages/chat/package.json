@@ -1,6 +1,6 @@
 {
   "name": "@polpo-ai/chat",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Composable chat UI components for Polpo AI agents",
   "type": "module",
   "main": "./dist/index.js",
@@ -38,12 +38,7 @@
     "react-virtuoso": ">=4.0.0",
     "streamdown": ">=0.1.0"
   },
-  "devDependencies": {
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "tsup": "^8.5.1",
-    "typescript": "^6.0.2"
-  },
+  "devDependencies": {},
   "keywords": [
     "polpo",
     "chat",

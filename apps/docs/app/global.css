@@ -2,6 +2,83 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
+@source "../../packages/chat/src";
+
+/* polpo chat design tokens */
+:root {
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --ink: #0F0F0F;
+  --ink-2: #555;
+  --ink-3: #999;
+  --p-accent: #E2733D;
+  --p-green: #1A7F52;
+  --warm: #F3F0EB;
+  --line: #E5E1DA;
+  --p-bg: #FAFAF7;
+  --p-warm: #F3F0EB;
+  --p-line: #E5E1DA;
+  --p-ink: #0F0F0F;
+  --p-ink-2: #555;
+  --p-ink-3: #999;
+  --polpo-border: #E5E1DA;
+  --polpo-bg: #FFFFFF;
+  --polpo-bg-hover: #F3F0EB;
+  --polpo-fg: #0F0F0F;
+  --polpo-accent: #E2733D;
+}
+
+.dark {
+  --bg: #111;
+  --surface: #1a1a1a;
+  --ink: #f0f0f0;
+  --ink-2: #aaa;
+  --ink-3: #666;
+  --warm: #1e1e1e;
+  --line: #2a2a2a;
+  --p-bg: #111;
+  --p-warm: #1e1e1e;
+  --p-line: #2a2a2a;
+  --p-ink: #f0f0f0;
+  --p-ink-2: #aaa;
+  --p-ink-3: #666;
+  --polpo-border: #2a2a2a;
+  --polpo-bg: #1a1a1a;
+  --polpo-bg-hover: #222;
+  --polpo-fg: #f0f0f0;
+}
+
+/* sugar-high syntax highlighting — light */
+:root {
+  --sh-class: #2d5e9d;
+  --sh-identifier: #354150;
+  --sh-sign: #8996a3;
+  --sh-property: #0550ae;
+  --sh-entity: #249a97;
+  --sh-jsxliterals: #6266d1;
+  --sh-string: #00a99a;
+  --sh-keyword: #f47067;
+  --sh-comment: #a19595;
+}
+
+/* sugar-high syntax highlighting — dark */
+.dark {
+  --sh-class: #79b8ff;
+  --sh-identifier: #e1e4e8;
+  --sh-sign: #85929e;
+  --sh-property: #79b8ff;
+  --sh-entity: #56d4dd;
+  --sh-jsxliterals: #b392f0;
+  --sh-string: #85e89d;
+  --sh-keyword: #f97583;
+  --sh-comment: #6a737d;
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
 html {
   scrollbar-gutter: stable;
 }

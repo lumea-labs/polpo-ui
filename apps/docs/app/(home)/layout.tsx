@@ -8,7 +8,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       {...options}
       nav={{
         ...options.nav,
-        enableSearch: false,
       }}
     >
       {children}
