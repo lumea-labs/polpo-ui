@@ -33,8 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT }}
+      ENABLE_EXPERIMENTAL_COREPACK: "1"
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -46,8 +48,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT_WIDGET }}
+      ENABLE_EXPERIMENTAL_COREPACK: "1"
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -59,8 +63,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_MULTI_AGENT }}
+      ENABLE_EXPERIMENTAL_COREPACK: "1"
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
