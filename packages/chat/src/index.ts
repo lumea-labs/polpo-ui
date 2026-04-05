@@ -7,7 +7,7 @@ export { ChatSessionsByAgent, type ChatSessionsByAgentProps, type AgentSessionGr
 export { ChatSuggestions, type ChatSuggestionsProps, type ChatSuggestion } from "./components/chat-suggestions";
 export { ChatAgentSelector, type ChatAgentSelectorProps } from "./components/chat-agent-selector";
 export { ChatAskUser, type ChatAskUserProps } from "./components/chat-ask-user";
-export { ChatProvider, ChatContext, useChatContext, type ChatContextValue } from "./components/chat-provider";
+export { ChatProvider, useChatContext } from "./components/chat-provider";
 export { ChatTyping } from "./components/chat-typing";
 export {
   ChatMessage,

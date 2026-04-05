@@ -18,7 +18,7 @@ const examples = [
     command: "npx create-polpo-app my-widget -t chat-widget -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/chat-widget",
     codePath: "examples/chat-widget/app/page.tsx",
-    previewUrl: "https://polpo-example-widget.vercel.app",
+    previewUrl: "https://polpo-example-chat-widget.vercel.app",
   },
   {
     slug: "multi-agent",

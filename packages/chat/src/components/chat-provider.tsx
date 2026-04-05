@@ -39,7 +39,7 @@ export interface ChatContextValue extends UseChatReturn {
 /*  Context                                                            */
 /* ------------------------------------------------------------------ */
 
-export const ChatContext = createContext<ChatContextValue | null>(null);
+const ChatContext = createContext<ChatContextValue | null>(null);
 
 /* ------------------------------------------------------------------ */
 /*  Provider                                                           */
