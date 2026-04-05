@@ -7,7 +7,7 @@ export function OPTIONS() {
 
 export function GET() {
   return NextResponse.json(
-    { ok: true, data: [] },
+    { ok: true, data: { roots: [] } },
     { headers: corsHeaders },
   );
 }
