@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSessions, useAgents } from "@polpo-ai/react";
 import { useRouter, usePathname } from "next/navigation";
 import { ChatSessionList } from "@polpo-ai/chat";
-import { Plus, PanelLeftClose, PanelLeft, Sun, Moon } from "lucide-react";
+import { Plus, PanelLeft, Sun, Moon } from "lucide-react";
 
 function useTheme() {
   const [theme, setThemeState] = useState<"light" | "dark" | "system">("system");
@@ -65,18 +65,18 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               {isDark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
             </button>
             <button
+              onClick={() => setCollapsed(true)}
+              className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
+              aria-label="Close sidebar"
+            >
+              <PanelLeft className="size-4" />
+            </button>
+            <button
               onClick={() => router.push("/chat/new")}
               className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
               aria-label="New chat"
             >
               <Plus className="size-4" />
-            </button>
-            <button
-              onClick={() => setCollapsed(true)}
-              className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
-              aria-label="Close sidebar"
-            >
-              <PanelLeftClose className="size-3.5" />
             </button>
           </div>
         </div>
