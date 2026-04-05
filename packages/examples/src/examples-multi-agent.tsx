@@ -27,6 +27,10 @@ const darkVars: Record<string, string> = {
   "--c-bg": "#1B1B1F", "--c-bg-subtle": "#141417", "--c-border": "#2A2A2F",
   "--c-ink-3": "#5A5A65", "--c-ink-2": "#B0B0BA", "--c-ink": "#E8E8ED",
   "--c-surface": "#222226", "--c-accent": "#4A90E2", "--c-green": "#4ADE80", "--c-red": "#EF4444",
+  "--c-border-2": "#35353A", "--c-ink-2-5": "#8A8A95",
+  "--c-accent-soft": "#1A2535", "--c-accent-light": "#6BA3E8",
+  "--c-accent-dark": "#3A7BD0", "--c-accent-darker": "#2D6BBF",
+  "--c-green-dark": "#22C55E", "--c-red-soft": "#2A1515", "--c-red-light": "#F87171",
   "--sidebar-bg": "#141417", "--sidebar-border": "#2A2A2F",
   "--ink": "#E8E8ED", "--ink-2": "#B0B0BA", "--ink-3": "#5A5A65",
   "--border": "#2A2A2F", "--bg": "#1B1B1F", "--surface": "#222226", "--accent": "#4A90E2",
@@ -36,6 +40,10 @@ const lightVars: Record<string, string> = {
   "--c-bg": "#FAFAFA", "--c-bg-subtle": "#F0F0F2", "--c-border": "#E0E0E5",
   "--c-ink-3": "#9090A0", "--c-ink-2": "#505060", "--c-ink": "#1A1A2E",
   "--c-surface": "#FFFFFF", "--c-accent": "#3B7DD8", "--c-green": "#16A34A", "--c-red": "#EF4444",
+  "--c-border-2": "#D0D0D5", "--c-ink-2-5": "#707080",
+  "--c-accent-soft": "#EBF2FF", "--c-accent-light": "#5B93E0",
+  "--c-accent-dark": "#2D6CC5", "--c-accent-darker": "#2060B5",
+  "--c-green-dark": "#15803D", "--c-red-soft": "#FEF2F2", "--c-red-light": "#FCA5A5",
   "--sidebar-bg": "#F0F0F2", "--sidebar-border": "#E0E0E5",
   "--ink": "#1A1A2E", "--ink-2": "#505060", "--ink-3": "#9090A0",
   "--border": "#E0E0E5", "--bg": "#FAFAFA", "--surface": "#FFFFFF", "--accent": "#3B7DD8",
@@ -86,7 +94,7 @@ function fakeStats(id: string) {
   const a = Math.abs(h);
   return {
     added: (a % 800) + 10, removed: ((a >> 8) % 500) + 5,
-    branch: ["main", "feat/auth", "fix/layout", "refactor/api", "dev"][a % 5],
+    branch: ["main", "feat/auth", "fix/layout", "refactor/api", "dev", "staging"][a % 6],
     status: ["Ready to merge", "In progress", "Draft", "Review"][(a >> 4) % 4],
   };
 }
@@ -128,8 +136,8 @@ function CodingSessionItem({ session, isActive, onSelect, onDelete }: SessionIte
 
 /* ── Agent group ─────────────────────────────────────── */
 
-function AgentGroup({ agentName, displayName, sessions, activeSessionId, onSelect, onDelete, onNewChat, variant }: {
-  agentName: string; displayName: string; sessions: MockSession[]; activeSessionId: string | null;
+function AgentGroup({ agentName, displayName, avatarUrl, sessions, activeSessionId, onSelect, onDelete, onNewChat, variant }: {
+  agentName: string; displayName: string; avatarUrl?: string; sessions: MockSession[]; activeSessionId: string | null;
   onSelect: (id: string) => void; onDelete: (id: string) => void; onNewChat: (agent: string) => void; variant: SidebarVariant;
 }) {
   const [expanded, setExpanded] = useState(true);
@@ -138,7 +146,10 @@ function AgentGroup({ agentName, displayName, sessions, activeSessionId, onSelec
     <div className="mb-3">
       <button onClick={() => setExpanded(!expanded)} className="group flex items-center gap-2 w-full px-3 py-2 text-[14px] font-semibold text-[var(--ink)] hover:text-[var(--ink)] transition-colors">
         <ChevronDown className={`size-3 text-[var(--ink-3)] transition-transform shrink-0 ${expanded ? "" : "-rotate-90"}`} />
-        <div className="size-5 rounded-md bg-[var(--border)] flex items-center justify-center text-[9px] font-bold text-[var(--ink-2)] shrink-0">{displayName.charAt(0).toUpperCase()}</div>
+        {avatarUrl
+          ? <img src={avatarUrl} alt={displayName} className="size-5 rounded-md object-cover shrink-0" />
+          : <div className="size-5 rounded-md bg-[var(--border)] flex items-center justify-center text-[9px] font-bold text-[var(--ink-2)] shrink-0">{displayName.charAt(0).toUpperCase()}</div>
+        }
         {displayName}
         <span className="ml-auto flex items-center gap-1.5">
           <button onClick={(e) => { e.stopPropagation(); onNewChat(agentName); }} className="size-5 rounded flex items-center justify-center text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--surface)] transition-colors opacity-0 group-hover:opacity-100"><Plus className="size-3" /></button>
@@ -184,29 +195,31 @@ function SettingsPopover({ variant, onVariantChange }: { variant: SidebarVariant
 
 function MockInput({ placeholder = "Type a message...", wrap = true, onSend }: { placeholder?: string; wrap?: boolean; onSend?: (text: string) => void }) {
   const [text, setText] = useState("");
+  const handleSend = () => { const t = text.trim(); if (!t || !onSend) return; onSend(t); setText(""); };
 
-  const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed || !onSend) return;
-    onSend(trimmed);
-    setText("");
-  };
-
-  const inner = (
-    <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+  const input = (
+    <div className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50">
       <textarea
         rows={1}
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
         placeholder={placeholder}
-        className="flex-1 resize-none bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
+        className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-sm outline-none placeholder:text-gray-400"
       />
-      <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0"><ArrowUp className="size-4" /></button>
+      <div className="flex items-center justify-between px-3 pb-3">
+        <button type="button" className="flex items-center justify-center size-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Attach file">
+          <Plus className="size-4" />
+        </button>
+        <button type="button" onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors" aria-label="Send">
+          <ArrowUp className="size-4" />
+        </button>
+      </div>
     </div>
   );
-  if (!wrap) return inner;
-  return <div className="shrink-0 px-6 py-3"><div className="max-w-3xl mx-auto">{inner}</div></div>;
+
+  if (!wrap) return input;
+  return <div className="shrink-0 px-6 py-3"><div className="max-w-3xl mx-auto">{input}</div></div>;
 }
 
 /* ── Landing view ────────────────────────────────────── */
@@ -283,12 +296,12 @@ export default function ExamplesMultiAgent() {
     if (adHocMessages) {
       setAdHocMessages((prev) => prev ? [...prev, userMsg] : [userMsg]);
       setTimeout(() => {
-        setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+        setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "Done! I've updated the code and verified it compiles.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/main.ts" } } as any] }] : prev);
       }, 800);
     } else if (activeSessionId) {
       setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), userMsg] }));
       setTimeout(() => {
-        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] }));
+        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), { id: "a-" + Date.now(), role: "assistant", content: "Done! I've updated the code and verified it compiles.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/main.ts" } } as any] }] }));
       }, 800);
     }
   }, [adHocMessages, activeSessionId]);
@@ -298,12 +311,16 @@ export default function ExamplesMultiAgent() {
     setAdHocMessages([userMsg]);
     setActiveSessionId("__adhoc__");
     setTimeout(() => {
-      setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+      setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "Done! I've updated the code and verified it compiles.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/main.ts" } } as any] }] : prev);
     }, 800);
   }, []);
 
   return (
     <div style={vars as React.CSSProperties} className="font-sans">
+      <style>{`
+        @keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.3s ease-out both; }
+      `}</style>
       <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg)", color: "var(--ink)" }}>
         {/* Sidebar */}
         <aside
@@ -368,7 +385,7 @@ export default function ExamplesMultiAgent() {
         {/* Main */}
         <main className="flex-1 min-w-0 relative bg-[var(--bg)]">
           {collapsed && (
-            <div className="absolute top-2 left-2 z-20 flex items-center gap-1">
+            <div className="absolute top-2 left-2 z-20 flex items-center gap-1 animate-fade-in">
               <button
                 onClick={() => setCollapsed(false)}
                 className="size-8 rounded-md flex items-center justify-center bg-[var(--surface)] border border-[var(--border)] text-[var(--ink-3)] hover:text-[var(--ink)] transition-colors"

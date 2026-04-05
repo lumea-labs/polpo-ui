@@ -25,9 +25,14 @@ import {
 /* ── CSS vars ────────────────────────────────────────── */
 
 const cssVars: Record<string, string> = {
-  "--c-bg": "#FAFAF7", "--c-bg-subtle": "#F2F0EB", "--c-border": "#E5E1DA",
-  "--c-ink-3": "#999999", "--c-ink-2": "#555555", "--c-ink": "#111111",
-  "--c-surface": "#FFFFFF", "--c-accent": "#E85D3A",
+  "--c-bg": "#F8FAFB", "--c-bg-subtle": "#F0F3F5", "--c-border": "#E2E8F0",
+  "--c-border-2": "#CBD5E1", "--c-ink-3": "#94A3B8", "--c-ink-2-5": "#64748B",
+  "--c-ink-2": "#475569", "--c-ink": "#0F172A", "--c-surface": "#FFFFFF",
+  "--c-accent-soft": "#F0FDFA", "--c-accent-light": "#5EEAD4",
+  "--c-accent": "#14B8A6", "--c-accent-dark": "#0D9488",
+  "--c-accent-darker": "#0F766E", "--c-green": "#16A34A",
+  "--c-green-dark": "#15803D", "--c-red-soft": "#FEF2F2",
+  "--c-red-light": "#FCA5A5", "--c-red": "#EF4444",
 };
 
 /* ── Mock data ───────────────────────────────────────── */
@@ -55,28 +60,29 @@ const quickQuestions = [
 
 /* ── Mock input ──────────────────────────────────────── */
 
-function MockWidgetInput({ onSend }: { onSend?: (text: string) => void }) {
+function MockWidgetInput({ onSend, placeholder = "Message AI Assistant..." }: { onSend?: (text: string) => void; placeholder?: string }) {
   const [text, setText] = useState("");
-
-  const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed || !onSend) return;
-    onSend(trimmed);
-    setText("");
-  };
+  const handleSend = () => { const t = text.trim(); if (!t || !onSend) return; onSend(t); setText(""); };
 
   return (
-    <div className="shrink-0 px-3 py-2">
-      <div className="flex items-end gap-2 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2">
-        <textarea
-          rows={1}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-          placeholder={`Message ${AGENT_DISPLAY}...`}
-          className="flex-1 resize-none bg-transparent text-sm text-[var(--c-ink)] placeholder:text-[var(--c-ink-3)] outline-none"
-        />
-        <button onClick={handleSend} className="flex items-center justify-center size-7 rounded-lg bg-[var(--c-accent)] text-white shrink-0"><ArrowUp className="size-3.5" /></button>
+    <div className="shrink-0">
+      <div className="w-full px-3 py-2">
+        <div className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50">
+          <textarea
+            rows={1}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+            placeholder={placeholder}
+            className="w-full resize-none bg-transparent px-4 pt-3 pb-1.5 text-sm outline-none placeholder:text-gray-400"
+          />
+          <div className="flex items-center justify-between px-2.5 pb-2.5">
+            <div />
+            <button type="button" onClick={handleSend} className="flex items-center justify-center size-7 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors" aria-label="Send">
+              <ArrowUp className="size-3.5" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -128,7 +134,7 @@ function HomeTab({ onNewChat }: { onNewChat: () => void }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="px-5 pt-6 pb-5 bg-[var(--c-accent)] text-white">
-        <h2 className="text-lg font-bold mb-1">Hi there</h2>
+        <h2 className="text-lg font-bold mb-1">Hi there 👋</h2>
         <p className="text-sm text-white/80">Ask us anything — we usually reply instantly.</p>
       </div>
 
@@ -185,7 +191,7 @@ function DirectWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
     setMessages((prev) => [...prev, userMsg]);
     setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
@@ -194,14 +200,14 @@ function DirectWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
     setMessages([userMsg]);
     setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
   return (
     <>
       {open && (
-        <div className={`z-50 ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
+        <div className={`z-50 animate-slide-up ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
           <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
             <div className="size-8 rounded-lg bg-[var(--c-accent)] flex items-center justify-center">
               <Headphones className="size-4 text-white" />
@@ -262,7 +268,7 @@ function ChatWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
     setMessages((prev) => [...prev, userMsg]);
     setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
@@ -271,7 +277,7 @@ function ChatWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
     setMessages([userMsg]);
     setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
@@ -280,7 +286,7 @@ function ChatWidget() {
   return (
     <>
       {open && (
-        <div className={`z-50 ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
+        <div className={`z-50 animate-slide-up ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
           <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
             {inChat && (
               <button onClick={goBack} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
@@ -366,7 +372,7 @@ export default function ExamplesChatWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
     setEmbeddedMessages((prev) => [...prev, userMsg]);
     setTimeout(() => {
-      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
@@ -375,12 +381,16 @@ export default function ExamplesChatWidget() {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
     setEmbeddedMessages([userMsg]);
     setTimeout(() => {
-      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
     }, 800);
   }, []);
 
   return (
-    <div style={cssVars as React.CSSProperties} className="font-sans" >
+    <div style={cssVars as React.CSSProperties} className="font-sans">
+      <style>{`
+        @keyframes slide-up { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .animate-slide-up { animation: slide-up 0.35s ease-out both; }
+      `}</style>
       <div
         className={`min-h-screen flex flex-col items-center justify-center px-8 transition-all ${variant === "embedded" ? "mr-[420px]" : ""}`}
         style={{ background: "var(--c-bg)", color: "var(--c-ink)" }}

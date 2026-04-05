@@ -36,6 +36,15 @@ const lightVars: Record<string, string> = {
   "--c-surface": "#FFFFFF",
   "--c-accent-soft": "#FEF0EC",
   "--c-accent": "#E85D3A",
+  "--c-ink-2-5": "#777777",
+  "--c-accent-light": "#EC7A5C",
+  "--c-accent-dark": "#D14E2D",
+  "--c-accent-darker": "#B8421F",
+  "--c-green": "#2D9B5E",
+  "--c-green-dark": "#1E7A47",
+  "--c-red-soft": "#FEF2F2",
+  "--c-red-light": "#FCA5A5",
+  "--c-red": "#E53E3E",
   "--sidebar-bg": "#F2F0EB",
   "--sidebar-border": "#E5E1DA",
   "--accent": "#E85D3A",
@@ -59,6 +68,15 @@ const darkVars: Record<string, string> = {
   "--c-surface": "#1C1C1C",
   "--c-accent-soft": "#2A1510",
   "--c-accent": "#F07052",
+  "--c-ink-2-5": "#888888",
+  "--c-accent-light": "#F08A70",
+  "--c-accent-dark": "#E85D3A",
+  "--c-accent-darker": "#D14E2D",
+  "--c-green": "#4ADE80",
+  "--c-green-dark": "#22C55E",
+  "--c-red-soft": "#2A1010",
+  "--c-red-light": "#F87171",
+  "--c-red": "#EF4444",
   "--sidebar-bg": "#171717",
   "--sidebar-border": "#2A2A2A",
   "--accent": "#F07052",
@@ -116,31 +134,35 @@ const mockConversations: Record<string, ChatMessageItemData[]> = {
 
 /* ── Mock input ──────────────────────────────────────── */
 
-function MockChatInput({ onSend }: { onSend?: (text: string) => void }) {
+function MockChatInput({ onSend, placeholder = "Type a message...", large }: { onSend?: (text: string) => void; placeholder?: string; large?: boolean }) {
   const [text, setText] = useState("");
-
-  const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed || !onSend) return;
-    onSend(trimmed);
-    setText("");
-  };
+  const handleSend = () => { const t = text.trim(); if (!t || !onSend) return; onSend(t); setText(""); };
 
   return (
-    <div className="shrink-0 px-6 py-3">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
-          <textarea
-            rows={1}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder="Type a message..."
-            className="flex-1 resize-none bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
-          />
-          <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
-            <ArrowUp className="size-4" />
-          </button>
+    <div className="shrink-0">
+      <div className="w-full px-6 py-3">
+        <div className="max-w-3xl mx-auto">
+          <div className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50">
+            <textarea
+              rows={1}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+              placeholder={placeholder}
+              className={large
+                ? "w-full resize-none bg-transparent px-6 pt-5 pb-3 text-base outline-none placeholder:text-gray-400"
+                : "w-full resize-none bg-transparent px-5 pt-4 pb-2 text-sm outline-none placeholder:text-gray-400"
+              }
+            />
+            <div className="flex items-center justify-between px-3 pb-3">
+              <button type="button" className="flex items-center justify-center size-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Attach file">
+                <Plus className="size-4" />
+              </button>
+              <button type="button" onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors" aria-label="Send">
+                <ArrowUp className="size-4" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -158,18 +180,9 @@ function LandingView({
   onAgentChange: (name: string) => void;
   onSend: (text: string) => void;
 }) {
-  const [text, setText] = useState("");
-
-  const handleSend = () => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    onSend(trimmed);
-    setText("");
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
-      <div className="max-w-3xl w-full text-center">
+      <div className="max-w-3xl w-full text-center stagger-children">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] text-xs font-medium mb-6">
           <Sparkles className="size-3" />
           Built with @polpo-ai/chat
@@ -192,19 +205,7 @@ function LandingView({
           />
         </div>
 
-        <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-6 pt-5 pb-3">
-          <textarea
-            rows={1}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder="Describe what you need..."
-            className="flex-1 resize-none bg-transparent text-base text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
-          />
-          <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
-            <ArrowUp className="size-4" />
-          </button>
-        </div>
+        <MockChatInput onSend={onSend} placeholder="Describe what you need..." large />
 
         <ChatSuggestions
           suggestions={suggestions}
@@ -260,17 +261,28 @@ export default function ExamplesChat() {
 
   const handleSend = (text: string) => {
     const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    const makeMockReply = (): ChatMessageItemData => ({
+      id: "a-" + Date.now(),
+      role: "assistant",
+      content: "Done! I've updated the file and ran the tests. Everything passes.",
+      ts: new Date().toISOString(),
+      toolCalls: [
+        { id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/index.ts" } } as any,
+        { id: "t2-" + Date.now(), name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" } as any,
+      ],
+    });
+
     if (adHocMessages) {
       const next = [...adHocMessages, userMsg];
       setAdHocMessages(next);
       setTimeout(() => {
-        setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+        setAdHocMessages((prev) => prev ? [...prev, makeMockReply()] : prev);
       }, 800);
     } else if (activeSessionId) {
       const prev = liveMessages[activeSessionId] || [];
       setLiveMessages({ ...liveMessages, [activeSessionId]: [...prev, userMsg] });
       setTimeout(() => {
-        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] }));
+        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), makeMockReply()] }));
       }, 800);
     }
   };
@@ -281,11 +293,32 @@ export default function ExamplesChat() {
     setAdHocMessages(initial);
     setActiveSessionId("__adhoc__");
     setTimeout(() => {
-      setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+      const mockReply: ChatMessageItemData = {
+        id: "a-" + Date.now(),
+        role: "assistant",
+        content: "Done! I've updated the file and ran the tests. Everything passes.",
+        ts: new Date().toISOString(),
+        toolCalls: [
+          { id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/index.ts" } } as any,
+          { id: "t2-" + Date.now(), name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" } as any,
+        ],
+      };
+      setAdHocMessages((prev) => prev ? [...prev, mockReply] : prev);
     }, 800);
   };
 
   return (
+    <>
+    <style>{`
+      @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-fade-in { animation: fade-in 0.4s ease-out both; }
+      .stagger-children > * { animation: fade-in 0.35s ease-out both; }
+      .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+      .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+      .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+      .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+      .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+    `}</style>
     <div style={vars as React.CSSProperties} className="font-sans">
       <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg)", color: "var(--ink)" }}>
         {/* Sidebar */}
@@ -344,7 +377,7 @@ export default function ExamplesChat() {
         {/* Main area */}
         <main className="flex-1 min-w-0 relative bg-[var(--bg)]">
           {collapsed && (
-            <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5">
+            <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 animate-fade-in">
               <button
                 onClick={() => setCollapsed(false)}
                 className="flex items-center justify-center size-9 rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-sm text-[var(--ink-3)] hover:text-[var(--ink)] hover:border-[var(--ink-3)] transition-all shadow-sm"
@@ -378,5 +411,6 @@ export default function ExamplesChat() {
         </main>
       </div>
     </div>
+    </>
   );
 }
