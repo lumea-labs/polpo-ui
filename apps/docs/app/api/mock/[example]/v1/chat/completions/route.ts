@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       // Stream tool calls first
       if (response.toolCalls) {
         for (const tc of response.toolCalls) {
-          const chunk = JSON.stringify({ choices: [{ tool_call: tc, index: 0 }] });
+          const chunk = JSON.stringify({ choices: [{ delta: {}, tool_call: tc, index: 0 }] });
           controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
           await sleep(100);
         }
