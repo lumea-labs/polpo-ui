@@ -53,7 +53,7 @@ function ChatLandingInner({
   const { sendMessage } = useChatContext();
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen px-6 ${className || ""}`}>
+    <div className={`flex flex-col items-center justify-center flex-1 px-6 ${className || ""}`}>
       <div className="text-center max-w-3xl w-full">
         {header}
 
