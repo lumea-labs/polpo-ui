@@ -29,6 +29,7 @@ function ChatInputWithAskUser() {
   return (
     <ChatInput
       placeholder="Type a message..."
+      hint="AI can make mistakes. Review important information."
       className="[&>div>div]:border-[var(--border)] [&>div>div]:focus-within:border-[var(--accent)] [&>div>div]:focus-within:shadow-[0_2px_20px_rgba(232,93,58,0.06)]"
     />
   );

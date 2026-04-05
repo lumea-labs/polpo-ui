@@ -62,6 +62,7 @@ function LandingView({
         {/* Input */}
         <ChatInput
           placeholder="Describe what you need..."
+          hint="AI can make mistakes. Review important information."
           className="[&_textarea]:text-base [&_textarea]:px-6 [&_textarea]:pt-5 [&_textarea]:pb-3"
         />
 
@@ -78,7 +79,7 @@ function LandingView({
 }
 
 function ConversationView() {
-  return <ChatInput placeholder="Type a message..." />;
+  return <ChatInput placeholder="Type a message..." hint="AI can make mistakes. Review important information." />;
 }
 
 export default function NewChatPage() {

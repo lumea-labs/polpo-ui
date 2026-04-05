@@ -27,7 +27,7 @@ export function PreviewTabs({ preview, code, rawCode, className, iframeSrc, ifra
   return (
     <div className="my-6 overflow-hidden rounded-xl border border-fd-border">
       {/* Tab header */}
-      <div className="flex items-center border-b border-fd-border bg-fd-muted/30">
+      <div className="flex items-center border-b border-fd-border bg-fd-muted/30 pb-0.5">
         <button
           type="button"
           onClick={() => setTab("preview")}
