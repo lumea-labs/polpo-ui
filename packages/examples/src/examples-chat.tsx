@@ -116,18 +116,29 @@ const mockConversations: Record<string, ChatMessageItemData[]> = {
 
 /* ── Mock input ──────────────────────────────────────── */
 
-function MockChatInput() {
+function MockChatInput({ onSend }: { onSend?: (text: string) => void }) {
+  const [text, setText] = useState("");
+
+  const handleSend = () => {
+    const trimmed = text.trim();
+    if (!trimmed || !onSend) return;
+    onSend(trimmed);
+    setText("");
+  };
+
   return (
     <div className="shrink-0 px-6 py-3">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
           <textarea
             rows={1}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Type a message..."
             className="flex-1 resize-none bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
-            readOnly
           />
-          <button className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
+          <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
             <ArrowUp className="size-4" />
           </button>
         </div>
@@ -141,12 +152,21 @@ function MockChatInput() {
 function LandingView({
   selectedAgent,
   onAgentChange,
-  onSuggestion,
+  onSend,
 }: {
   selectedAgent: string | undefined;
   onAgentChange: (name: string) => void;
-  onSuggestion: (text: string) => void;
+  onSend: (text: string) => void;
 }) {
+  const [text, setText] = useState("");
+
+  const handleSend = () => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    onSend(trimmed);
+    setText("");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <div className="max-w-3xl w-full text-center">
@@ -175,18 +195,20 @@ function LandingView({
         <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-6 pt-5 pb-3">
           <textarea
             rows={1}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Describe what you need..."
             className="flex-1 resize-none bg-transparent text-base text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
-            readOnly
           />
-          <button className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
+          <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0">
             <ArrowUp className="size-4" />
           </button>
         </div>
 
         <ChatSuggestions
           suggestions={suggestions}
-          onSelect={onSuggestion}
+          onSelect={(text) => onSend(text)}
           columns={2}
           className="mt-5 max-w-md mx-auto [&_button]:px-3 [&_button]:py-2 [&_button]:text-[11px] [&_button]:rounded-lg [&_button]:gap-1.5"
         />
@@ -197,7 +219,7 @@ function LandingView({
 
 /* ── Conversation view ───────────────────────────────── */
 
-function ConversationView({ messages, agentName }: { messages: ChatMessageItemData[]; agentName: string }) {
+function ConversationView({ messages, agentName, onSend }: { messages: ChatMessageItemData[]; agentName: string; onSend: (text: string) => void }) {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 overflow-y-auto">
@@ -209,7 +231,7 @@ function ConversationView({ messages, agentName }: { messages: ChatMessageItemDa
           ),
         )}
       </div>
-      <MockChatInput />
+      <MockChatInput onSend={onSend} />
     </div>
   );
 }
@@ -221,14 +243,47 @@ export default function ExamplesChat() {
   const [collapsed, setCollapsed] = useState(true);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<string | undefined>();
+  const [liveMessages, setLiveMessages] = useState<Record<string, ChatMessageItemData[]>>({ ...mockConversations });
+  const [adHocMessages, setAdHocMessages] = useState<ChatMessageItemData[] | null>(null);
 
   const isDark = theme === "dark";
   const vars = isDark ? darkVars : lightVars;
   const activeSession = mockSessions.find((s) => s.id === activeSessionId);
-  const activeMessages = activeSessionId ? mockConversations[activeSessionId] || [] : [];
+  const activeMessages = adHocMessages
+    ? adHocMessages
+    : activeSessionId
+      ? liveMessages[activeSessionId] || []
+      : [];
   const activeAgent = activeSession
     ? mockAgents.find((a) => a.name === activeSession.agent)
     : undefined;
+
+  const handleSend = (text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    if (adHocMessages) {
+      const next = [...adHocMessages, userMsg];
+      setAdHocMessages(next);
+      setTimeout(() => {
+        setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+      }, 800);
+    } else if (activeSessionId) {
+      const prev = liveMessages[activeSessionId] || [];
+      setLiveMessages({ ...liveMessages, [activeSessionId]: [...prev, userMsg] });
+      setTimeout(() => {
+        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] }));
+      }, 800);
+    }
+  };
+
+  const handleLandingSend = (text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    const initial = [userMsg];
+    setAdHocMessages(initial);
+    setActiveSessionId("__adhoc__");
+    setTimeout(() => {
+      setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+    }, 800);
+  };
 
   return (
     <div style={vars as React.CSSProperties} className="font-sans">
@@ -252,7 +307,7 @@ export default function ExamplesChat() {
                 {isDark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
               </button>
               <button
-                onClick={() => setActiveSessionId(null)}
+                onClick={() => { setAdHocMessages(null); setActiveSessionId(null); }}
                 className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
                 aria-label="New chat"
               >
@@ -279,7 +334,7 @@ export default function ExamplesChat() {
               sessions={mockSessions as any}
               agents={mockAgents as any}
               activeSessionId={activeSessionId}
-              onSelect={(id) => setActiveSessionId(id)}
+              onSelect={(id) => { setAdHocMessages(null); setActiveSessionId(id); }}
               onDelete={() => {}}
               emptyMessage="No chats yet"
             />
@@ -298,7 +353,7 @@ export default function ExamplesChat() {
                 <PanelLeft className="size-4" />
               </button>
               <button
-                onClick={() => setActiveSessionId(null)}
+                onClick={() => { setAdHocMessages(null); setActiveSessionId(null); }}
                 className="flex items-center justify-center size-9 rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-sm text-[var(--ink-3)] hover:text-[var(--ink)] hover:border-[var(--ink-3)] transition-all shadow-sm"
                 aria-label="New chat"
               >
@@ -311,12 +366,13 @@ export default function ExamplesChat() {
             <ConversationView
               messages={activeMessages}
               agentName={activeAgent?.identity?.displayName || activeAgent?.name || "Assistant"}
+              onSend={handleSend}
             />
           ) : (
             <LandingView
               selectedAgent={selectedAgent}
               onAgentChange={setSelectedAgent}
-              onSuggestion={() => setActiveSessionId("s1")}
+              onSend={handleLandingSend}
             />
           )}
         </main>

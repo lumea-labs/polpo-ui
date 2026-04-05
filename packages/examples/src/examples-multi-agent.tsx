@@ -182,11 +182,27 @@ function SettingsPopover({ variant, onVariantChange }: { variant: SidebarVariant
 
 /* ── Shared mock input ────────────────────────────────── */
 
-function MockInput({ placeholder = "Type a message...", wrap = true }: { placeholder?: string; wrap?: boolean }) {
+function MockInput({ placeholder = "Type a message...", wrap = true, onSend }: { placeholder?: string; wrap?: boolean; onSend?: (text: string) => void }) {
+  const [text, setText] = useState("");
+
+  const handleSend = () => {
+    const trimmed = text.trim();
+    if (!trimmed || !onSend) return;
+    onSend(trimmed);
+    setText("");
+  };
+
   const inner = (
     <div className="flex items-end gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
-      <textarea rows={1} placeholder={placeholder} className="flex-1 resize-none bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none" readOnly />
-      <button className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0"><ArrowUp className="size-4" /></button>
+      <textarea
+        rows={1}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+        placeholder={placeholder}
+        className="flex-1 resize-none bg-transparent text-sm text-[var(--ink)] placeholder:text-[var(--ink-3)] outline-none"
+      />
+      <button onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-[var(--accent)] text-white shrink-0"><ArrowUp className="size-4" /></button>
     </div>
   );
   if (!wrap) return inner;
@@ -195,7 +211,7 @@ function MockInput({ placeholder = "Type a message...", wrap = true }: { placeho
 
 /* ── Landing view ────────────────────────────────────── */
 
-function LandingView({ selectedAgent, onAgentChange }: { selectedAgent: string | undefined; onAgentChange: (name: string) => void }) {
+function LandingView({ selectedAgent, onAgentChange, onSend }: { selectedAgent: string | undefined; onAgentChange: (name: string) => void; onSend: (text: string) => void }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <div className="max-w-2xl w-full text-center">
@@ -204,7 +220,7 @@ function LandingView({ selectedAgent, onAgentChange }: { selectedAgent: string |
         <div className="flex justify-center mb-4">
           <ChatAgentSelector agents={mockAgents as any} selected={selectedAgent} onSelect={onAgentChange} fallbackLabel="Auto (Orchestrator)" />
         </div>
-        <MockInput placeholder="What are you working on?" wrap={false} />
+        <MockInput placeholder="What are you working on?" wrap={false} onSend={onSend} />
       </div>
     </div>
   );
@@ -212,7 +228,7 @@ function LandingView({ selectedAgent, onAgentChange }: { selectedAgent: string |
 
 /* ── Conversation view ───────────────────────────────── */
 
-function ConversationView({ messages, agentName }: { messages: ChatMessageItemData[]; agentName: string }) {
+function ConversationView({ messages, agentName, onSend }: { messages: ChatMessageItemData[]; agentName: string; onSend: (text: string) => void }) {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 overflow-y-auto">
@@ -221,7 +237,7 @@ function ConversationView({ messages, agentName }: { messages: ChatMessageItemDa
           : <ChatAssistantMessage key={msg.id} msg={msg} agentName={agentName} />
         )}
       </div>
-      <MockInput />
+      <MockInput onSend={onSend} />
     </div>
   );
 }
@@ -234,6 +250,8 @@ export default function ExamplesMultiAgent() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<string | undefined>();
   const [sidebarVariant, setSidebarVariant] = useState<SidebarVariant>("default");
+  const [liveMessages, setLiveMessages] = useState<Record<string, ChatMessageItemData[]>>({ ...mockConversations });
+  const [adHocMessages, setAdHocMessages] = useState<ChatMessageItemData[] | null>(null);
 
   const vars = theme === "dark" ? darkVars : lightVars;
 
@@ -247,13 +265,42 @@ export default function ExamplesMultiAgent() {
   }, []);
 
   const handleNewChat = useCallback((agent?: string) => {
+    setAdHocMessages(null);
     setActiveSessionId(null);
     if (agent) setSelectedAgent(agent);
   }, []);
 
   const activeSession = mockSessions.find((s) => s.id === activeSessionId);
-  const activeMessages = activeSessionId ? mockConversations[activeSessionId] || [] : [];
+  const activeMessages = adHocMessages
+    ? adHocMessages
+    : activeSessionId
+      ? liveMessages[activeSessionId] || []
+      : [];
   const activeAgent = activeSession ? mockAgents.find((a) => a.name === activeSession.agent) : undefined;
+
+  const handleSend = useCallback((text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    if (adHocMessages) {
+      setAdHocMessages((prev) => prev ? [...prev, userMsg] : [userMsg]);
+      setTimeout(() => {
+        setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+      }, 800);
+    } else if (activeSessionId) {
+      setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), userMsg] }));
+      setTimeout(() => {
+        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] }));
+      }, 800);
+    }
+  }, [adHocMessages, activeSessionId]);
+
+  const handleLandingSend = useCallback((text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    setAdHocMessages([userMsg]);
+    setActiveSessionId("__adhoc__");
+    setTimeout(() => {
+      setAdHocMessages((prev) => prev ? [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }] : prev);
+    }, 800);
+  }, []);
 
   return (
     <div style={vars as React.CSSProperties} className="font-sans">
@@ -289,7 +336,7 @@ export default function ExamplesMultiAgent() {
                 displayName={agent?.identity?.displayName || agent?.name || agentName}
                 sessions={sessions}
                 activeSessionId={activeSessionId}
-                onSelect={(id) => setActiveSessionId(id)}
+                onSelect={(id) => { setAdHocMessages(null); setActiveSessionId(id); }}
                 onDelete={() => {}}
                 onNewChat={handleNewChat}
                 variant={sidebarVariant}
@@ -341,11 +388,13 @@ export default function ExamplesMultiAgent() {
             <ConversationView
               messages={activeMessages}
               agentName={activeAgent?.identity?.displayName || activeAgent?.name || "Assistant"}
+              onSend={handleSend}
             />
           ) : (
             <LandingView
               selectedAgent={selectedAgent}
               onAgentChange={setSelectedAgent}
+              onSend={handleLandingSend}
             />
           )}
         </main>

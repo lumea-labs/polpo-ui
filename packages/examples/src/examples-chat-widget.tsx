@@ -55,12 +55,28 @@ const quickQuestions = [
 
 /* ── Mock input ──────────────────────────────────────── */
 
-function MockWidgetInput() {
+function MockWidgetInput({ onSend }: { onSend?: (text: string) => void }) {
+  const [text, setText] = useState("");
+
+  const handleSend = () => {
+    const trimmed = text.trim();
+    if (!trimmed || !onSend) return;
+    onSend(trimmed);
+    setText("");
+  };
+
   return (
     <div className="shrink-0 px-3 py-2">
       <div className="flex items-end gap-2 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2">
-        <textarea rows={1} placeholder={`Message ${AGENT_DISPLAY}...`} className="flex-1 resize-none bg-transparent text-sm text-[var(--c-ink)] placeholder:text-[var(--c-ink-3)] outline-none" readOnly />
-        <button className="flex items-center justify-center size-7 rounded-lg bg-[var(--c-accent)] text-white shrink-0"><ArrowUp className="size-3.5" /></button>
+        <textarea
+          rows={1}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+          placeholder={`Message ${AGENT_DISPLAY}...`}
+          className="flex-1 resize-none bg-transparent text-sm text-[var(--c-ink)] placeholder:text-[var(--c-ink-3)] outline-none"
+        />
+        <button onClick={handleSend} className="flex items-center justify-center size-7 rounded-lg bg-[var(--c-accent)] text-white shrink-0"><ArrowUp className="size-3.5" /></button>
       </div>
     </div>
   );
@@ -95,10 +111,10 @@ function NewChatWelcome({ onQuestion }: { onQuestion: (q: string) => void }) {
   );
 }
 
-function ConversationMessages() {
+function ConversationMessages({ messages }: { messages: ChatMessageItemData[] }) {
   return (
     <div className="flex-1 overflow-y-auto">
-      {mockMessages.map((msg) => msg.role === "user"
+      {messages.map((msg) => msg.role === "user"
         ? <ChatUserMessage key={msg.id} msg={msg} />
         : <ChatAssistantMessage key={msg.id} msg={msg} agentName={AGENT_DISPLAY} />
       )}
@@ -159,9 +175,27 @@ function DirectWidget() {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState<WidgetSize>("default");
   const [showConversation, setShowConversation] = useState(false);
+  const [messages, setMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
 
   const cycleSize = useCallback(() => {
     setSize((s) => s === "default" ? "large" : s === "large" ? "fullscreen" : "default");
+  }, []);
+
+  const handleSend = useCallback((text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    setMessages((prev) => [...prev, userMsg]);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
+  }, []);
+
+  const handleQuestion = useCallback((q: string) => {
+    setShowConversation(true);
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
+    setMessages([userMsg]);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
   }, []);
 
   return (
@@ -182,11 +216,11 @@ function DirectWidget() {
           </div>
           {showConversation ? (
             <div className="flex-1 min-h-0 flex flex-col">
-              <ConversationMessages />
-              <MockWidgetInput />
+              <ConversationMessages messages={messages} />
+              <MockWidgetInput onSend={handleSend} />
             </div>
           ) : (
-            <NewChatWelcome onQuestion={() => setShowConversation(true)} />
+            <NewChatWelcome onQuestion={handleQuestion} />
           )}
         </div>
       )}
@@ -214,6 +248,7 @@ function ChatWidget() {
   const [chatView, setChatView] = useState<ChatView>(null);
   const [size, setSize] = useState<WidgetSize>("default");
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [messages, setMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
 
   const cycleSize = useCallback(() => {
     setSize((s) => s === "default" ? "large" : s === "large" ? "fullscreen" : "default");
@@ -222,6 +257,23 @@ function ChatWidget() {
   const openNewChat = useCallback(() => setChatView({ type: "new" }), []);
   const openSession = useCallback((id: string) => setChatView({ type: "session", sessionId: id }), []);
   const goBack = useCallback(() => setChatView(null), []);
+
+  const handleSend = useCallback((text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    setMessages((prev) => [...prev, userMsg]);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
+  }, []);
+
+  const handleQuestion = useCallback((q: string) => {
+    setChatView({ type: "new" });
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
+    setMessages([userMsg]);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
+  }, []);
 
   const inChat = chatView !== null;
 
@@ -258,8 +310,8 @@ function ChatWidget() {
 
           {inChat ? (
             <div className="flex-1 min-h-0 flex flex-col">
-              <ConversationMessages />
-              <MockWidgetInput />
+              <ConversationMessages messages={messages} />
+              <MockWidgetInput onSend={handleSend} />
             </div>
           ) : (
             <>
@@ -308,6 +360,24 @@ function ChatWidget() {
 export default function ExamplesChatWidget() {
   const [variant, setVariant] = useState<"direct" | "history" | "embedded">("direct");
   const [embeddedShowConversation, setEmbeddedShowConversation] = useState(false);
+  const [embeddedMessages, setEmbeddedMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
+
+  const handleEmbeddedSend = useCallback((text: string) => {
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
+    setEmbeddedMessages((prev) => [...prev, userMsg]);
+    setTimeout(() => {
+      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
+  }, []);
+
+  const handleEmbeddedQuestion = useCallback((q: string) => {
+    setEmbeddedShowConversation(true);
+    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
+    setEmbeddedMessages([userMsg]);
+    setTimeout(() => {
+      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I'll help you with that. Let me look into it and get back to you with a solution.", ts: new Date().toISOString() }]);
+    }, 800);
+  }, []);
 
   return (
     <div style={cssVars as React.CSSProperties} className="font-sans" >
@@ -358,11 +428,11 @@ export default function ExamplesChatWidget() {
             </div>
             {embeddedShowConversation ? (
               <div className="flex-1 min-h-0 flex flex-col">
-                <ConversationMessages />
-                <MockWidgetInput />
+                <ConversationMessages messages={embeddedMessages} />
+                <MockWidgetInput onSend={handleEmbeddedSend} />
               </div>
             ) : (
-              <NewChatWelcome onQuestion={() => setEmbeddedShowConversation(true)} />
+              <NewChatWelcome onQuestion={handleEmbeddedQuestion} />
             )}
           </div>
         )}
