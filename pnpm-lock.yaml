@@ -35,6 +35,9 @@ importers:
       '@polpo-ai/sdk':
         specifier: ^0.5.14
         version: 0.5.14
+      '@radix-ui/react-presence':
+        specifier: ^1.1.5
+        version: 1.1.5(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
