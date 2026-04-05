@@ -147,6 +147,8 @@ importers:
 
   packages/cli: {}
 
+  packages/create-app: {}
+
   packages/examples:
     dependencies:
       '@polpo-ai/chat':
@@ -158,6 +160,10 @@ importers:
       react:
         specifier: '*'
         version: 19.2.4
+    devDependencies:
+      '@types/react':
+        specifier: '*'
+        version: 19.2.14
 
 packages:
 

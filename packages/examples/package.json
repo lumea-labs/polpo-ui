@@ -7,5 +7,8 @@
     "@polpo-ai/chat": "workspace:*",
     "lucide-react": "*",
     "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "*"
   }
 }

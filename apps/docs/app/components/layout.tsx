@@ -2,7 +2,7 @@ import { componentsSource } from '@/lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { baseOptions } from '@/lib/layout.shared';
 
-export default function Layout({ children }: LayoutProps<'/components2'>) {
+export default function Layout({ children }: LayoutProps<'/components'>) {
   return (
     <DocsLayout
       tree={componentsSource.getPageTree()}
