@@ -4,15 +4,15 @@ import { highlight } from "sugar-high";
 import { PreviewTabs } from "./preview-tabs";
 
 interface IframePreviewProps {
-  /** Path for the iframe preview route */
-  path: string;
+  /** URL for the iframe preview */
+  iframeSrc: string;
   /** Path to the real example source file to show in Code tab */
   codePath: string;
   /** Height of the iframe preview */
   height?: number;
 }
 
-export async function IframePreview({ path, codePath, height = 680 }: IframePreviewProps) {
+export async function IframePreview({ iframeSrc, codePath, height = 680 }: IframePreviewProps) {
   const code = await readFile(
     join(process.cwd(), "..", "..", codePath),
     "utf8",
@@ -25,7 +25,7 @@ export async function IframePreview({ path, codePath, height = 680 }: IframePrev
       preview={null}
       code={highlighted}
       rawCode={code}
-      iframeSrc={`/examples/preview/${path}`}
+      iframeSrc={iframeSrc}
       iframeHeight={height}
     />
   );

@@ -19,9 +19,6 @@ import ToolCallShellExample from "@polpo-ai/examples/src/tool-call-shell";
 import ChatMessagesExample from "@polpo-ai/examples/src/chat-messages";
 import ChatProviderExample from "@polpo-ai/examples/src/chat-provider";
 import ChatLandingExample from "@polpo-ai/examples/src/chat-landing";
-import ExamplesChatExample from "@polpo-ai/examples/src/examples-chat";
-import ExamplesChatWidgetExample from "@polpo-ai/examples/src/examples-chat-widget";
-import ExamplesMultiAgentExample from "@polpo-ai/examples/src/examples-multi-agent";
 
 const registry: Record<string, React.ComponentType> = {
   chat: ChatExample,
@@ -39,9 +36,6 @@ const registry: Record<string, React.ComponentType> = {
   "chat-agent-selector": ChatAgentSelectorExample,
   "chat-ask-user": ChatAskUserExample,
   "tool-call-shell": ToolCallShellExample,
-  "examples-chat": ExamplesChatExample,
-  "examples-chat-widget": ExamplesChatWidgetExample,
-  "examples-multi-agent": ExamplesMultiAgentExample,
 };
 
 interface PreviewProps {

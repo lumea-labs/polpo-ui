@@ -3,28 +3,31 @@ import { CopyButton } from "./copy-button";
 
 const examples = [
   {
-    name: "examples-chat",
+    slug: "chat",
     title: "Chat",
     description: "Full-page chat with sidebar, session history, and markdown rendering.",
     command: "npx create-polpo-app my-chat -t chat -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/chat",
     codePath: "examples/chat/app/chat/layout.tsx",
+    previewUrl: "https://polpo-example-chat.vercel.app",
   },
   {
-    name: "examples-chat-widget",
+    slug: "chat-widget",
     title: "Chat Widget",
     description: "Floating/embedded support widget with multiple layout variants.",
     command: "npx create-polpo-app my-widget -t chat-widget -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/chat-widget",
     codePath: "examples/chat-widget/app/page.tsx",
+    previewUrl: "https://polpo-example-widget.vercel.app",
   },
   {
-    name: "examples-multi-agent",
+    slug: "multi-agent",
     title: "Multi-Agent",
     description: "Multi-agent workspace with grouped sessions and dark theme.",
     command: "npx create-polpo-app my-workspace -t multi-agent -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/multi-agent",
     codePath: "examples/multi-agent/app/chat/layout.tsx",
+    previewUrl: "https://polpo-example-multi-agent.vercel.app",
   },
 ];
 
@@ -43,7 +46,7 @@ export default function ExamplesPage() {
 
       <div className="mt-12 space-y-16">
         {examples.map((ex) => (
-          <section key={ex.name}>
+          <section key={ex.slug}>
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-xl font-bold">{ex.title}</h2>
@@ -67,7 +70,7 @@ export default function ExamplesPage() {
               <CopyButton text={ex.command} />
             </div>
 
-            <IframePreview path={ex.name} codePath={ex.codePath} />
+            <IframePreview iframeSrc={ex.previewUrl} codePath={ex.codePath} />
           </section>
         ))}
       </div>
