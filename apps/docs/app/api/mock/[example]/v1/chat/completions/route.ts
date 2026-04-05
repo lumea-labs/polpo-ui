@@ -43,21 +43,21 @@ export async function POST(req: Request) {
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
-      // Stream tool calls first
+      // Stream text first, then tool calls
+      for (let i = 0; i < words.length; i++) {
+        const word = words[i] + (i < words.length - 1 ? " " : "");
+        const chunk = JSON.stringify({ choices: [{ delta: { content: word }, index: 0 }] });
+        controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
+        await sleep(40);
+      }
+
+      // Stream tool calls after text
       if (response.toolCalls) {
         for (const tc of response.toolCalls) {
           const chunk = JSON.stringify({ choices: [{ delta: {}, tool_call: tc, index: 0 }] });
           controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
           await sleep(100);
         }
-      }
-
-      // Stream text word by word
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i] + (i < words.length - 1 ? " " : "");
-        const chunk = JSON.stringify({ choices: [{ delta: { content: word }, index: 0 }] });
-        controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
-        await sleep(40);
       }
 
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
