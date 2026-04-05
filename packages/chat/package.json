@@ -39,7 +39,10 @@
     "react-virtuoso": ">=4.0.0",
     "streamdown": ">=0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
   "keywords": [
     "polpo",
     "chat",
