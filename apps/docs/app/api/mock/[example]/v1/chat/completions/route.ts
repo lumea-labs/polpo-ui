@@ -1,25 +1,26 @@
 import { corsHeaders } from '../../../../data/loader';
 
-const mockResponses: Record<string, { text: string; toolCalls?: any[] }> = {
-  code: {
-    text: "Done! I've updated the file and ran the tests. Everything passes.\n\n```ts\nexport function hello() {\n  return 'world';\n}\n```",
-    toolCalls: [
-      { id: "tc-w", name: "write", state: "completed", arguments: { path: "src/index.ts" } },
-      { id: "tc-b", name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" },
-    ],
-  },
-  help: {
-    text: "I'd be happy to help! Here's how to get started:\n\n1. **Install the SDK** — `npm install @polpo-ai/chat`\n2. **Wrap your app** with `<PolpoProvider>`\n3. **Add `<Chat>`** anywhere in your app\n\nWould you like me to walk through any of these steps?",
-  },
-  default: {
-    text: "I'll help you with that. Let me look into it and get back to you with a solution.\n\nHere's what I found — the approach looks solid. I've made the changes and verified everything works correctly.",
-    toolCalls: [
-      { id: "tc-r", name: "read", state: "completed", arguments: { path: "src/main.ts" } },
-    ],
-  },
+type Step = { type: "text"; content: string } | { type: "tool_call"; call: any };
+
+const mockResponses: Record<string, Step[]> = {
+  code: [
+    { type: "text", content: "Let me update that file for you." },
+    { type: "tool_call", call: { id: "tc-w", name: "write", state: "completed", arguments: { path: "src/index.ts" } } },
+    { type: "text", content: " Done. Now let me run the tests." },
+    { type: "tool_call", call: { id: "tc-b", name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" } },
+    { type: "text", content: " Everything passes.\n\n```ts\nexport function hello() {\n  return 'world';\n}\n```" },
+  ],
+  help: [
+    { type: "text", content: "I'd be happy to help! Here's how to get started:\n\n1. **Install the SDK** — `npm install @polpo-ai/chat`\n2. **Wrap your app** with `<PolpoProvider>`\n3. **Add `<Chat>`** anywhere in your app\n\nWould you like me to walk through any of these steps?" },
+  ],
+  default: [
+    { type: "text", content: "Let me look into that." },
+    { type: "tool_call", call: { id: "tc-r", name: "read", state: "completed", arguments: { path: "src/main.ts" } } },
+    { type: "text", content: " Here's what I found — the approach looks solid. I've made the changes and verified everything works correctly." },
+  ],
 };
 
-function pickResponse(userText: string) {
+function pickResponse(userText: string): Step[] {
   const lower = userText.toLowerCase();
   if (lower.includes("code") || lower.includes("file") || lower.includes("write") || lower.includes("test") || lower.includes("add") || lower.includes("fix") || lower.includes("debug")) {
     return mockResponses.code;
@@ -37,26 +38,24 @@ export async function POST(req: Request) {
   const userText = typeof lastUser?.content === "string" ? lastUser.content : "hello";
   const sessionId = body.sessionId || `mock-${Date.now()}`;
 
-  const response = pickResponse(userText);
-  const words = response.text.split(" ");
+  const steps = pickResponse(userText);
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
-      // Stream text first, then tool calls
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i] + (i < words.length - 1 ? " " : "");
-        const chunk = JSON.stringify({ choices: [{ delta: { content: word }, index: 0 }] });
-        controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
-        await sleep(40);
-      }
-
-      // Stream tool calls after text
-      if (response.toolCalls) {
-        for (const tc of response.toolCalls) {
-          const chunk = JSON.stringify({ choices: [{ delta: {}, tool_call: tc, index: 0 }] });
+      for (const step of steps) {
+        if (step.type === "text") {
+          const words = step.content.split(" ");
+          for (let i = 0; i < words.length; i++) {
+            const word = words[i] + (i < words.length - 1 ? " " : "");
+            const chunk = JSON.stringify({ choices: [{ delta: { content: word }, index: 0 }] });
+            controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
+            await sleep(40);
+          }
+        } else {
+          const chunk = JSON.stringify({ choices: [{ delta: {}, tool_call: step.call, index: 0 }] });
           controller.enqueue(encoder.encode(`data: ${chunk}\n\n`));
-          await sleep(100);
+          await sleep(200);
         }
       }
 
