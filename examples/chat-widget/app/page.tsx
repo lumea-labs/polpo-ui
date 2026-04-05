@@ -41,8 +41,8 @@ type ChatView = { type: "new" } | { type: "session"; sessionId: string } | null;
 type WidgetSize = "default" | "large" | "fullscreen";
 
 const sizeClasses: Record<WidgetSize, string> = {
-  default: "fixed bottom-24 right-6 w-[420px] h-[620px] rounded-2xl",
-  large: "fixed bottom-24 right-6 w-[520px] h-[720px] rounded-2xl",
+  default: "fixed bottom-24 right-6 left-6 sm:left-auto sm:w-[420px] h-[min(620px,calc(100dvh-8rem))] rounded-2xl",
+  large: "fixed bottom-24 right-6 left-6 sm:left-auto sm:w-[520px] h-[min(720px,calc(100dvh-8rem))] rounded-2xl",
   fullscreen: "fixed inset-4 w-auto h-auto rounded-2xl",
 };
 
@@ -359,7 +359,7 @@ export default function Home() {
   const [embeddedOpen, setEmbeddedOpen] = useState(true);
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center px-8 transition-all ${variant === "embedded" && embeddedOpen ? "mr-[420px]" : ""}`}>
+    <div className={`min-h-screen flex flex-col items-center justify-center px-8 transition-all ${variant === "embedded" && embeddedOpen ? "sm:mr-[420px]" : ""}`}>
       <div className="max-w-lg text-center">
         <p className="text-xs font-medium text-[var(--c-accent)] uppercase tracking-widest mb-4">@polpo-ai/chat example</p>
         <h1 className="text-4xl font-bold tracking-tight mb-3">
@@ -394,7 +394,7 @@ export default function Home() {
       {variant === "direct" && <DirectWidget />}
       {variant === "history" && <ChatWidget />}
       {variant === "embedded" && embeddedOpen && (
-        <div className="fixed top-0 right-0 w-[420px] h-screen border-l border-[var(--c-border)] bg-[var(--c-bg)] z-50 flex flex-col">
+        <div className="fixed top-0 right-0 w-full sm:w-[420px] h-screen border-l border-[var(--c-border)] bg-[var(--c-bg)] z-50 flex flex-col">
           <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
             <div className="size-8 rounded-lg bg-[var(--c-accent)] flex items-center justify-center">
               <Headphones className="size-4 text-white" />
