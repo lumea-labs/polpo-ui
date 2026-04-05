@@ -84,7 +84,7 @@ export function PreviewTabs({ preview, code, rawCode, className, iframeSrc, ifra
         )
       ) : (
         <div className="max-h-[600px] overflow-y-auto preview-scroll">
-          <pre data-preview-code="" className="m-0 p-4 text-[13px] leading-relaxed overflow-x-auto font-mono">
+          <pre data-preview-code="" className="m-0 p-4 text-[13px] leading-relaxed overflow-x-auto font-mono bg-fd-card">
             <code dangerouslySetInnerHTML={{ __html: code }} />
           </pre>
         </div>

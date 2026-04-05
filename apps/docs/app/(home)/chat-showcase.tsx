@@ -10,7 +10,7 @@ export function ChatShowcase() {
       {/* Left — text */}
       <div className="flex flex-col justify-center">
         <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-fd-primary">
-          Components
+          Drop-in
         </p>
         <h2 className="mt-4 text-2xl font-extrabold tracking-tight md:text-3xl">
           Agents that work

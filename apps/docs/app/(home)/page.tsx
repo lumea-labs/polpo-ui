@@ -67,7 +67,7 @@ export default function HomePage() {
               desc: "Built on @polpo-ai/react hooks. Streaming, sessions, tool calls, memory — all wired out of the box.",
               icon: (
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                 </svg>
               ),
             },
@@ -136,6 +136,13 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-fd-border py-8 px-6">
+        <p className="mx-auto max-w-[1100px] text-xs text-fd-muted-foreground">
+          &copy; {new Date().getFullYear()} Lumea Technologies
+        </p>
+      </footer>
     </div>
   );
 }
