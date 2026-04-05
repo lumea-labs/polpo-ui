@@ -1,0 +1,67 @@
+name: Deploy Examples
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'examples/**'
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      chat: ${{ steps.changes.outputs.chat }}
+      chat-widget: ${{ steps.changes.outputs.chat-widget }}
+      multi-agent: ${{ steps.changes.outputs.multi-agent }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: changes
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          echo "chat=$(echo "$CHANGED" | grep -q '^examples/chat/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "chat-widget=$(echo "$CHANGED" | grep -q '^examples/chat-widget/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "multi-agent=$(echo "$CHANGED" | grep -q '^examples/multi-agent/' && echo true || echo false)" >> $GITHUB_OUTPUT
+
+  deploy-chat:
+    needs: detect
+    if: needs.detect.outputs.chat == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g vercel
+      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-chat-widget:
+    needs: detect
+    if: needs.detect.outputs.chat-widget == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT_WIDGET }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g vercel
+      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-multi-agent:
+    needs: detect
+    if: needs.detect.outputs.multi-agent == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_MULTI_AGENT }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g vercel
+      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

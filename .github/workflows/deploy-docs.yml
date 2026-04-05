@@ -3,6 +3,10 @@ name: Deploy Docs
 on:
   push:
     branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - 'packages/examples/**'
+      - 'packages/chat/src/**'
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -33,5 +37,5 @@ jobs:
         env:
           ENABLE_EXPERIMENTAL_COREPACK: "1"
 
-      - name: Deploy prebuilt
+      - name: Deploy
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
