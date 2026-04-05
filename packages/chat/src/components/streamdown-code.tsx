@@ -31,14 +31,12 @@ function FallbackCodeBlock({ code, language }: CodeBlockComponentProps) {
   return (
     <pre
       data-language={language}
+      className="border border-gray-200 bg-gray-100 text-gray-900"
       style={{
         margin: "0.75rem 0",
         padding: "0.875rem 1rem",
         borderRadius: "10px",
         overflowX: "auto",
-        border: "1px solid #e5e7eb",
-        background: "#f9fafb",
-        color: "inherit",
         fontSize: "0.75rem",
         lineHeight: "1.625",
       }}

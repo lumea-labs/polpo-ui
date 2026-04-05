@@ -117,6 +117,19 @@ html {
   opacity: 0.5 !important;
 }
 
+/* Preview scrollbar — thin, theme-aware */
+[data-preview-code],
+[data-preview-code] ~ *,
+.preview-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border-2) transparent;
+}
+.dark [data-preview-code],
+.dark [data-preview-code] ~ *,
+.dark .preview-scroll {
+  scrollbar-color: var(--c-border) transparent;
+}
+
 /* Preview code block — strip sugar-high inline backgrounds */
 [data-preview-code] span {
   background: transparent !important;
