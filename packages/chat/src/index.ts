@@ -8,6 +8,7 @@ export { ChatSuggestions, type ChatSuggestionsProps, type ChatSuggestion } from 
 export { ChatAgentSelector, type ChatAgentSelectorProps } from "./components/chat-agent-selector";
 export { ChatAskUser, type ChatAskUserProps } from "./components/chat-ask-user";
 export { ChatProvider, useChatContext } from "./components/chat-provider";
+export type { ChatProviderProps, ChatContextValue } from "./components/chat-provider";
 export { ChatTyping } from "./components/chat-typing";
 export {
   ChatMessage,
@@ -33,9 +34,14 @@ export {
   streamdownComponents,
   createStreamdownComponents,
 } from "./components/streamdown-code";
+export type {
+  CodeBlockComponentProps,
+  StreamdownComponents,
+} from "./components/streamdown-code";
 
 // Hooks
 export { useSubmitHandler } from "./hooks/use-submit-handler";
+export type { PromptInputMessage } from "./hooks/use-submit-handler";
 export { useDocumentDrag } from "./hooks/use-document-drag";
 
 // Lib utilities
@@ -44,4 +50,4 @@ export { getTextContent } from "./lib/get-text-content";
 
 // Tools
 export { ToolCallChip } from "./tools";
-export { ToolCallShell } from "./tools/tool-call-shell";
+export { ToolCallShell, type ToolCallShellProps } from "./tools/tool-call-shell";
