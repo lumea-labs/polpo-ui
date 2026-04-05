@@ -1,0 +1,21 @@
+{
+  "agents": [
+    { "name": "assistant", "role": "Support assistant", "model": "anthropic:claude-sonnet-4-6", "identity": { "displayName": "AI Assistant" }, "createdAt": "2026-03-24T15:13:17.323Z", "teamName": "default" }
+  ],
+  "sessions": [
+    { "id": "s1", "title": "How do I get started?", "agent": "assistant", "createdAt": "2026-04-03T10:00:00Z", "updatedAt": "2026-04-03T14:30:00Z", "messageCount": 4 },
+    { "id": "s2", "title": "API integration help", "agent": "assistant", "createdAt": "2026-04-02T09:00:00Z", "updatedAt": "2026-04-02T16:00:00Z", "messageCount": 6 }
+  ],
+  "messages": {
+    "s1": [
+      { "id": "m1", "role": "user", "content": "How do I get started?", "ts": "2026-04-03T10:00:00Z" },
+      { "id": "m2", "role": "assistant", "content": "Welcome! Here's how to get started:\n\n1. **Install the SDK** — `npm install @polpo-ai/chat`\n2. **Add your API key** — set `POLPO_API_KEY` in `.env`\n3. **Drop in the Chat component**\n\n```tsx\nimport { Chat } from '@polpo-ai/chat';\n\nexport default function App() {\n  return <Chat agent=\"assistant\" />;\n}\n```\n\nWould you like me to walk through any of these steps?", "ts": "2026-04-03T10:01:00Z" },
+      { "id": "m3", "role": "user", "content": "Show me the Chat component setup.", "ts": "2026-04-03T10:05:00Z" },
+      { "id": "m4", "role": "assistant", "content": "Here's a complete setup:\n\n```tsx\nimport { PolpoProvider } from '@polpo-ai/react';\nimport { Chat } from '@polpo-ai/chat';\n\nexport default function App() {\n  return (\n    <PolpoProvider baseUrl=\"https://api.polpo.sh\" apiKey=\"sk_live_...\">\n      <Chat agent=\"assistant\" />\n    </PolpoProvider>\n  );\n}\n```\n\nThe `<Chat>` component handles everything: messages, streaming, input, file attachments, and tool calls.", "ts": "2026-04-03T10:06:00Z" }
+    ],
+    "s2": [
+      { "id": "m5", "role": "user", "content": "How do I integrate the API?", "ts": "2026-04-02T09:00:00Z" },
+      { "id": "m6", "role": "assistant", "content": "You can use the SDK directly:\n\n```ts\nimport { PolpoClient } from '@polpo-ai/sdk';\n\nconst client = new PolpoClient({\n  baseUrl: 'https://api.polpo.sh',\n  apiKey: 'sk_live_...',\n});\n\nconst stream = client.chatCompletionsStream({\n  agent: 'assistant',\n  messages: [{ role: 'user', content: 'Hello' }],\n});\n\nfor await (const chunk of stream) {\n  console.log(chunk.choices[0]?.delta?.content);\n}\n```", "ts": "2026-04-02T09:02:00Z" }
+    ]
+  }
+}

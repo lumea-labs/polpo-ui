@@ -1,7 +1,5 @@
-"use client";
-
-import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { IframePreview } from "@/components/iframe-preview";
+import { CopyButton } from "./copy-button";
 
 const examples = [
   {
@@ -10,6 +8,7 @@ const examples = [
     description: "Full-page chat with sidebar, session history, and markdown rendering.",
     command: "npx create-polpo-app my-chat -t chat -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/chat",
+    codePath: "examples/chat/app/chat/layout.tsx",
   },
   {
     name: "examples-chat-widget",
@@ -17,6 +16,7 @@ const examples = [
     description: "Floating/embedded support widget with multiple layout variants.",
     command: "npx create-polpo-app my-widget -t chat-widget -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/chat-widget",
+    codePath: "examples/chat-widget/app/page.tsx",
   },
   {
     name: "examples-multi-agent",
@@ -24,25 +24,9 @@ const examples = [
     description: "Multi-agent workspace with grouped sessions and dark theme.",
     command: "npx create-polpo-app my-workspace -t multi-agent -y",
     source: "https://github.com/lumea-labs/polpo-ui/tree/main/examples/multi-agent",
+    codePath: "examples/multi-agent/app/chat/layout.tsx",
   },
 ];
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      onClick={() => {
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-      }}
-      className="flex items-center justify-center size-6 rounded text-fd-muted-foreground hover:text-fd-foreground transition-colors"
-      aria-label="Copy"
-    >
-      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-    </button>
-  );
-}
 
 export default function ExamplesPage() {
   return (
@@ -78,19 +62,12 @@ export default function ExamplesPage() {
               </a>
             </div>
 
-            <div className="mb-4 flex items-center gap-2 rounded-lg border border-fd-border bg-fd-card px-4 py-2.5 w-fit">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-fd-border bg-fd-card px-4 py-2.5 w-fit">
               <code className="font-mono text-xs text-fd-primary">{ex.command}</code>
               <CopyButton text={ex.command} />
             </div>
 
-            <div className="rounded-xl border border-fd-border overflow-hidden">
-              <iframe
-                src={`/examples/preview/${ex.name}`}
-                className="w-full border-0"
-                style={{ height: "680px" }}
-                loading="lazy"
-              />
-            </div>
+            <IframePreview path={ex.name} codePath={ex.codePath} />
           </section>
         ))}
       </div>

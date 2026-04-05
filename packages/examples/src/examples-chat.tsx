@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import {
+  ChatInput,
   ChatSessionList,
   ChatSuggestions,
   ChatAgentSelector,
   ChatUserMessage,
   ChatAssistantMessage,
+  ChatMessages,
+  useChatContext,
+  streamdownComponents,
   type ChatMessageItemData,
   type ChatSuggestion,
 } from "@polpo-ai/chat";
@@ -20,8 +24,8 @@ import {
   Workflow,
   CalendarCheck,
   FileBarChart,
-  ArrowUp,
 } from "lucide-react";
+import { MockChatProvider } from "./mock-provider";
 
 /* ── CSS vars (inline on root) ───────────────────────── */
 
@@ -132,67 +136,33 @@ const mockConversations: Record<string, ChatMessageItemData[]> = {
   ],
 };
 
-/* ── Mock input ──────────────────────────────────────── */
+/* ── Landing view (inside MockChatProvider) ──────────── */
 
-function MockChatInput({ onSend, placeholder = "Type a message...", large }: { onSend?: (text: string) => void; placeholder?: string; large?: boolean }) {
-  const [text, setText] = useState("");
-  const handleSend = () => { const t = text.trim(); if (!t || !onSend) return; onSend(t); setText(""); };
-
-  return (
-    <div className="shrink-0">
-      <div className="w-full px-6 py-3">
-        <div className="max-w-3xl mx-auto">
-          <div className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50">
-            <textarea
-              rows={1}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder={placeholder}
-              className={large
-                ? "w-full resize-none bg-transparent px-6 pt-5 pb-3 text-base outline-none placeholder:text-gray-400"
-                : "w-full resize-none bg-transparent px-5 pt-4 pb-2 text-sm outline-none placeholder:text-gray-400"
-              }
-            />
-            <div className="flex items-center justify-between px-3 pb-3">
-              <button type="button" className="flex items-center justify-center size-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Attach file">
-                <Plus className="size-4" />
-              </button>
-              <button type="button" onClick={handleSend} className="flex items-center justify-center size-8 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors" aria-label="Send">
-                <ArrowUp className="size-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Landing view ────────────────────────────────────── */
-
-function LandingView({
+function LandingInner({
   selectedAgent,
   onAgentChange,
-  onSend,
 }: {
   selectedAgent: string | undefined;
   onAgentChange: (name: string) => void;
-  onSend: (text: string) => void;
 }) {
+  const { sendMessage } = useChatContext();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <div className="max-w-3xl w-full text-center stagger-children">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] text-xs font-medium mb-6">
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-6"
+          style={{ backgroundColor: "var(--accent-soft)", color: "var(--accent)" }}
+        >
           <Sparkles className="size-3" />
           Built with @polpo-ai/chat
         </div>
 
         <h1 className="text-5xl font-bold tracking-tight mb-3 whitespace-nowrap">
-          What can I help with<span className="text-[var(--accent)]">?</span>
+          What can I help with<span style={{ color: "var(--accent)" }}>?</span>
         </h1>
 
-        <p className="text-[var(--ink-3)] text-base mb-8 max-w-md mx-auto leading-relaxed">
+        <p className="text-base mb-8 max-w-md mx-auto leading-relaxed" style={{ color: "var(--ink-3)" }}>
           Your AI team is ready.
         </p>
 
@@ -205,11 +175,14 @@ function LandingView({
           />
         </div>
 
-        <MockChatInput onSend={onSend} placeholder="Describe what you need..." large />
+        <ChatInput
+          placeholder="Describe what you need..."
+          className="[&_textarea]:text-base [&_textarea]:px-6 [&_textarea]:pt-5 [&_textarea]:pb-3"
+        />
 
         <ChatSuggestions
           suggestions={suggestions}
-          onSelect={(text) => onSend(text)}
+          onSelect={(text) => sendMessage(text)}
           columns={2}
           className="mt-5 max-w-md mx-auto [&_button]:px-3 [&_button]:py-2 [&_button]:text-[11px] [&_button]:rounded-lg [&_button]:gap-1.5"
         />
@@ -218,21 +191,23 @@ function LandingView({
   );
 }
 
-/* ── Conversation view ───────────────────────────────── */
+/* ── Conversation view (inside MockChatProvider) ─────── */
 
-function ConversationView({ messages, agentName, onSend }: { messages: ChatMessageItemData[]; agentName: string; onSend: (text: string) => void }) {
+function ConversationInner({ agentName }: { agentName: string }) {
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex-1 overflow-y-auto">
-        {messages.map((msg, i) =>
+      <ChatMessages
+        renderItem={(msg, _index, isLast, streaming) =>
           msg.role === "user" ? (
             <ChatUserMessage key={msg.id} msg={msg} />
           ) : (
-            <ChatAssistantMessage key={msg.id} msg={msg} agentName={agentName} />
-          ),
-        )}
-      </div>
-      <MockChatInput onSend={onSend} />
+            <ChatAssistantMessage key={msg.id} msg={msg} agentName={agentName}
+              isLast={isLast} isStreaming={streaming} streamdownComponents={streamdownComponents as any} />
+          )
+        }
+        className="flex-1"
+      />
+      <ChatInput />
     </div>
   );
 }
@@ -244,173 +219,136 @@ export default function ExamplesChat() {
   const [collapsed, setCollapsed] = useState(true);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<string | undefined>();
-  const [liveMessages, setLiveMessages] = useState<Record<string, ChatMessageItemData[]>>({ ...mockConversations });
-  const [adHocMessages, setAdHocMessages] = useState<ChatMessageItemData[] | null>(null);
+  const [newChatText, setNewChatText] = useState<string | null>(null);
 
   const isDark = theme === "dark";
   const vars = isDark ? darkVars : lightVars;
   const activeSession = mockSessions.find((s) => s.id === activeSessionId);
-  const activeMessages = adHocMessages
-    ? adHocMessages
-    : activeSessionId
-      ? liveMessages[activeSessionId] || []
-      : [];
   const activeAgent = activeSession
     ? mockAgents.find((a) => a.name === activeSession.agent)
     : undefined;
+  const agentDisplayName = activeAgent?.identity?.displayName || activeAgent?.name || "Assistant";
 
-  const handleSend = (text: string) => {
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
-    const makeMockReply = (): ChatMessageItemData => ({
-      id: "a-" + Date.now(),
-      role: "assistant",
-      content: "Done! I've updated the file and ran the tests. Everything passes.",
-      ts: new Date().toISOString(),
-      toolCalls: [
-        { id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/index.ts" } } as any,
-        { id: "t2-" + Date.now(), name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" } as any,
-      ],
-    });
-
-    if (adHocMessages) {
-      const next = [...adHocMessages, userMsg];
-      setAdHocMessages(next);
-      setTimeout(() => {
-        setAdHocMessages((prev) => prev ? [...prev, makeMockReply()] : prev);
-      }, 800);
-    } else if (activeSessionId) {
-      const prev = liveMessages[activeSessionId] || [];
-      setLiveMessages({ ...liveMessages, [activeSessionId]: [...prev, userMsg] });
-      setTimeout(() => {
-        setLiveMessages((cur) => ({ ...cur, [activeSessionId]: [...(cur[activeSessionId] || []), makeMockReply()] }));
-      }, 800);
-    }
-  };
-
-  const handleLandingSend = (text: string) => {
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
-    const initial = [userMsg];
-    setAdHocMessages(initial);
-    setActiveSessionId("__adhoc__");
-    setTimeout(() => {
-      const mockReply: ChatMessageItemData = {
-        id: "a-" + Date.now(),
-        role: "assistant",
-        content: "Done! I've updated the file and ran the tests. Everything passes.",
-        ts: new Date().toISOString(),
-        toolCalls: [
-          { id: "t-" + Date.now(), name: "write", state: "completed", arguments: { path: "src/index.ts" } } as any,
-          { id: "t2-" + Date.now(), name: "bash", state: "completed", arguments: { command: "npm test" }, result: "All tests passed" } as any,
-        ],
-      };
-      setAdHocMessages((prev) => prev ? [...prev, mockReply] : prev);
-    }, 800);
-  };
+  const showConversation = !!activeSessionId;
 
   return (
     <>
-    <style>{`
-      @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-      .animate-fade-in { animation: fade-in 0.4s ease-out both; }
-      .stagger-children > * { animation: fade-in 0.35s ease-out both; }
-      .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-      .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
-      .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
-      .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
-      .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
-    `}</style>
-    <div style={vars as React.CSSProperties} className="font-sans">
-      <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg)", color: "var(--ink)" }}>
-        {/* Sidebar */}
-        <aside
-          className={`shrink-0 bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)] flex flex-col transition-all duration-300 ease-in-out ${
-            collapsed ? "w-0 border-r-0 overflow-hidden" : "w-64"
-          }`}
-        >
-          <div className="flex items-center justify-between px-4 h-14 border-b border-[var(--sidebar-border)]">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--ink-3)]">
-              Chats
-            </span>
-            <div className="flex items-center gap-0.5">
-              <button
-                onClick={() => setTheme(isDark ? "light" : "dark")}
-                className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
-                aria-label="Toggle theme"
-              >
-                {isDark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
-              </button>
-              <button
-                onClick={() => { setAdHocMessages(null); setActiveSessionId(null); }}
-                className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
-                aria-label="New chat"
-              >
-                <Plus className="size-4" />
-              </button>
-              <button
-                onClick={() => setCollapsed(true)}
-                className="flex items-center justify-center size-7 rounded-lg text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--border)]/50 transition-colors"
-                aria-label="Close sidebar"
-              >
-                <PanelLeftClose className="size-3.5" />
-              </button>
+      <style>{`
+        @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.4s ease-out both; }
+        .stagger-children > * { animation: fade-in 0.35s ease-out both; }
+        .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+        .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+        .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+        .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+        .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+        .sidebar-icon-btn { color: var(--ink-3); }
+        .sidebar-icon-btn:hover { color: var(--ink); background-color: color-mix(in srgb, var(--border) 50%, transparent); }
+        .floating-action-btn { border-color: var(--border); background-color: var(--surface); color: var(--ink-3); }
+        .floating-action-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+      `}</style>
+      <div style={vars as React.CSSProperties} className="font-sans">
+        <div className="flex h-screen overflow-hidden" style={{ background: "var(--bg)", color: "var(--ink)" }}>
+          {/* Sidebar */}
+          <aside
+            className={`shrink-0 border-r flex flex-col transition-all duration-300 ease-in-out ${
+              collapsed ? "w-0 border-r-0 overflow-hidden" : "w-64"
+            }`}
+            style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--sidebar-border)" }}
+          >
+            <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
+              <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--ink-3)" }}>
+                Chats
+              </span>
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={() => setTheme(isDark ? "light" : "dark")}
+                  className="flex items-center justify-center size-7 rounded-lg sidebar-icon-btn transition-colors"
+                  aria-label="Toggle theme"
+                >
+                  {isDark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
+                </button>
+                <button
+                  onClick={() => setActiveSessionId(null)}
+                  className="flex items-center justify-center size-7 rounded-lg sidebar-icon-btn transition-colors"
+                  aria-label="New chat"
+                >
+                  <Plus className="size-4" />
+                </button>
+                <button
+                  onClick={() => setCollapsed(true)}
+                  className="flex items-center justify-center size-7 rounded-lg sidebar-icon-btn transition-colors"
+                  aria-label="Close sidebar"
+                >
+                  <PanelLeftClose className="size-3.5" />
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="px-4 pt-4 pb-2">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--ink-3)]">
-              Recent
-            </span>
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-2 pb-2">
-            <ChatSessionList
-              sessions={mockSessions as any}
-              agents={mockAgents as any}
-              activeSessionId={activeSessionId}
-              onSelect={(id) => { setAdHocMessages(null); setActiveSessionId(id); }}
-              onDelete={() => {}}
-              emptyMessage="No chats yet"
-            />
-          </div>
-        </aside>
-
-        {/* Main area */}
-        <main className="flex-1 min-w-0 relative bg-[var(--bg)]">
-          {collapsed && (
-            <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 animate-fade-in">
-              <button
-                onClick={() => setCollapsed(false)}
-                className="flex items-center justify-center size-9 rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-sm text-[var(--ink-3)] hover:text-[var(--ink)] hover:border-[var(--ink-3)] transition-all shadow-sm"
-                aria-label="Open sidebar"
-              >
-                <PanelLeft className="size-4" />
-              </button>
-              <button
-                onClick={() => { setAdHocMessages(null); setActiveSessionId(null); }}
-                className="flex items-center justify-center size-9 rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-sm text-[var(--ink-3)] hover:text-[var(--ink)] hover:border-[var(--ink-3)] transition-all shadow-sm"
-                aria-label="New chat"
-              >
-                <Plus className="size-4" />
-              </button>
+            <div className="px-4 pt-4 pb-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--ink-3)" }}>
+                Recent
+              </span>
             </div>
-          )}
 
-          {activeSessionId && activeMessages.length > 0 ? (
-            <ConversationView
-              messages={activeMessages}
-              agentName={activeAgent?.identity?.displayName || activeAgent?.name || "Assistant"}
-              onSend={handleSend}
-            />
-          ) : (
-            <LandingView
-              selectedAgent={selectedAgent}
-              onAgentChange={setSelectedAgent}
-              onSend={handleLandingSend}
-            />
-          )}
-        </main>
+            <div className="flex-1 overflow-y-auto px-2 pb-2">
+              <ChatSessionList
+                sessions={mockSessions as any}
+                agents={mockAgents as any}
+                activeSessionId={activeSessionId}
+                onSelect={(id) => setActiveSessionId(id)}
+                onDelete={() => {}}
+                emptyMessage="No chats yet"
+              />
+            </div>
+          </aside>
+
+          {/* Main area */}
+          <main className="flex-1 min-w-0 relative" style={{ backgroundColor: "var(--bg)" }}>
+            {collapsed && (
+              <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 animate-fade-in">
+                <button
+                  onClick={() => setCollapsed(false)}
+                  className="flex items-center justify-center size-9 rounded-lg border backdrop-blur-sm floating-action-btn transition-all shadow-sm"
+                  aria-label="Open sidebar"
+                >
+                  <PanelLeft className="size-4" />
+                </button>
+                <button
+                  onClick={() => setActiveSessionId(null)}
+                  className="flex items-center justify-center size-9 rounded-lg border backdrop-blur-sm floating-action-btn transition-all shadow-sm"
+                  aria-label="New chat"
+                >
+                  <Plus className="size-4" />
+                </button>
+              </div>
+            )}
+
+            {showConversation ? (
+              <MockChatProvider
+                key={activeSessionId}
+                initialMessages={
+                  activeSessionId === "__new__" && newChatText
+                    ? [{ id: "u-new", role: "user" as const, content: newChatText, ts: new Date().toISOString() }]
+                    : mockConversations[activeSessionId!] || []
+                }
+              >
+                <ConversationInner agentName={agentDisplayName} />
+              </MockChatProvider>
+            ) : (
+              <MockChatProvider
+                key="__landing__"
+                onFirstMessage={(text) => { setNewChatText(text); setActiveSessionId("__new__"); }}
+              >
+                <LandingInner
+                  selectedAgent={selectedAgent}
+                  onAgentChange={setSelectedAgent}
+                />
+              </MockChatProvider>
+            )}
+          </main>
+        </div>
       </div>
-    </div>
     </>
   );
 }

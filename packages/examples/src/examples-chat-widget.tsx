@@ -1,28 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import {
-  ChatSessionList,
-  ChatUserMessage,
-  ChatAssistantMessage,
-  type ChatMessageItemData,
-} from "@polpo-ai/chat";
-import {
-  MessageCircle,
-  X,
-  ArrowLeft,
-  Plus,
-  Headphones,
-  Home as HomeIcon,
-  Clock,
-  Sun,
-  Moon,
-  Maximize2,
-  Minimize2,
-  ArrowUp,
-} from "lucide-react";
+import { ChatInput, ChatSessionList, ChatSuggestions, ChatUserMessage, ChatAssistantMessage, streamdownComponents, useChatContext, type ChatMessageItemData } from "@polpo-ai/chat";
+import { MockChatProvider } from "./mock-provider";
+import { MessageCircle, X, ArrowLeft, Plus, Headphones, Home as HomeIcon, Clock, Sun, Moon, Maximize2, Minimize2 } from "lucide-react";
 
-/* ── CSS vars ────────────────────────────────────────── */
+/* ── CSS vars (teal palette) ────────────────────────── */
 
 const cssVars: Record<string, string> = {
   "--c-bg": "#F8FAFB", "--c-bg-subtle": "#F0F3F5", "--c-border": "#E2E8F0",
@@ -35,60 +18,27 @@ const cssVars: Record<string, string> = {
   "--c-red-light": "#FCA5A5", "--c-red": "#EF4444",
 };
 
-/* ── Mock data ───────────────────────────────────────── */
+/* ── Constants & mock data ──────────────────────────── */
 
 const AGENT_DISPLAY = "AI Assistant";
-
 const mockSessions = [
   { id: "s1", title: "How do I get started?", agent: "assistant", createdAt: "2026-04-03T10:00:00Z", updatedAt: "2026-04-03T14:30:00Z", messageCount: 4 },
   { id: "s2", title: "API integration help", agent: "assistant", createdAt: "2026-04-02T09:00:00Z", updatedAt: "2026-04-02T16:00:00Z", messageCount: 6 },
 ];
-
 const mockMessages: ChatMessageItemData[] = [
   { id: "m1", role: "user", content: "How do I get started?" },
   { id: "m2", role: "assistant", content: "Welcome! Here's how to get started:\n\n1. **Install the SDK** — `npm install @polpo-ai/chat`\n2. **Add your API key** — set `POLPO_API_KEY` in your `.env`\n3. **Drop in the Chat component** — wrap your app with `<Chat>`\n\nWould you like me to walk you through any of these steps?" },
   { id: "m3", role: "user", content: "Show me the Chat component setup." },
   { id: "m4", role: "assistant", content: "Here's a minimal setup:\n\n```tsx\nimport { Chat, ChatInput } from '@polpo-ai/chat';\n\nexport default function App() {\n  return (\n    <Chat agent=\"assistant\">\n      <ChatInput placeholder=\"Ask anything...\" />\n    </Chat>\n  );\n}\n```\n\nThe `<Chat>` component handles message history, streaming, and state management automatically." },
 ];
-
 const quickQuestions = [
-  "How do I get started?",
-  "What are your pricing plans?",
-  "I need help with my account",
-  "How do I integrate the API?",
+  { text: "How do I get started?" },
+  { text: "What are your pricing plans?" },
+  { text: "I need help with my account" },
+  { text: "How do I integrate the API?" },
 ];
 
-/* ── Mock input ──────────────────────────────────────── */
-
-function MockWidgetInput({ onSend, placeholder = "Message AI Assistant..." }: { onSend?: (text: string) => void; placeholder?: string }) {
-  const [text, setText] = useState("");
-  const handleSend = () => { const t = text.trim(); if (!t || !onSend) return; onSend(t); setText(""); };
-
-  return (
-    <div className="shrink-0">
-      <div className="w-full px-3 py-2">
-        <div className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50">
-          <textarea
-            rows={1}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder={placeholder}
-            className="w-full resize-none bg-transparent px-4 pt-3 pb-1.5 text-sm outline-none placeholder:text-gray-400"
-          />
-          <div className="flex items-center justify-between px-2.5 pb-2.5">
-            <div />
-            <button type="button" onClick={handleSend} className="flex items-center justify-center size-7 rounded-lg bg-gray-900 text-white hover:bg-gray-700 transition-colors" aria-label="Send">
-              <ArrowUp className="size-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Size classes ────────────────────────────────────── */
+/* ── Size classes ───────────────────────────────────── */
 
 type WidgetSize = "default" | "large" | "fullscreen";
 type WidgetTab = "home" | "sessions";
@@ -100,53 +50,63 @@ const sizeClasses: Record<WidgetSize, string> = {
   fullscreen: "fixed inset-4 w-auto h-auto rounded-2xl",
 };
 
-/* ── Welcome view ────────────────────────────────────── */
+/* ── Shared inner components (consume ChatContext) ──── */
 
-function NewChatWelcome({ onQuestion }: { onQuestion: (q: string) => void }) {
-  return (
-    <div className="flex-1 flex flex-col px-5 py-8">
-      <h3 className="text-base font-semibold mb-1">{AGENT_DISPLAY}</h3>
-      <p className="text-sm text-[var(--c-ink-3)] mb-6">Ask me anything — I usually reply instantly.</p>
-      <div className="space-y-1.5">
-        {quickQuestions.map((q) => (
-          <button key={q} type="button" onClick={() => onQuestion(q)}
-            className="flex items-center w-full px-3.5 py-2.5 rounded-lg border border-[var(--c-border)] text-sm text-[var(--c-ink-2)] text-left hover:bg-[var(--c-bg-subtle)] hover:text-[var(--c-ink)] transition-colors">{q}</button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ConversationMessages({ messages }: { messages: ChatMessageItemData[] }) {
+function ConversationView() {
+  const { messages } = useChatContext();
   return (
     <div className="flex-1 overflow-y-auto">
       {messages.map((msg) => msg.role === "user"
         ? <ChatUserMessage key={msg.id} msg={msg} />
-        : <ChatAssistantMessage key={msg.id} msg={msg} agentName={AGENT_DISPLAY} />
+        : <ChatAssistantMessage key={msg.id} msg={msg} streamdownComponents={streamdownComponents} agentName={AGENT_DISPLAY} />
       )}
     </div>
   );
 }
 
-/* ── Home tab ────────────────────────────────────────── */
+function NewChatWelcome() {
+  const { messages, sendMessage } = useChatContext();
+  if (messages.length > 0) return null;
+  return (
+    <div className="flex-1 flex flex-col px-5 py-8">
+      <h3 className="text-base font-semibold mb-1">{AGENT_DISPLAY}</h3>
+      <p className="text-sm mb-6" style={{ color: "var(--c-ink-3)" }}>Ask me anything — I usually reply instantly.</p>
+      <ChatSuggestions suggestions={quickQuestions} onSelect={(text) => sendMessage(text)} columns={1} />
+    </div>
+  );
+}
+
+function WidgetInput() {
+  return (
+    <ChatInput placeholder={`Message ${AGENT_DISPLAY}...`} allowAttachments={false} className="[&>div]:px-3 [&>div]:py-2 [&>div>div]:max-w-none" />
+  );
+}
+
+function ChatBody() {
+  const { messages } = useChatContext();
+  return (
+    <div className="flex-1 min-h-0 flex flex-col">
+      {messages.length === 0 ? <NewChatWelcome /> : <ConversationView />}
+      <WidgetInput />
+    </div>
+  );
+}
+
+/* ── Home & Sessions tabs ───────────────────────────── */
 
 function HomeTab({ onNewChat }: { onNewChat: () => void }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="px-5 pt-6 pb-5 bg-[var(--c-accent)] text-white">
+      <div className="px-5 pt-6 pb-5 text-white" style={{ backgroundColor: "var(--c-accent)" }}>
         <h2 className="text-lg font-bold mb-1">Hi there 👋</h2>
         <p className="text-sm text-white/80">Ask us anything — we usually reply instantly.</p>
       </div>
-
       <div className="flex-1 flex flex-col items-center justify-center px-5 py-8">
-        <div className="size-12 rounded-2xl bg-[var(--c-accent)]/10 flex items-center justify-center mb-4">
-          <MessageCircle className="size-6 text-[var(--c-accent)]" />
+        <div className="size-12 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: "color-mix(in srgb, var(--c-accent) 10%, transparent)" }}>
+          <MessageCircle className="size-6" style={{ color: "var(--c-accent)" }} />
         </div>
-        <p className="text-sm text-[var(--c-ink-2)] mb-5 text-center">Start a new conversation with our AI assistant</p>
-        <button
-          onClick={onNewChat}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--c-accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
-        >
+        <p className="text-sm mb-5 text-center" style={{ color: "var(--c-ink-2)" }}>Start a new conversation with our AI assistant</p>
+        <button onClick={onNewChat} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-medium hover:opacity-90 transition-opacity" style={{ backgroundColor: "var(--c-accent)" }}>
           <Plus className="size-4" /> New conversation
         </button>
       </div>
@@ -154,89 +114,58 @@ function HomeTab({ onNewChat }: { onNewChat: () => void }) {
   );
 }
 
-/* ── Sessions tab ────────────────────────────────────── */
-
 function SessionsTab({ onSelectSession }: { onSelectSession: (id: string) => void }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="px-4 pt-4 pb-2">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--c-ink-3)]">
-          Your conversations
-        </p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--c-ink-3)" }}>Your conversations</p>
       </div>
       <div className="flex-1 overflow-y-auto px-3 pb-3">
-        <ChatSessionList
-          sessions={mockSessions as any}
-          onSelect={onSelectSession}
-          emptyMessage="No conversations yet"
-        />
+        <ChatSessionList sessions={mockSessions as any} onSelect={onSelectSession} emptyMessage="No conversations yet" />
       </div>
     </div>
   );
 }
 
-/* ── Direct widget ───────────────────────────────────── */
+/* ── Direct widget (floating, no home/sessions) ─────── */
 
 function DirectWidget() {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState<WidgetSize>("default");
-  const [showConversation, setShowConversation] = useState(false);
-  const [messages, setMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
 
   const cycleSize = useCallback(() => {
     setSize((s) => s === "default" ? "large" : s === "large" ? "fullscreen" : "default");
   }, []);
 
-  const handleSend = useCallback((text: string) => {
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
-    setMessages((prev) => [...prev, userMsg]);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
-
-  const handleQuestion = useCallback((q: string) => {
-    setShowConversation(true);
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
-    setMessages([userMsg]);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
-
   return (
     <>
       {open && (
-        <div className={`z-50 animate-slide-up ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
-          <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
-            <div className="size-8 rounded-lg bg-[var(--c-accent)] flex items-center justify-center">
+        <div
+          className={`z-50 animate-slide-up ${sizeClasses[size]} border flex flex-col overflow-hidden`}
+          style={{ borderColor: "var(--c-border)", backgroundColor: "var(--c-bg)", boxShadow: "0 24px 80px -12px rgba(0,0,0,0.2)" }}
+        >
+          <div className="flex items-center gap-2 px-4 h-14 border-b shrink-0" style={{ borderColor: "var(--c-border)" }}>
+            <div className="size-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--c-accent)" }}>
               <Headphones className="size-4 text-white" />
             </div>
             <span className="text-sm font-semibold flex-1">{AGENT_DISPLAY}</span>
-            <button onClick={cycleSize} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
+            <button onClick={cycleSize} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors">
               {size === "fullscreen" ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
             </button>
-            <button onClick={() => { setOpen(false); setSize("default"); setShowConversation(false); }} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
+            <button onClick={() => { setOpen(false); setSize("default"); }} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors">
               <X className="size-4" />
             </button>
           </div>
-          {showConversation ? (
-            <div className="flex-1 min-h-0 flex flex-col">
-              <ConversationMessages messages={messages} />
-              <MockWidgetInput onSend={handleSend} />
-            </div>
-          ) : (
-            <NewChatWelcome onQuestion={handleQuestion} />
-          )}
+          <MockChatProvider initialMessages={mockMessages}>
+            <ChatBody />
+          </MockChatProvider>
         </div>
       )}
 
       <button
         onClick={() => setOpen(!open)}
         className={`fixed bottom-6 right-6 z-50 rounded-full shadow-[0_8px_32px_rgba(20,184,166,0.35)] transition-all flex items-center justify-center ${
-          open
-            ? "size-12 bg-[var(--c-ink-3)] hover:bg-[var(--c-ink-2)]"
-            : "size-14 bg-[var(--c-accent)] hover:scale-105 hover:shadow-[0_12px_40px_rgba(20,184,166,0.45)]"
+          open ? "size-12 fab-close-btn" : "size-14 fab-open-btn hover:scale-105 hover:shadow-[0_12px_40px_rgba(20,184,166,0.45)]"
         }`}
         aria-label={open ? "Close chat" : "Open chat"}
       >
@@ -246,15 +175,14 @@ function DirectWidget() {
   );
 }
 
-/* ── Full widget (with history) ──────────────────────── */
+/* ── Full widget (with home + history tabs) ──────────── */
 
-function ChatWidget() {
+function FullWidget() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<WidgetTab>("home");
   const [chatView, setChatView] = useState<ChatView>(null);
   const [size, setSize] = useState<WidgetSize>("default");
   const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [messages, setMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
 
   const cycleSize = useCallback(() => {
     setSize((s) => s === "default" ? "large" : s === "large" ? "fullscreen" : "default");
@@ -264,37 +192,24 @@ function ChatWidget() {
   const openSession = useCallback((id: string) => setChatView({ type: "session", sessionId: id }), []);
   const goBack = useCallback(() => setChatView(null), []);
 
-  const handleSend = useCallback((text: string) => {
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
-    setMessages((prev) => [...prev, userMsg]);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
-
-  const handleQuestion = useCallback((q: string) => {
-    setChatView({ type: "new" });
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
-    setMessages([userMsg]);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
-
   const inChat = chatView !== null;
 
   return (
     <>
       {open && (
-        <div className={`z-50 animate-slide-up ${sizeClasses[size]} border border-[var(--c-border)] bg-[var(--c-bg)] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden`}>
-          <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
+        <div
+          className={`z-50 animate-slide-up ${sizeClasses[size]} border flex flex-col overflow-hidden`}
+          style={{ borderColor: "var(--c-border)", backgroundColor: "var(--c-bg)", boxShadow: "0 24px 80px -12px rgba(0,0,0,0.2)" }}
+        >
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 h-14 border-b shrink-0" style={{ borderColor: "var(--c-border)" }}>
             {inChat && (
-              <button onClick={goBack} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
+              <button onClick={goBack} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors">
                 <ArrowLeft className="size-4" />
               </button>
             )}
             {!inChat && (
-              <div className="size-8 rounded-lg bg-[var(--c-accent)] flex items-center justify-center">
+              <div className="size-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--c-accent)" }}>
                 <Headphones className="size-4 text-white" />
               </div>
             )}
@@ -302,23 +217,26 @@ function ChatWidget() {
               {inChat ? AGENT_DISPLAY : tab === "home" ? "Support" : "Messages"}
             </span>
             {!inChat && (
-              <button onClick={openNewChat} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
+              <button onClick={openNewChat} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors">
                 <Plus className="size-4" />
               </button>
             )}
-            <button onClick={cycleSize} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors" aria-label="Resize">
+            <button onClick={cycleSize} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors" aria-label="Resize">
               {size === "fullscreen" ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
             </button>
-            <button onClick={() => setOpen(false)} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors">
+            <button onClick={() => setOpen(false)} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors">
               <X className="size-4" />
             </button>
           </div>
 
+          {/* Body */}
           {inChat ? (
-            <div className="flex-1 min-h-0 flex flex-col">
-              <ConversationMessages messages={messages} />
-              <MockWidgetInput onSend={handleSend} />
-            </div>
+            <MockChatProvider
+              key={chatView.type === "session" ? chatView.sessionId : "new"}
+              initialMessages={chatView.type === "session" ? mockMessages : []}
+            >
+              <ChatBody />
+            </MockChatProvider>
           ) : (
             <>
               {tab === "home" ? (
@@ -329,16 +247,22 @@ function ChatWidget() {
             </>
           )}
 
+          {/* Bottom navbar */}
           {!inChat && (
-            <div className="flex border-t border-[var(--c-border)] shrink-0">
+            <div className="flex border-t shrink-0" style={{ borderColor: "var(--c-border)" }}>
               {([["home", HomeIcon, "Home"], ["sessions", Clock, "Messages"]] as const).map(([key, Icon, label]) => (
-                <button key={key} onClick={() => setTab(key as WidgetTab)}
-                  className={`flex-1 flex flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors ${tab === key ? "text-[var(--c-accent)]" : "text-[var(--c-ink-3)] hover:text-[var(--c-ink-2)]"}`}>
+                <button
+                  key={key}
+                  onClick={() => setTab(key as WidgetTab)}
+                  className={`flex-1 flex flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors ${tab === key ? "tab-active" : "tab-inactive"}`}
+                >
                   <Icon className="size-4" />{label}
                 </button>
               ))}
-              <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="flex-1 flex flex-col items-center gap-1 py-3 text-[11px] font-medium text-[var(--c-ink-3)] hover:text-[var(--c-ink-2)] transition-colors">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="flex-1 flex flex-col items-center gap-1 py-3 text-[11px] font-medium tab-inactive transition-colors"
+              >
                 {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}Theme
               </button>
             </div>
@@ -349,9 +273,7 @@ function ChatWidget() {
       <button
         onClick={() => setOpen(!open)}
         className={`fixed bottom-6 right-6 z-50 rounded-full shadow-[0_8px_32px_rgba(20,184,166,0.35)] transition-all flex items-center justify-center ${
-          open
-            ? "size-12 bg-[var(--c-ink-3)] hover:bg-[var(--c-ink-2)]"
-            : "size-14 bg-[var(--c-accent)] hover:scale-105 hover:shadow-[0_12px_40px_rgba(20,184,166,0.45)]"
+          open ? "size-12 fab-close-btn" : "size-14 fab-open-btn hover:scale-105 hover:shadow-[0_12px_40px_rgba(20,184,166,0.45)]"
         }`}
         aria-label={open ? "Close chat" : "Open chat"}
       >
@@ -361,48 +283,55 @@ function ChatWidget() {
   );
 }
 
-/* ── Page ────────────────────────────────────────────── */
+/* ── Embedded panel ─────────────────────────────────── */
+
+function EmbeddedPanel({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      className="fixed top-0 right-0 w-[420px] h-screen border-l z-50 flex flex-col"
+      style={{ borderColor: "var(--c-border)", backgroundColor: "var(--c-bg)" }}
+    >
+      <div className="flex items-center gap-2 px-4 h-14 border-b shrink-0" style={{ borderColor: "var(--c-border)" }}>
+        <div className="size-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--c-accent)" }}>
+          <Headphones className="size-4 text-white" />
+        </div>
+        <span className="text-sm font-semibold flex-1">{AGENT_DISPLAY}</span>
+        <button onClick={onClose} className="size-8 rounded-lg flex items-center justify-center widget-icon-btn transition-colors" aria-label="Close panel">
+          <X className="size-4" />
+        </button>
+      </div>
+      <MockChatProvider initialMessages={mockMessages}>
+        <ChatBody />
+      </MockChatProvider>
+    </div>
+  );
+}
+
+/* ── Page ───────────────────────────────────────────── */
 
 export default function ExamplesChatWidget() {
   const [variant, setVariant] = useState<"direct" | "history" | "embedded">("direct");
-  const [embeddedShowConversation, setEmbeddedShowConversation] = useState(false);
-  const [embeddedMessages, setEmbeddedMessages] = useState<ChatMessageItemData[]>([...mockMessages]);
-
-  const handleEmbeddedSend = useCallback((text: string) => {
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: text, ts: new Date().toISOString() };
-    setEmbeddedMessages((prev) => [...prev, userMsg]);
-    setTimeout(() => {
-      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
-
-  const handleEmbeddedQuestion = useCallback((q: string) => {
-    setEmbeddedShowConversation(true);
-    const userMsg: ChatMessageItemData = { id: "u-" + Date.now(), role: "user", content: q, ts: new Date().toISOString() };
-    setEmbeddedMessages([userMsg]);
-    setTimeout(() => {
-      setEmbeddedMessages((prev) => [...prev, { id: "a-" + Date.now(), role: "assistant", content: "I can help with that! Here's what I found.", ts: new Date().toISOString(), toolCalls: [{ id: "t-" + Date.now(), name: "search_web", state: "completed", arguments: { query: "pricing plans" }, result: "Found 3 results" } as any] }]);
-    }, 800);
-  }, []);
 
   return (
     <div style={cssVars as React.CSSProperties} className="font-sans">
-      <style>{`
-        @keyframes slide-up { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .animate-slide-up { animation: slide-up 0.35s ease-out both; }
-      `}</style>
+      <style>{`@keyframes slide-up{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}.animate-slide-up{animation:slide-up .35s ease-out both}.widget-icon-btn{color:var(--c-ink-3)}.widget-icon-btn:hover{color:var(--c-ink);background:var(--c-bg-subtle)}.fab-open-btn{background:var(--c-accent)}.fab-close-btn{background:var(--c-ink-3)}.fab-close-btn:hover{background:var(--c-ink-2)}.tab-active{color:var(--c-accent)}.tab-inactive{color:var(--c-ink-3)}.tab-inactive:hover{color:var(--c-ink-2)}.variant-active-btn{background:var(--c-accent)}.variant-inactive-btn{color:var(--c-ink-3)}.variant-inactive-btn:hover{color:var(--c-ink)}`}</style>
       <div
         className={`min-h-screen flex flex-col items-center justify-center px-8 transition-all ${variant === "embedded" ? "mr-[420px]" : ""}`}
         style={{ background: "var(--c-bg)", color: "var(--c-ink)" }}
       >
         <div className="max-w-lg text-center">
-          <p className="text-xs font-medium text-[var(--c-accent)] uppercase tracking-widest mb-4">@polpo-ai/chat example</p>
+          <p className="text-xs font-medium uppercase tracking-widest mb-4" style={{ color: "var(--c-accent)" }}>
+            @polpo-ai/chat example
+          </p>
           <h1 className="text-4xl font-bold tracking-tight mb-3">Support Widget</h1>
-          <p className="text-base text-[var(--c-ink-2)] leading-relaxed mb-8">
+          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--c-ink-2)" }}>
             Three ways to embed AI support into your product.
           </p>
 
-          <div className="flex justify-center gap-1 rounded-full bg-[var(--c-bg-subtle)] p-1 border border-[var(--c-border)] mx-auto w-fit">
+          <div
+            className="flex justify-center gap-1 rounded-full p-1 border mx-auto w-fit"
+            style={{ backgroundColor: "var(--c-bg-subtle)", borderColor: "var(--c-border)" }}
+          >
             {([
               { key: "direct", label: "Floating Widget" },
               { key: "history", label: "Widget + History" },
@@ -410,11 +339,11 @@ export default function ExamplesChatWidget() {
             ] as const).map((v) => (
               <button
                 key={v.key}
-                onClick={() => { setVariant(v.key); setEmbeddedShowConversation(false); }}
+                onClick={() => setVariant(v.key)}
                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   variant === v.key
-                    ? "bg-[var(--c-accent)] text-white shadow-sm"
-                    : "text-[var(--c-ink-3)] hover:text-[var(--c-ink)]"
+                    ? "text-white shadow-sm variant-active-btn"
+                    : "variant-inactive-btn"
                 }`}
               >
                 {v.label}
@@ -424,28 +353,8 @@ export default function ExamplesChatWidget() {
         </div>
 
         {variant === "direct" && <DirectWidget />}
-        {variant === "history" && <ChatWidget />}
-        {variant === "embedded" && (
-          <div className="fixed top-0 right-0 w-[420px] h-screen border-l border-[var(--c-border)] bg-[var(--c-bg)] z-50 flex flex-col">
-            <div className="flex items-center gap-2 px-4 h-14 border-b border-[var(--c-border)] shrink-0">
-              <div className="size-8 rounded-lg bg-[var(--c-accent)] flex items-center justify-center">
-                <Headphones className="size-4 text-white" />
-              </div>
-              <span className="text-sm font-semibold flex-1">{AGENT_DISPLAY}</span>
-              <button onClick={() => setVariant("direct")} className="size-8 rounded-lg flex items-center justify-center text-[var(--c-ink-3)] hover:text-[var(--c-ink)] hover:bg-[var(--c-bg-subtle)] transition-colors" aria-label="Close panel">
-                <X className="size-4" />
-              </button>
-            </div>
-            {embeddedShowConversation ? (
-              <div className="flex-1 min-h-0 flex flex-col">
-                <ConversationMessages messages={embeddedMessages} />
-                <MockWidgetInput onSend={handleEmbeddedSend} />
-              </div>
-            ) : (
-              <NewChatWelcome onQuestion={handleEmbeddedQuestion} />
-            )}
-          </div>
-        )}
+        {variant === "history" && <FullWidget />}
+        {variant === "embedded" && <EmbeddedPanel onClose={() => setVariant("direct")} />}
       </div>
     </div>
   );

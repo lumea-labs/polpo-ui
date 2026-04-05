@@ -8,9 +8,13 @@ interface PreviewTabsProps {
   code: string;
   rawCode: string;
   className?: string;
+  /** Use iframe for CSS isolation — pass the src URL */
+  iframeSrc?: string;
+  /** iframe height (default: 680px) */
+  iframeHeight?: number;
 }
 
-export function PreviewTabs({ preview, code, rawCode, className }: PreviewTabsProps) {
+export function PreviewTabs({ preview, code, rawCode, className, iframeSrc, iframeHeight = 680 }: PreviewTabsProps) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
   const [copied, setCopied] = useState(false);
 
@@ -66,9 +70,18 @@ export function PreviewTabs({ preview, code, rawCode, className }: PreviewTabsPr
 
       {/* Content */}
       {tab === "preview" ? (
-        <div className={className || "p-6 min-h-[200px]"}>
-          {preview}
-        </div>
+        iframeSrc ? (
+          <iframe
+            src={iframeSrc}
+            className="w-full border-0"
+            style={{ height: iframeHeight }}
+            loading="lazy"
+          />
+        ) : (
+          <div className={className || "p-6 min-h-[200px]"}>
+            {preview}
+          </div>
+        )
       ) : (
         <div className="max-h-[600px] overflow-y-auto">
           <pre data-preview-code="" className="m-0 p-4 text-[13px] leading-relaxed overflow-x-auto font-mono">

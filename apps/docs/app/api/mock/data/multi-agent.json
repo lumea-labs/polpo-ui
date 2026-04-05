@@ -1,0 +1,31 @@
+{
+  "agents": [
+    { "name": "coder", "role": "Senior Engineer", "model": "anthropic:claude-sonnet-4-6", "identity": { "displayName": "Marco Rossi", "title": "Senior Full-Stack Engineer" }, "createdAt": "2026-03-16T21:35:17.926Z", "allowedTools": ["bash","read","write","edit","glob","grep"], "teamName": "engineering" },
+    { "name": "writer", "role": "Technical writer", "model": "anthropic:claude-sonnet-4-6", "identity": { "displayName": "Writer" }, "createdAt": "2026-03-20T10:00:00.000Z", "teamName": "engineering" },
+    { "name": "reviewer", "role": "Code reviewer", "model": "anthropic:claude-sonnet-4-6", "identity": { "displayName": "Reviewer" }, "createdAt": "2026-03-22T10:00:00.000Z", "teamName": "engineering" }
+  ],
+  "sessions": [
+    { "id": "s1", "title": "Add users table to Prisma schema", "agent": "coder", "createdAt": "2026-04-03T10:00:00Z", "updatedAt": "2026-04-03T14:30:00Z", "messageCount": 4 },
+    { "id": "s2", "title": "Debug authentication middleware", "agent": "coder", "createdAt": "2026-04-02T09:00:00Z", "updatedAt": "2026-04-02T16:00:00Z", "messageCount": 6 },
+    { "id": "s3", "title": "Write API documentation", "agent": "writer", "createdAt": "2026-04-01T08:00:00Z", "updatedAt": "2026-04-01T18:00:00Z", "messageCount": 4 },
+    { "id": "s4", "title": "Review pull request #42", "agent": "reviewer", "createdAt": "2026-03-31T10:00:00Z", "updatedAt": "2026-03-31T12:00:00Z", "messageCount": 4 }
+  ],
+  "messages": {
+    "s1": [
+      { "id": "m1", "role": "user", "content": "Add a users table to the Prisma schema with email, name, and role fields.", "ts": "2026-04-03T10:00:00Z" },
+      { "id": "m2", "role": "assistant", "content": "I'll add the `User` model.\n\n```prisma\nmodel User {\n  id    String @id @default(cuid())\n  email String @unique\n  name  String\n  role  Role   @default(USER)\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n```\n\nMigration applied.", "ts": "2026-04-03T10:01:00Z", "toolCalls": [{"id":"tc1","name":"write","state":"completed","arguments":{"path":"prisma/schema.prisma"}},{"id":"tc2","name":"bash","state":"completed","arguments":{"command":"npx prisma migrate dev"},"result":"Migration applied: add_users"}] }
+    ],
+    "s2": [
+      { "id": "m3", "role": "user", "content": "The auth middleware returns 401 for valid tokens.", "ts": "2026-04-02T09:00:00Z" },
+      { "id": "m4", "role": "assistant", "content": "Found it — algorithm mismatch between `RS256` and `HS256`. Fixed and tests pass.", "ts": "2026-04-02T09:02:00Z", "toolCalls": [{"id":"tc3","name":"read","state":"completed","arguments":{"path":"src/middleware/auth.ts"}},{"id":"tc4","name":"edit","state":"completed","arguments":{"path":"src/middleware/auth.ts"}},{"id":"tc5","name":"bash","state":"completed","arguments":{"command":"npm test"},"result":"Tests: 3 passed"}] }
+    ],
+    "s3": [
+      { "id": "m5", "role": "user", "content": "Write docs for the /api/users endpoints.", "ts": "2026-04-01T08:00:00Z" },
+      { "id": "m6", "role": "assistant", "content": "## Users API\n\n### `GET /api/users`\nPaginated list. Params: `page`, `limit`.\n\n### `POST /api/users`\nCreate user. Body: `{ email, name, role? }`\n\n### `GET /api/users/:id`\nSingle user by ID.", "ts": "2026-04-01T08:05:00Z" }
+    ],
+    "s4": [
+      { "id": "m7", "role": "user", "content": "Review PR #42.", "ts": "2026-03-31T10:00:00Z" },
+      { "id": "m8", "role": "assistant", "content": "Reviewed. Approved with suggestions:\n1. Line 42: Log the error message\n2. Line 78: Add index on `created_at`\n3. Line 105: Good builder pattern", "ts": "2026-03-31T10:05:00Z", "toolCalls": [{"id":"tc6","name":"read","state":"completed","arguments":{"path":"src/api/orders.ts"}}] }
+    ]
+  }
+}
