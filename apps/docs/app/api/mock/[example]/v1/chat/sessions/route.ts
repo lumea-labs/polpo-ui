@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { getDataset, corsHeaders } from "../../../data/loader";
+import { getDataset, corsHeaders } from "../../../../data/loader";
 
 export function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders });
