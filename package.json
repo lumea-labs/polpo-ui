@@ -5,6 +5,10 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:docs": "portless ui.polpo pnpm --filter docs exec next dev",
+    "dev:example-chat": "cd examples/chat && portless example-chat.polpo next dev",
+    "dev:example-chat-widget": "cd examples/chat-widget && portless example-chat-widget.polpo next dev",
+    "dev:example-multi-agent": "cd examples/multi-agent && portless example-multi-agent.polpo next dev",
     "lint": "turbo lint",
     "clean": "turbo clean"
   },
