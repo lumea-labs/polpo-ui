@@ -12,8 +12,8 @@ importers:
         specifier: ^2.5.0
         version: 2.9.3
       typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
+        specifier: ^6.0.2
+        version: 6.0.2
 
   apps/docs:
     dependencies:
@@ -153,10 +153,10 @@ importers:
         version: 19.2.14
       tsup:
         specifier: ^8.0.0
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@6.0.2)
       typescript:
-        specifier: ^5.0.0
-        version: 5.9.3
+        specifier: ^6.0.2
+        version: 6.0.2
 
   packages/cli: {}
 
@@ -2851,11 +2851,6 @@ packages:
 
   turbo@2.9.3:
     resolution: {integrity: sha512-J/VUvsGRykPb9R8Kh8dHVBOqioDexLk9BhLCU/ZybRR+HN9UR3cURdazFvNgMDt9zPP8TF6K73Z+tplfmi0PqQ==}
-    hasBin: true
-
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
-    engines: {node: '>=14.17'}
     hasBin: true
 
   typescript@6.0.2:
@@ -5842,7 +5837,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3):
+  tsup@8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@6.0.2):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.5)
       cac: 6.7.14
@@ -5863,7 +5858,7 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       postcss: 8.5.8
-      typescript: 5.9.3
+      typescript: 6.0.2
     transitivePeerDependencies:
       - jiti
       - supports-color
@@ -5878,8 +5873,6 @@ snapshots:
       '@turbo/linux-arm64': 2.9.3
       '@turbo/windows-64': 2.9.3
       '@turbo/windows-arm64': 2.9.3
-
-  typescript@5.9.3: {}
 
   typescript@6.0.2: {}
 
