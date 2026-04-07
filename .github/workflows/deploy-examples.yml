@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - 'examples/**'
+  workflow_run:
+    workflows: ["Publish Packages"]
+    types: [completed]
+    branches: [main]
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -12,6 +16,8 @@ env:
 jobs:
   detect:
     runs-on: ubuntu-latest
+    # Skip if triggered by a failed publish
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     outputs:
       chat: ${{ steps.changes.outputs.chat }}
       chat-widget: ${{ steps.changes.outputs.chat-widget }}
@@ -22,10 +28,17 @@ jobs:
           fetch-depth: 2
       - id: changes
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD)
-          echo "chat=$(echo "$CHANGED" | grep -q '^examples/chat/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "chat-widget=$(echo "$CHANGED" | grep -q '^examples/chat-widget/' && echo true || echo false)" >> $GITHUB_OUTPUT
-          echo "multi-agent=$(echo "$CHANGED" | grep -q '^examples/multi-agent/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          # After a publish, deploy all examples to pick up new package version
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "chat=true" >> $GITHUB_OUTPUT
+            echo "chat-widget=true" >> $GITHUB_OUTPUT
+            echo "multi-agent=true" >> $GITHUB_OUTPUT
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD)
+            echo "chat=$(echo "$CHANGED" | grep -q '^examples/chat/' && echo true || echo false)" >> $GITHUB_OUTPUT
+            echo "chat-widget=$(echo "$CHANGED" | grep -q '^examples/chat-widget/' && echo true || echo false)" >> $GITHUB_OUTPUT
+            echo "multi-agent=$(echo "$CHANGED" | grep -q '^examples/multi-agent/' && echo true || echo false)" >> $GITHUB_OUTPUT
+          fi
 
   deploy-chat:
     needs: detect
