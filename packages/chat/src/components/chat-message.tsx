@@ -21,12 +21,20 @@ type StreamdownComponentsProp = Record<string, unknown>;
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
+/** An ordered segment in the assistant message stream. */
+export type MessageSegment =
+  | { type: "text"; content: string }
+  | { type: "tool_call"; toolCall: ToolCallEvent };
+
 export interface ChatMessageItemData {
   id?: string;
   role: "user" | "assistant";
   content: string | ContentPart[];
   ts?: string;
   toolCalls?: ToolCallEvent[];
+  /** Ordered segments preserving chronological interleaving of text and tool calls.
+   *  When present, the component renders these in order instead of grouping. */
+  segments?: MessageSegment[];
 }
 
 export interface ChatMessageProps {
@@ -219,6 +227,9 @@ export const ChatAssistantMessage = memo(
       (tc) => tc.name !== "ask_user_question",
     );
 
+    // Build ordered segments: use explicit segments if available, otherwise fallback to grouped layout
+    const hasSegments = msg.segments && msg.segments.length > 0;
+
     return (
       <div className={`w-full px-6 pt-4 pb-6 ${className ?? ""}`}>
         <div className="max-w-3xl mx-auto">
@@ -235,37 +246,72 @@ export const ChatAssistantMessage = memo(
               </div>
             )}
 
-            {/* Tool calls */}
-            {filteredToolCalls && filteredToolCalls.length > 0 && (
-              <div className="flex flex-col gap-1 mb-1">
-                {filteredToolCalls.map((tc) => (
-                  <ToolCallChip key={tc.id} tool={tc} />
-                ))}
-              </div>
-            )}
+            {hasSegments ? (
+              /* ── Ordered segments (chronological) ── */
+              <>
+                {msg.segments!.map((seg, i) => {
+                  if (seg.type === "tool_call") {
+                    if (seg.toolCall.name === "ask_user_question") return null;
+                    return <ToolCallChip key={seg.toolCall.id || i} tool={seg.toolCall} />;
+                  }
+                  // text segment
+                  return (
+                    <div key={i} className="w-full text-gray-900">
+                      {components ? (
+                        <Streamdown
+                          className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                          components={components as any}
+                        >
+                          {seg.content}
+                        </Streamdown>
+                      ) : (
+                        <p className="whitespace-pre-wrap break-words">{seg.content}</p>
+                      )}
+                    </div>
+                  );
+                })}
 
-            {/* File/image parts */}
-            {Array.isArray(msg.content) && (
-              <ContentParts parts={msg.content} align="start" resolveFileUrl={resolveFileUrl} />
-            )}
+                {/* Typing dots when streaming and no content yet */}
+                {!text && !filteredToolCalls?.length && (
+                  <ChatTyping className="pt-1" />
+                )}
+              </>
+            ) : (
+              /* ── Fallback: grouped layout (backward compat) ── */
+              <>
+                {/* Tool calls */}
+                {filteredToolCalls && filteredToolCalls.length > 0 && (
+                  <div className="flex flex-col gap-1 mb-1">
+                    {filteredToolCalls.map((tc) => (
+                      <ToolCallChip key={tc.id} tool={tc} />
+                    ))}
+                  </div>
+                )}
 
-            {/* Text content or typing dots */}
-            <div className="w-full text-gray-900">
-              {text ? (
-                components ? (
-                  <Streamdown
-                    className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
-                    components={components as any}
-                  >
-                    {text}
-                  </Streamdown>
-                ) : (
-                  <p className="whitespace-pre-wrap break-words">{text}</p>
-                )
-              ) : (
-                !filteredToolCalls?.length && <ChatTyping className="pt-1" />
-              )}
-            </div>
+                {/* File/image parts */}
+                {Array.isArray(msg.content) && (
+                  <ContentParts parts={msg.content} align="start" resolveFileUrl={resolveFileUrl} />
+                )}
+
+                {/* Text content or typing dots */}
+                <div className="w-full text-gray-900">
+                  {text ? (
+                    components ? (
+                      <Streamdown
+                        className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                        components={components as any}
+                      >
+                        {text}
+                      </Streamdown>
+                    ) : (
+                      <p className="whitespace-pre-wrap break-words">{text}</p>
+                    )
+                  ) : (
+                    !filteredToolCalls?.length && <ChatTyping className="pt-1" />
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Hover action: copy */}
             {text && (!isLast || !isStreaming) && (

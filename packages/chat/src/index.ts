@@ -18,6 +18,7 @@ export {
 export type {
   ChatMessageItemData,
   ChatMessageProps,
+  MessageSegment,
 } from "./components/chat-message";
 export {
   ChatSkeleton,
