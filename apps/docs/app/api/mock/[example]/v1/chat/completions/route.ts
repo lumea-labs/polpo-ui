@@ -16,7 +16,9 @@ const mockResponses: Record<string, Step[]> = {
   default: [
     { type: "text", content: "Let me look into that." },
     { type: "tool_call", call: { id: "tc-r", name: "read", state: "completed", arguments: { path: "src/main.ts" } } },
-    { type: "text", content: " Here's what I found — the approach looks solid. I've made the changes and verified everything works correctly." },
+    { type: "text", content: "Here's what I found — the approach looks solid." },
+    { type: "tool_call", call: { id: "tc-e", name: "edit", state: "completed", arguments: { path: "src/main.ts" } } },
+    { type: "text", content: "Done — I've made the changes and verified everything works correctly." },
   ],
 };
 
