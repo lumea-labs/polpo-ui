@@ -23,7 +23,7 @@ jobs:
       chat-widget: ${{ steps.changes.outputs.chat-widget }}
       multi-agent: ${{ steps.changes.outputs.multi-agent }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2
       - id: changes
@@ -47,7 +47,7 @@ jobs:
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_CHAT_WIDGET }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -73,7 +73,7 @@ jobs:
     env:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_EXAMPLE_MULTI_AGENT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g vercel
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
