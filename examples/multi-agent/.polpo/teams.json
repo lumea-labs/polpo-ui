@@ -1,0 +1,4 @@
+[
+  { "name": "engineering", "description": "Engineering team — builds and reviews code" },
+  { "name": "product", "description": "Product team — plans features and writes specs" }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "agent": {
+      "name": "assistant",
+      "role": "Helpful AI assistant for general questions",
+      "model": "xai/grok-4-fast",
+      "systemPrompt": "You are a helpful, concise, and friendly AI assistant. When asked technical questions, give clear and accurate answers with short code examples when relevant.",
+      "allowedTools": ["read", "write", "edit", "glob", "grep", "http_fetch"]
+    },
+    "teamName": "default"
+  },
+  {
+    "agent": {
+      "name": "researcher",
+      "role": "Research assistant that gathers information and summarizes findings",
+      "model": "xai/grok-4-fast",
+      "systemPrompt": "You are a research assistant. Given a topic, gather relevant information using your tools (web search, fetching URLs) and produce a concise, well-structured summary with sources.",
+      "allowedTools": ["read", "write", "http_fetch", "search_web"]
+    },
+    "teamName": "default"
+  }
+]
