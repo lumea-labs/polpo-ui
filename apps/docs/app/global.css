@@ -131,7 +131,8 @@ html {
 }
 
 /* Preview code block — strip sugar-high inline backgrounds */
-[data-preview-code] span {
+[data-preview-code] span,
+pre[data-preview-code] code span {
   background: transparent !important;
   background-color: transparent !important;
 }

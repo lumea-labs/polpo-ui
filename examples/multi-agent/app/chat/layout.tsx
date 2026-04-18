@@ -46,7 +46,7 @@ function useTheme() {
 
 /* ── Resolve avatar URL ────────────────────────────────── */
 
-const POLPO_BASE = process.env.NEXT_PUBLIC_POLPO_URL || "https://api.polpo.sh";
+const POLPO_BASE = process.env.NEXT_PUBLIC_POLPO_URL!;
 
 function resolveAvatar(agent: AgentConfig | undefined): string | undefined {
   const avatar = agent?.identity?.avatar;
