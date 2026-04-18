@@ -24,7 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable}`} suppressHydrationWarning>
       <head>
+        {/*
+          Theme init runs before hydration to avoid flash. Some browser
+          extensions (e.g. LocationGuard) rewrite <head> scripts before
+          React attaches, producing a hydration mismatch warning that is
+          not caused by our code. Suppress warnings on this specific
+          script tag so real mismatches elsewhere still surface.
+        */}
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("theme");if(!t)t=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`,
           }}

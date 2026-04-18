@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en" className={cn(dmSans.variable, "font-sans", geist.variable)} suppressHydrationWarning>
       <head>
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem("theme");if(!t)t=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`,
           }}

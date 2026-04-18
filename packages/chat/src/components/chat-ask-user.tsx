@@ -57,10 +57,10 @@ function Btn({
   const base = "inline-flex items-center justify-center font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
   const sizes = "px-3 py-1.5 text-xs";
   const variants = {
-    default: "bg-gray-900 text-white hover:bg-gray-700",
-    ghost: "bg-transparent hover:bg-gray-100 text-gray-500",
-    outline: "border border-gray-200 bg-transparent hover:bg-gray-50 text-gray-700",
-    accent: "bg-blue-600 text-white hover:bg-blue-500",
+    default: "bg-foreground text-background hover:bg-foreground/90",
+    ghost: "bg-transparent hover:bg-accent text-muted-foreground",
+    outline: "border border-border bg-transparent hover:bg-muted/50 text-foreground",
+    accent: "bg-primary text-primary-foreground hover:bg-primary/90",
   };
   return (
     <button
@@ -101,17 +101,17 @@ function QuestionCard({
   const showCustom = q.custom !== false;
 
   return (
-    <div className="rounded-xl border border-blue-200/50 bg-blue-50/30 p-4">
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
       <div className="flex items-start gap-2 mb-3">
-        <MessageSquareMore className="size-4 text-blue-600 mt-0.5 shrink-0" />
+        <MessageSquareMore className="size-4 text-primary mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           {q.header && (
-            <p className="text-[10px] font-semibold text-blue-600/80 uppercase tracking-wider mb-0.5">{q.header}</p>
+            <p className="text-[10px] font-semibold text-primary/80 uppercase tracking-wider mb-0.5">{q.header}</p>
           )}
-          <p className="font-medium text-gray-900">{q.question}</p>
+          <p className="font-medium text-foreground">{q.question}</p>
         </div>
         {isMultiple && (
-          <span className="text-[9px] font-medium text-gray-500 border border-gray-200 rounded px-1.5 py-0.5 shrink-0">
+          <span className="text-[9px] font-medium text-muted-foreground border border-border rounded px-1.5 py-0.5 shrink-0">
             Multi-select
           </span>
         )}
@@ -128,17 +128,17 @@ function QuestionCard({
                 disabled={disabled || submitting}
                 className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                   isSelected
-                    ? "border-blue-400 bg-blue-50 text-blue-700 font-medium shadow-sm"
-                    : "border-gray-200 bg-gray-50/60 text-gray-600 hover:border-blue-300 hover:bg-blue-50/30 hover:text-gray-900"
+                    ? "border-primary bg-primary/5 text-primary font-medium shadow-sm"
+                    : "border-border bg-muted/50 text-muted-foreground hover:border-primary/30 hover:bg-primary/5 hover:text-foreground"
                 }`}
                 onClick={() => onToggle(opt.label, isMultiple)}
               >
                 <span
                   className={`flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                    isSelected ? "border-blue-500 bg-blue-500" : "border-gray-300"
+                    isSelected ? "border-primary bg-primary" : "border-border"
                   }`}
                 >
-                  {isSelected && <Check className="size-2.5 text-white" />}
+                  {isSelected && <Check className="size-2.5 text-primary-foreground" />}
                 </span>
                 <span>{opt.label}</span>
               </button>
@@ -152,8 +152,8 @@ function QuestionCard({
           {q.options
             ?.filter((o) => sel.has(o.label) && o.description)
             .map((o) => (
-              <p key={o.label} className="text-xs text-gray-500 leading-snug">
-                <span className="font-medium text-gray-700">{o.label}:</span> {o.description}
+              <p key={o.label} className="text-xs text-muted-foreground leading-snug">
+                <span className="font-medium text-foreground">{o.label}:</span> {o.description}
               </p>
             ))}
         </div>
@@ -161,11 +161,11 @@ function QuestionCard({
 
       {showCustom && (
         <div className="flex items-center gap-2">
-          <PenLine className="size-3.5 text-gray-400 shrink-0" />
+          <PenLine className="size-3.5 text-muted-foreground shrink-0" />
           <input
             type="text"
             placeholder="Type your own answer..."
-            className="flex-1 h-8 px-3 text-sm rounded-lg border border-gray-200 bg-transparent text-gray-900 placeholder:text-gray-400 outline-none focus:border-blue-400 transition-colors"
+            className="flex-1 h-8 px-3 text-sm rounded-lg border border-border bg-transparent text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors"
             value={customText}
             disabled={disabled || submitting}
             onChange={(e) => onCustomChange(e.target.value)}
@@ -348,13 +348,13 @@ export function ChatAskUser({ questions, onSubmit, disabled }: ChatAskUserProps)
               onClick={() => setStep(idx)}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
                 isActive
-                  ? "bg-blue-50 text-blue-700 border border-blue-200"
-                  : "text-gray-500 hover:bg-gray-50 border border-transparent"
+                  ? "bg-primary/5 text-primary border border-primary/20"
+                  : "text-muted-foreground hover:bg-muted/50 border border-transparent"
               }`}
             >
               <span
                 className={`size-2 rounded-full shrink-0 ${
-                  status === "answered" ? "bg-green-500" : isActive ? "bg-blue-500" : "bg-gray-200"
+                  status === "answered" ? "bg-green-500" : isActive ? "bg-primary" : "bg-accent"
                 }`}
               />
               {q.header || `Q${idx + 1}`}
@@ -366,8 +366,8 @@ export function ChatAskUser({ questions, onSubmit, disabled }: ChatAskUserProps)
           onClick={() => setStep(questions.length)}
           className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap shrink-0 ${
             isSummaryStep
-              ? "bg-blue-50 text-blue-700 border border-blue-200"
-              : "text-gray-500 hover:bg-gray-50 border border-transparent"
+              ? "bg-primary/5 text-primary border border-primary/20"
+              : "text-muted-foreground hover:bg-muted/50 border border-transparent"
           }`}
         >
           <ListChecks className="size-3" />
@@ -378,11 +378,11 @@ export function ChatAskUser({ questions, onSubmit, disabled }: ChatAskUserProps)
       {/* Summary step */}
       {isSummaryStep ? (
         <div className="space-y-3">
-          <div className="rounded-xl border border-blue-200/50 bg-blue-50/30 p-4 space-y-3">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-3">
             <div className="flex items-center gap-2 mb-1">
-              <ListChecks className="size-4 text-blue-600" />
-              <p className="text-sm font-semibold text-gray-900">Summary</p>
-              <span className="text-[9px] font-medium text-gray-500 border border-gray-200 rounded px-1.5 py-0.5 ml-auto">
+              <ListChecks className="size-4 text-primary" />
+              <p className="text-sm font-semibold text-foreground">Summary</p>
+              <span className="text-[9px] font-medium text-muted-foreground border border-border rounded px-1.5 py-0.5 ml-auto">
                 {answeredCount}/{questions.length} answered
               </span>
             </div>
@@ -400,22 +400,22 @@ export function ChatAskUser({ questions, onSubmit, disabled }: ChatAskUserProps)
                     key={q.id}
                     type="button"
                     onClick={() => setStep(idx)}
-                    className="flex items-start gap-2 w-full text-left rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors"
+                    className="flex items-start gap-2 w-full text-left rounded-lg px-3 py-2 hover:bg-muted/50 transition-colors"
                   >
                     <span
                       className={`size-2 rounded-full shrink-0 mt-1.5 ${
-                        status === "answered" ? "bg-green-500" : "bg-gray-200"
+                        status === "answered" ? "bg-green-500" : "bg-accent"
                       }`}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-gray-900">{q.question}</p>
+                      <p className="text-xs font-medium text-foreground">{q.question}</p>
                       {answer ? (
-                        <p className="text-xs text-gray-500 truncate">{answer}</p>
+                        <p className="text-xs text-muted-foreground truncate">{answer}</p>
                       ) : (
-                        <p className="text-xs text-gray-400 italic">Not answered yet</p>
+                        <p className="text-xs text-muted-foreground italic">Not answered yet</p>
                       )}
                     </div>
-                    <ChevronRight className="size-3 text-gray-400 mt-1 shrink-0" />
+                    <ChevronRight className="size-3 text-muted-foreground mt-1 shrink-0" />
                   </button>
                 );
               })}

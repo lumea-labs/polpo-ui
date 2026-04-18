@@ -48,11 +48,11 @@ export function ChatSuggestions({
         <button
           key={s.text}
           type="button"
-          className="flex items-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-transparent text-xs text-gray-600 text-left hover:bg-gray-50 hover:border-gray-300 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl border border-border bg-transparent text-xs text-muted-foreground text-left hover:bg-muted/50 hover:border-border transition-colors"
           onClick={() => onSelect(s.text)}
         >
           {s.icon && (
-            <span className="shrink-0 text-gray-400">{s.icon}</span>
+            <span className="shrink-0 text-muted-foreground">{s.icon}</span>
           )}
           {s.text}
         </button>

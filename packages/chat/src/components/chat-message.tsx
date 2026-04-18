@@ -67,7 +67,7 @@ function CopyButton({ text }: { text: string }) {
       type="button"
       onClick={handleCopy}
       aria-label="Copy message"
-      className="inline-flex items-center justify-center rounded-md p-1 text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+      className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
     >
       {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
     </button>
@@ -124,7 +124,7 @@ function ContentParts({
               href={resolveFileUrl(fileId)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-900 hover:border-gray-400 transition-colors"
+              className="flex items-center gap-1.5 bg-muted border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground hover:border-border transition-colors"
             >
               <FileCode size={13} />
               <span className="truncate max-w-[120px]">{fn}</span>
@@ -167,9 +167,9 @@ export const ChatUserMessage = memo(
             )}
 
             {/* Message bubble */}
-            <div className="w-fit max-w-[80%] ml-auto rounded-[18px_18px_4px_18px] bg-gray-100 px-4 py-3">
+            <div className="w-fit max-w-[80%] ml-auto rounded-[18px_18px_4px_18px] bg-muted px-4 py-3">
               {text ? (
-                <p className="whitespace-pre-wrap break-words text-gray-900">
+                <p className="whitespace-pre-wrap break-words text-foreground">
                   {text}
                 </p>
               ) : null}
@@ -178,7 +178,7 @@ export const ChatUserMessage = memo(
             {/* Hover actions: timestamp + copy */}
             {text && (!isLast || !isStreaming) && (
               <div className="flex items-center justify-end gap-1.5 h-6">
-                <span className="text-[11px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[11px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   {msg.ts ? relativeTime(msg.ts) : ""}
                 </span>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -239,7 +239,7 @@ export const ChatAssistantMessage = memo(
               <div className="flex items-center gap-2 mb-1">
                 {avatar}
                 {agentName && (
-                  <span className="text-[13px] font-semibold text-gray-900">
+                  <span className="text-[13px] font-semibold text-foreground">
                     {agentName}
                   </span>
                 )}
@@ -256,7 +256,7 @@ export const ChatAssistantMessage = memo(
                   }
                   // text segment
                   return (
-                    <div key={i} className="w-full text-gray-900">
+                    <div key={i} className="w-full text-foreground">
                       {components ? (
                         <Streamdown
                           className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
@@ -294,7 +294,7 @@ export const ChatAssistantMessage = memo(
                 )}
 
                 {/* Text content or typing dots */}
-                <div className="w-full text-gray-900">
+                <div className="w-full text-foreground">
                   {text ? (
                     components ? (
                       <Streamdown

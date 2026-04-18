@@ -117,6 +117,29 @@
   --color-red-500: var(--c-red);
 
   --color-white: var(--c-surface);
+
+  /* shadcn-style semantic tokens consumed by @polpo-ai/chat (and any
+     other shadcn-compatible component). Mapped onto the example's
+     existing --c-* palette so the visual result is unchanged. */
+  --color-background: var(--c-bg);
+  --color-foreground: var(--c-ink);
+  --color-card: var(--c-surface);
+  --color-card-foreground: var(--c-ink);
+  --color-popover: var(--c-surface);
+  --color-popover-foreground: var(--c-ink);
+  --color-primary: var(--c-accent);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--c-bg-subtle);
+  --color-secondary-foreground: var(--c-ink);
+  --color-muted: var(--c-bg-subtle);
+  --color-muted-foreground: var(--c-ink-2);
+  --color-accent: var(--c-bg-subtle);
+  --color-accent-foreground: var(--c-ink);
+  --color-destructive: var(--c-red);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--c-border);
+  --color-input: var(--c-border);
+  --color-ring: var(--c-accent);
 }
 
 /* ── Base ─────────────────────────────────────────────── */

@@ -30,11 +30,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/examples
       '@polpo-ai/react':
-        specifier: ^0.5.14
-        version: 0.5.14(react@19.2.4)
+        specifier: ^0.6.18
+        version: 0.6.18(react@19.2.4)
       '@polpo-ai/sdk':
-        specifier: ^0.5.14
-        version: 0.5.14
+        specifier: ^0.6.18
+        version: 0.6.18
       '@radix-ui/react-presence':
         specifier: ^1.1.5
         version: 1.1.5(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -677,8 +677,18 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
+  '@polpo-ai/react@0.6.18':
+    resolution: {integrity: sha512-hkmW3ntDGZY+HMbThhImuR5G+OVU6i7nWHu2I4xLlRPiAku85bdx95CvY1HlgWkQS0CwyCLzVF11P0cmUnuFew==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+
   '@polpo-ai/sdk@0.5.14':
     resolution: {integrity: sha512-hu6IhWDnQK+dSdjXP7ah9KEkkbf+OW4CwpWO5+Tj5xq+dMKS3KpzRP0VxM8EYaEI0iUoCqf/aE0yOAA3PSav0A==}
+    engines: {node: '>=18.0.0'}
+
+  '@polpo-ai/sdk@0.6.18':
+    resolution: {integrity: sha512-VGFt+Fodc9qaNGWi44YLa0Im30YGKYMZOhQvk/B2kJhTPTtS+RdMP7wxq62glkXs1feUVwkQOF1SVZej9XOO5Q==}
     engines: {node: '>=18.0.0'}
 
   '@radix-ui/number@1.1.1':
@@ -3337,7 +3347,14 @@ snapshots:
       '@polpo-ai/sdk': 0.5.14
       react: 19.2.4
 
+  '@polpo-ai/react@0.6.18(react@19.2.4)':
+    dependencies:
+      '@polpo-ai/sdk': 0.6.18
+      react: 19.2.4
+
   '@polpo-ai/sdk@0.5.14': {}
+
+  '@polpo-ai/sdk@0.6.18': {}
 
   '@radix-ui/number@1.1.1': {}
 

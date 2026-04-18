@@ -168,12 +168,12 @@ function PendingFiles({ files, removeFile }: { files: PendingFile[]; removeFile:
         return (
           <div
             key={f.id}
-            className="relative flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs"
+            className="relative flex items-center gap-2 bg-muted/50 border border-border rounded-lg px-2.5 py-1.5 text-xs"
           >
             {isImage ? (
               <img src={f.url} alt={f.file.name} className="size-8 rounded object-cover" />
             ) : (
-              <div className="size-8 rounded bg-gray-200 flex items-center justify-center text-gray-500 text-[10px] font-mono uppercase">
+              <div className="size-8 rounded bg-accent flex items-center justify-center text-muted-foreground text-[10px] font-mono uppercase">
                 {f.file.name.split(".").pop()?.slice(0, 4)}
               </div>
             )}
@@ -181,7 +181,7 @@ function PendingFiles({ files, removeFile }: { files: PendingFile[]; removeFile:
             <button
               type="button"
               onClick={() => removeFile(f.id)}
-              className="size-4 rounded-full bg-gray-300/50 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+              className="size-4 rounded-full bg-border/50 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors"
             >
               <X className="size-2.5" />
             </button>
@@ -210,12 +210,12 @@ export function ChatInput({
       <div className="w-full px-6 py-3">
         <div className="max-w-3xl mx-auto relative">
           {allowAttachments && s.dragging && (
-            <div className="absolute inset-0 z-10 bg-blue-50 border-2 border-dashed border-blue-400 rounded-2xl flex items-center justify-center gap-2 text-blue-600 text-sm font-medium pointer-events-none">
+            <div className="absolute inset-0 z-10 bg-primary/5 border-2 border-dashed border-primary rounded-2xl flex items-center justify-center gap-2 text-primary text-sm font-medium pointer-events-none">
               <Upload className="size-4" /> Drop files to attach
             </div>
           )}
           <div
-            className="rounded-2xl border border-gray-200 shadow-sm focus-within:border-blue-400 focus-within:shadow-md transition-all bg-gray-50"
+            className="rounded-2xl border border-border shadow-sm focus-within:border-primary focus-within:shadow-md transition-all bg-muted/50"
             onDrop={allowAttachments ? s.onDrop : undefined}
             onDragOver={allowAttachments ? (e) => e.preventDefault() : undefined}
           >
@@ -228,23 +228,23 @@ export function ChatInput({
               placeholder={placeholder}
               aria-label={placeholder}
               rows={1}
-              className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-sm outline-none placeholder:text-gray-400"
+              className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-sm outline-none placeholder:text-muted-foreground"
             />
             <div className="flex items-center justify-between px-3 pb-3">
               {allowAttachments ? (
-                <button type="button" onClick={() => s.fileInputRef.current?.click()} className="flex items-center justify-center size-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Attach file">
+                <button type="button" onClick={() => s.fileInputRef.current?.click()} className="flex items-center justify-center size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors" aria-label="Attach file">
                   <Plus className="size-4" />
                 </button>
               ) : <div />}
               {renderSubmit ? renderSubmit({ isStreaming: s.isStreaming, onStop: s.abort }) : (
-                <button type="button" onClick={s.isStreaming ? s.abort : s.submit} disabled={s.isSending && !s.isStreaming} className="flex items-center justify-center size-8 rounded-lg bg-gray-900 text-white hover:bg-gray-700 disabled:opacity-40 transition-colors" aria-label={s.isStreaming ? "Stop" : "Send"}>
+                <button type="button" onClick={s.isStreaming ? s.abort : s.submit} disabled={s.isSending && !s.isStreaming} className="flex items-center justify-center size-8 rounded-lg bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40 transition-colors" aria-label={s.isStreaming ? "Stop" : "Send"}>
                   {s.isStreaming ? <Square className="size-3.5" /> : <ArrowUp className="size-4" />}
                 </button>
               )}
             </div>
           </div>
           {allowAttachments && <input ref={s.fileInputRef} type="file" multiple onChange={s.onFileChange} className="hidden" />}
-          {hint && <p className="text-center text-xs text-gray-400 mt-2">{hint}</p>}
+          {hint && <p className="text-center text-xs text-muted-foreground mt-2">{hint}</p>}
         </div>
       </div>
     </div>
