@@ -31,7 +31,7 @@ function FallbackCodeBlock({ code, language }: CodeBlockComponentProps) {
   return (
     <pre
       data-language={language}
-      className="border border-gray-200 bg-gray-100 text-gray-900"
+      className="border border-border bg-muted text-foreground"
       style={{
         margin: "0.75rem 0",
         padding: "0.875rem 1rem",

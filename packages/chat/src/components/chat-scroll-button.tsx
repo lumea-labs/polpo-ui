@@ -26,14 +26,14 @@ export function ChatScrollButton({
       type="button"
       aria-label="Scroll to bottom"
       onClick={onClick}
-      className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-gray-50 shadow-md transition-colors hover:bg-gray-100 ${className ?? ""}`}
+      className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-muted/50 shadow-md transition-colors hover:bg-accent ${className ?? ""}`}
     >
-      <ArrowDown className="h-4 w-4 text-gray-600" />
+      <ArrowDown className="h-4 w-4 text-muted-foreground" />
 
       {showNewMessage && (
         <span className="absolute -top-1 -right-1 flex h-3 w-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75" />
-          <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-500" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+          <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
         </span>
       )}
     </button>

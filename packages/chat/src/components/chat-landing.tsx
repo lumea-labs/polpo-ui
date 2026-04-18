@@ -68,7 +68,7 @@ function ChatLandingInner({
         </h1>
 
         {subtitle && (
-          <p className="text-gray-500 text-sm mb-6">{subtitle}</p>
+          <p className="text-muted-foreground text-sm mb-6">{subtitle}</p>
         )}
 
         {!subtitle && <div className="mb-7" />}

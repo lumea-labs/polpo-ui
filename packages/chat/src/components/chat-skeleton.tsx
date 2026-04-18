@@ -6,7 +6,7 @@
 function Bone({ width, height = 14 }: { width: string; height?: number }) {
   return (
     <div
-      className="bg-gray-200 animate-pulse"
+      className="bg-accent animate-pulse"
       style={{ width, height, borderRadius: height > 20 ? 12 : 6 }}
     />
   );
@@ -19,7 +19,7 @@ export function MessageSkeleton({ lines = 3 }: { lines?: number }) {
     <div className="w-full px-6 pt-4 pb-6">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-2 mb-2">
-          <div className="size-6 rounded-md bg-gray-200 animate-pulse shrink-0" />
+          <div className="size-6 rounded-md bg-accent animate-pulse shrink-0" />
           <Bone width="80px" height={13} />
         </div>
         <div className="flex flex-col gap-2">
@@ -37,7 +37,7 @@ export function UserMessageSkeleton() {
   return (
     <div className="w-full px-6 py-3">
       <div className="max-w-3xl mx-auto flex justify-end">
-        <div className="w-[45%] min-w-[120px] h-[42px] rounded-[18px_18px_4px_18px] bg-gray-200 animate-pulse" />
+        <div className="w-[45%] min-w-[120px] h-[42px] rounded-[18px_18px_4px_18px] bg-accent animate-pulse" />
       </div>
     </div>
   );

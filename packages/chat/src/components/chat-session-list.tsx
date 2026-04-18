@@ -69,30 +69,30 @@ const SessionItem = memo(function SessionItem({
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(session.id); } }}
       className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-all duration-150 cursor-pointer group ${
         isActive
-          ? "bg-gray-100"
-          : "hover:bg-gray-50"
+          ? "bg-muted"
+          : "hover:bg-muted/50"
       }`}
     >
       {/* Avatar */}
       {renderAvatar ? (
         renderAvatar(agent, agentName)
       ) : (
-        <div className="flex items-center justify-center size-8 rounded-lg bg-gray-200 text-gray-600 text-xs font-semibold shrink-0">
+        <div className="flex items-center justify-center size-8 rounded-lg bg-accent text-muted-foreground text-xs font-semibold shrink-0">
           {displayName.charAt(0).toUpperCase()}
         </div>
       )}
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-gray-900 truncate">
+        <div className="text-sm font-medium text-foreground truncate">
           {session.title || session.id.slice(0, 24)}
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-xs text-gray-500 truncate">{displayName}</span>
+          <span className="text-xs text-muted-foreground truncate">{displayName}</span>
           {session.updatedAt && (
             <>
-              <span className="text-gray-300">·</span>
-              <span className="text-[11px] text-gray-400 shrink-0">
+              <span className="text-muted-foreground/60">·</span>
+              <span className="text-[11px] text-muted-foreground shrink-0">
                 {relativeTime(session.updatedAt)}
               </span>
             </>
@@ -105,7 +105,7 @@ const SessionItem = memo(function SessionItem({
         <button
           type="button"
           onClick={handleDelete}
-          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
+          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
           aria-label="Delete session"
         >
           <Trash2 className="size-3.5" />
@@ -141,10 +141,10 @@ export function ChatSessionList({
       <div className={`flex flex-col gap-1 ${className || ""}`}>
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3 px-3 py-2.5">
-            <div className="size-8 rounded-lg bg-gray-100 animate-pulse" />
+            <div className="size-8 rounded-lg bg-muted animate-pulse" />
             <div className="flex-1 space-y-1.5">
-              <div className="h-3.5 w-3/4 rounded bg-gray-100 animate-pulse" />
-              <div className="h-3 w-1/2 rounded bg-gray-100 animate-pulse" />
+              <div className="h-3.5 w-3/4 rounded bg-muted animate-pulse" />
+              <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
             </div>
           </div>
         ))}
@@ -155,8 +155,8 @@ export function ChatSessionList({
   if (sessions.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center py-12 ${className || ""}`}>
-        <MessageSquare className="size-8 text-gray-300 mb-3" />
-        <p className="text-sm text-gray-400">{emptyMessage}</p>
+        <MessageSquare className="size-8 text-muted-foreground/60 mb-3" />
+        <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     );
   }

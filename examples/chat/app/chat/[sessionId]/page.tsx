@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { useSessions, useAgent } from "@polpo-ai/react";
+import { useSessions, useAgents } from "@polpo-ai/react";
 import { Chat, ChatInput, ChatAskUser, useChatContext } from "@polpo-ai/chat";
 
 function ChatInputWithAskUser() {
@@ -42,8 +42,9 @@ export default function ChatPage({
 }) {
   const { sessionId } = use(params);
   const { sessions } = useSessions();
+  const { agents } = useAgents();
   const agentName = sessions?.find((s) => s.id === sessionId)?.agent;
-  const { agent } = useAgent(agentName || "__none__");
+  const agent = agentName ? agents?.find((a) => a.name === agentName) : undefined;
   const displayName = agent?.identity?.displayName || agent?.name || agentName || "Assistant";
 
   return (

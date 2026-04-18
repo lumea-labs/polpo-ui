@@ -51,29 +51,29 @@ const AgentGroupItem = memo(function AgentGroupItem({
     <button
       type="button"
       onClick={() => onSelect(group.agentName)}
-      className="flex items-center gap-3.5 w-full px-4 py-3.5 rounded-xl text-left transition-all duration-150 hover:bg-gray-50 group"
+      className="flex items-center gap-3.5 w-full px-4 py-3.5 rounded-xl text-left transition-all duration-150 hover:bg-muted/50 group"
     >
       {/* Avatar */}
       {renderAvatar ? (
         renderAvatar(group.agent, group.agentName)
       ) : (
-        <div className="flex items-center justify-center size-9 rounded-lg bg-gray-200 text-gray-600 text-sm font-semibold shrink-0">
+        <div className="flex items-center justify-center size-9 rounded-lg bg-accent text-muted-foreground text-sm font-semibold shrink-0">
           {group.displayName.charAt(0).toUpperCase()}
         </div>
       )}
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-gray-900 truncate">
+        <div className="text-sm font-medium text-foreground truncate">
           {group.displayName}
         </div>
         {role && (
-          <div className="text-xs text-gray-500 mt-0.5 truncate">{role}</div>
+          <div className="text-xs text-muted-foreground mt-0.5 truncate">{role}</div>
         )}
       </div>
 
       {/* Session count badge */}
-      <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full shrink-0">
+      <span className="text-xs font-semibold text-muted-foreground bg-muted px-2.5 py-0.5 rounded-full shrink-0">
         {group.sessions.length}
       </span>
     </button>
@@ -128,12 +128,12 @@ export function ChatSessionsByAgent({
       <div className={`flex flex-col gap-1 ${className || ""}`}>
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3.5 px-4 py-3.5">
-            <div className="size-9 rounded-lg bg-gray-100 animate-pulse" />
+            <div className="size-9 rounded-lg bg-muted animate-pulse" />
             <div className="flex-1 space-y-1.5">
-              <div className="h-3.5 w-1/2 rounded bg-gray-100 animate-pulse" />
-              <div className="h-3 w-1/3 rounded bg-gray-100 animate-pulse" />
+              <div className="h-3.5 w-1/2 rounded bg-muted animate-pulse" />
+              <div className="h-3 w-1/3 rounded bg-muted animate-pulse" />
             </div>
-            <div className="h-5 w-8 rounded-full bg-gray-100 animate-pulse" />
+            <div className="h-5 w-8 rounded-full bg-muted animate-pulse" />
           </div>
         ))}
       </div>
@@ -143,8 +143,8 @@ export function ChatSessionsByAgent({
   if (groups.length === 0) {
     return (
       <div className={`flex flex-col items-center justify-center py-12 ${className || ""}`}>
-        <Users className="size-8 text-gray-300 mb-3" />
-        <p className="text-sm text-gray-400">{emptyMessage}</p>
+        <Users className="size-8 text-muted-foreground/60 mb-3" />
+        <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     );
   }

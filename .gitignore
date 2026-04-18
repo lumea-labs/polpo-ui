@@ -6,3 +6,7 @@ dist/
 .env.local
 .env*.local
 .vercel
+# pnpm is the monorepo package manager — ignore stray bun lockfiles
+# that appear when someone runs `bun install` inside an example
+bun.lock
+bun.lockb

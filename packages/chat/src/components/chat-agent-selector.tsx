@@ -55,7 +55,7 @@ export const ChatAgentSelector = memo(function ChatAgentSelector({
     <div className={`relative ${className || ""}`}>
       <button
         type="button"
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:bg-accent transition-colors"
         onClick={() => setOpen(!open)}
       >
         {selectedItem ? (
@@ -63,7 +63,7 @@ export const ChatAgentSelector = memo(function ChatAgentSelector({
             {renderAvatar ? (
               renderAvatar(selectedItem.agent, 20)
             ) : (
-              <span className="flex items-center justify-center size-5 rounded bg-gray-200 text-[10px] font-semibold text-gray-600">
+              <span className="flex items-center justify-center size-5 rounded bg-accent text-[10px] font-semibold text-muted-foreground">
                 {selectedItem.letter}
               </span>
             )}
@@ -83,13 +83,13 @@ export const ChatAgentSelector = memo(function ChatAgentSelector({
             onClick={() => setOpen(false)}
           />
           {/* Dropdown */}
-          <div className="absolute bottom-full left-0 mb-1 bg-gray-50 border border-gray-200 rounded-xl shadow-lg py-1 min-w-[180px] z-50">
+          <div className="absolute bottom-full left-0 mb-1 bg-muted/50 border border-border rounded-xl shadow-lg py-1 min-w-[180px] z-50">
             {items.map((item) => (
               <button
                 key={item.agent.name}
                 type="button"
-                className={`flex items-center gap-2 w-full px-3 py-2 text-xs text-left hover:bg-gray-50 transition-colors ${
-                  selected === item.agent.name ? "bg-gray-50 font-semibold" : ""
+                className={`flex items-center gap-2 w-full px-3 py-2 text-xs text-left hover:bg-muted/50 transition-colors ${
+                  selected === item.agent.name ? "bg-muted/50 font-semibold" : ""
                 }`}
                 onClick={() => {
                   onSelect(item.agent.name);
@@ -99,7 +99,7 @@ export const ChatAgentSelector = memo(function ChatAgentSelector({
                 {renderAvatar ? (
                   renderAvatar(item.agent, 20)
                 ) : (
-                  <span className="flex items-center justify-center size-5 rounded bg-gray-200 text-[10px] font-semibold text-gray-600">
+                  <span className="flex items-center justify-center size-5 rounded bg-accent text-[10px] font-semibold text-muted-foreground">
                     {item.letter}
                   </span>
                 )}
