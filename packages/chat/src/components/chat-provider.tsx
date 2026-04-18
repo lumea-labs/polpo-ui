@@ -17,8 +17,14 @@ export interface ChatProviderProps {
   sessionId?: string;
   /** Target a specific agent for direct conversation. */
   agent?: string;
-  /** Called when a new session is created (first message). */
+  /** Called when a new session is created (first message). Note: fires mid-stream.
+   *  If you want to navigate on new-session creation, prefer `onFinish` so the
+   *  stream completes before the route (and component tree) changes. */
   onSessionCreated?: (id: string) => void;
+  /** Called when the assistant stream finishes. Safer than `onSessionCreated`
+   *  for post-stream navigation — the component stays mounted for the full
+   *  response. */
+  onFinish?: (result: unknown) => void;
   /** Called after each stream update (e.g. scroll-to-bottom). */
   onUpdate?: () => void;
   children: ReactNode;
@@ -49,6 +55,7 @@ export function ChatProvider({
   sessionId,
   agent,
   onSessionCreated,
+  onFinish,
   onUpdate,
   children,
 }: ChatProviderProps) {
@@ -56,6 +63,7 @@ export function ChatProvider({
     sessionId,
     agent,
     onSessionCreated,
+    onFinish,
     onUpdate,
   });
 

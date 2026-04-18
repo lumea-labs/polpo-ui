@@ -19,8 +19,14 @@ export interface ChatProps {
   sessionId?: string;
   /** Agent name for completions */
   agent?: string;
-  /** Called when a new session is created */
+  /** Called when a new session is created (first message). Note: fires mid-stream.
+   *  If you want to navigate on new-session creation, prefer `onFinish` so the
+   *  stream completes before the route (and component tree) changes. */
   onSessionCreated?: (sessionId: string) => void;
+  /** Called when the assistant stream finishes. Safer than `onSessionCreated`
+   *  for post-stream navigation — the component stays mounted for the full
+   *  response. */
+  onFinish?: (result: unknown) => void;
   /** Called on each stream update (useful for external scroll control) */
   onUpdate?: () => void;
   /** Custom message renderer — if omitted, uses ChatMessage with defaults */
@@ -60,7 +66,7 @@ function ChatInner({
   allowAttachments,
   children,
   className,
-}: Omit<ChatProps, "sessionId" | "agent" | "onSessionCreated" | "onUpdate"> & {
+}: Omit<ChatProps, "sessionId" | "agent" | "onSessionCreated" | "onFinish" | "onUpdate"> & {
   ref?: React.Ref<ChatMessagesHandle>;
 }) {
   const { messages } = useChatContext();
@@ -127,6 +133,7 @@ export function Chat({
   sessionId,
   agent,
   onSessionCreated,
+  onFinish,
   onUpdate,
   ref,
   ...rest
@@ -136,6 +143,7 @@ export function Chat({
       sessionId={sessionId}
       agent={agent}
       onSessionCreated={onSessionCreated}
+      onFinish={onFinish}
       onUpdate={onUpdate}
     >
       <ChatInner ref={ref} {...rest} />

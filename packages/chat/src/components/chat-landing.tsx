@@ -13,8 +13,14 @@ import { useChatContext } from "./chat-provider";
 export interface ChatLandingProps {
   /** Agent name for new conversations */
   agent?: string;
-  /** Called when the first message creates a session */
+  /** Called when the first message creates a session (fires mid-stream).
+   *  If you want to navigate on new-session creation, prefer `onFinish` so the
+   *  stream completes before the route (and component tree) changes. */
   onSessionCreated?: (sessionId: string) => void;
+  /** Called when the assistant stream finishes. Safer than `onSessionCreated`
+   *  for post-stream navigation — the component stays mounted for the full
+   *  response. */
+  onFinish?: (result: unknown) => void;
   /** Greeting heading */
   greeting?: string;
   /** Subtitle below the greeting */
@@ -49,7 +55,7 @@ function ChatLandingInner({
   allowAttachments,
   header,
   className,
-}: Omit<ChatLandingProps, "agent" | "onSessionCreated">) {
+}: Omit<ChatLandingProps, "agent" | "onSessionCreated" | "onFinish">) {
   const { sendMessage } = useChatContext();
 
   return (
@@ -93,10 +99,11 @@ function ChatLandingInner({
 export function ChatLanding({
   agent,
   onSessionCreated,
+  onFinish,
   ...rest
 }: ChatLandingProps) {
   return (
-    <ChatProvider agent={agent} onSessionCreated={onSessionCreated}>
+    <ChatProvider agent={agent} onSessionCreated={onSessionCreated} onFinish={onFinish}>
       <ChatLandingInner {...rest} />
     </ChatProvider>
   );

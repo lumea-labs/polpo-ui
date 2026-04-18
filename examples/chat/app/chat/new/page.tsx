@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAgents } from "@polpo-ai/react";
 import {
@@ -86,11 +86,19 @@ export default function NewChatPage() {
   const { agents } = useAgents();
   const [selectedAgent, setSelectedAgent] = useState<string | undefined>();
   const activeAgent = selectedAgent || agents?.[0]?.name;
+  const newSessionIdRef = useRef<string | null>(null);
 
   return (
     <Chat
       agent={activeAgent}
-      onSessionCreated={(id) => router.replace(`/chat/${id}`)}
+      onSessionCreated={(id) => {
+        newSessionIdRef.current = id;
+      }}
+      onFinish={() => {
+        if (newSessionIdRef.current) {
+          router.replace(`/chat/${newSessionIdRef.current}`);
+        }
+      }}
       className="h-screen"
     >
       {({ hasMessages }) =>
