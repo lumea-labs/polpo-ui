@@ -10,7 +10,7 @@
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
-    "@ai-sdk/react": "^3.0.148",
+    "@ai-sdk/react": "^3.0.176",
     "@ai-sdk/xai": "^3.0.77",
     "@polpo-ai/chat": "workspace:*",
     "@polpo-ai/examples": "workspace:*",
