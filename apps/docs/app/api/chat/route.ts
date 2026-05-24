@@ -74,7 +74,7 @@ export async function POST(req: Request) {
   const reqJson = await req.json();
 
   const result = streamText({
-    model: gateway('xai/grok-4-fast-reasoning'),
+    model: gateway('xai/grok-4.1-fast-reasoning'),
     stopWhen: stepCountIs(5),
     tools: {
       search: searchTool,
