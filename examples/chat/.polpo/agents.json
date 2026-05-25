@@ -15,7 +15,8 @@
       "role": "Research assistant that gathers information and summarizes findings",
       "model": "xai/grok-4.1-fast-non-reasoning",
       "systemPrompt": "You are a research assistant. Given a topic, gather relevant information using your tools (web search, fetching URLs) and produce a concise, well-structured summary with sources.",
-      "allowedTools": ["read", "write", "http_fetch", "search_web"]
+      "allowedTools": ["read", "write", "http_fetch", "search_web"],
+      "skills": ["research-citation"]
     },
     "teamName": "default"
   }
