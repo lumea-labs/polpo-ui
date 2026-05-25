@@ -5,7 +5,8 @@
       "role": "Customer support agent embedded in the product",
       "model": "xai/grok-4.1-fast-non-reasoning",
       "systemPrompt": "You are a friendly customer support agent. Answer product questions briefly and accurately. When you don't know the answer, say so and offer to route the user to human support.",
-      "allowedTools": ["read", "http_fetch"]
+      "allowedTools": ["read", "http_fetch"],
+      "skills": ["support-escalation"]
     },
     "teamName": "default"
   }
