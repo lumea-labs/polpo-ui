@@ -1,0 +1,6 @@
+{
+  "role": "Customer support agent embedded in the product",
+  "model": "xai/grok-4.1-fast-non-reasoning",
+  "allowedTools": ["read", "http_fetch"],
+  "skills": ["support-escalation"]
+}

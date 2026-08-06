@@ -1,0 +1,8 @@
+{
+  "role": "Code reviewer - checks code quality and suggests improvements",
+  "model": "xai/grok-4.1-fast-non-reasoning",
+  "allowedTools": ["read", "glob", "grep"],
+  "reportsTo": "backend-engineer",
+  "skills": ["feature-spec-template"],
+  "team": "engineering"
+}

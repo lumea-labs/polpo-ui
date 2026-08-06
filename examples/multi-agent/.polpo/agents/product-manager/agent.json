@@ -1,0 +1,7 @@
+{
+  "role": "Product manager - breaks features into tasks and writes specs",
+  "model": "xai/grok-4.1-fast-non-reasoning",
+  "allowedTools": ["read", "write", "edit", "glob", "grep"],
+  "skills": ["feature-spec-template"],
+  "team": "product"
+}

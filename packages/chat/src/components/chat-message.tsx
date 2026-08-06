@@ -271,8 +271,13 @@ export const ChatAssistantMessage = memo(
                   );
                 })}
 
-                {/* Typing dots when streaming and no content yet */}
-                {!text && !filteredToolCalls?.length && (
+                {/* Typing dots — only while this message is the live
+                    stream target. Without the isLast && isStreaming
+                    guard, an assistant turn that legitimately produced
+                    only tool calls (then all filtered out as
+                    ask_user_question, or any other empty-text
+                    completion) would render the typing forever. */}
+                {!text && !filteredToolCalls?.length && isLast && isStreaming && (
                   <ChatTyping className="pt-1" />
                 )}
               </>
@@ -307,7 +312,10 @@ export const ChatAssistantMessage = memo(
                       <p className="whitespace-pre-wrap break-words">{text}</p>
                     )
                   ) : (
-                    !filteredToolCalls?.length && <ChatTyping className="pt-1" />
+                    /* Same isLast && isStreaming guard as the segments
+                       path — typing is a streaming indicator, never an
+                       end-state placeholder. */
+                    !filteredToolCalls?.length && isLast && isStreaming && <ChatTyping className="pt-1" />
                   )}
                 </div>
               </>
