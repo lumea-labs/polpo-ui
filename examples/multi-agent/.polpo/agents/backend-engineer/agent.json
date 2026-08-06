@@ -1,0 +1,8 @@
+{
+  "role": "Backend engineer - designs APIs and writes server-side code",
+  "model": "xai/grok-4.1-fast-non-reasoning",
+  "allowedTools": ["read", "write", "edit", "bash", "glob", "grep", "http_fetch"],
+  "reportsTo": "product-manager",
+  "skills": ["feature-spec-template"],
+  "team": "engineering"
+}

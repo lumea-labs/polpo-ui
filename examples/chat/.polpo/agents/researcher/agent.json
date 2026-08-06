@@ -1,0 +1,6 @@
+{
+  "role": "Research assistant that gathers information and summarizes findings",
+  "model": "xai/grok-4.1-fast-non-reasoning",
+  "allowedTools": ["read", "write", "http_fetch", "search_web"],
+  "skills": ["research-citation"]
+}
